@@ -1,0 +1,36 @@
+{% extends 'feed/base.html' %}
+{% load static %}
+{% block content %}
+<div class="px-5">
+ <div class="row">
+      {% for post in allpost %}
+        <div class="col-md-2 mb-3" style="margin-right: -10px">
+            <div class="card">
+              {% for p in post.img.all %}
+              {% if forloop.counter == 1 %}
+              <a href="{% url 'feed:postdetails' post.id %}">
+                <img class="img-fluid w-100" alt="100%x280" src="{{p.pimages.url}}" style="height: 250px;"></a>
+                {% endif %}
+                {% endfor %}
+                <div class="card-body d-flex flex-column" align="center">
+                    <p class="card-text">Stars</p>
+                    <div class="mt-auto">
+                    <button class="btn btn-outline-primary btn-block like" id ="{{post.id}}">
+                    {% if is_liked %}
+                      <a href="{% url 'feed:post-like' %}" style=" font-size: 16px;" id="likebtn{{ post.id }}">&#10084;unwishlist</a>
+                      {% else %}
+                      <a href="{% url 'feed:post-like' %}" style=" font-size: 16px;" id="likebtn{{ post.id }}"> &#10084;wishlist</a>
+                      {% endif %}
+                    </button><br>
+                    <a href="{% url 'feed:postdetails' post.id %}"><button class="btn btn-outline-primary">Explore</button></a>
+                  </div>
+                </div>
+            </div>
+        </div>     
+        {% endfor %}
+</div>
+</div>
+{% endblock content %}
+
+{% block jsfiles %}
+{% endblock jsfiles %}

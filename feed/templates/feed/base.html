@@ -1,0 +1,156 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<style type="text/css">
+html,
+body{
+    margin:0;
+    padding: 0;
+    height: 100%;
+    padding-bottom: 1px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  margin-bottom: 0;
+  margin-right: 0;
+  width: 100%;
+  text-align: center;
+  /* Set the minimum height of the footer here */
+  min-height: 1px;
+  background-color:;
+}
+  
+.fa-stack[data-count]:after{
+  position:absolute;
+  right:0%;
+  top:1%;
+  content: attr(data-count);
+  font-size:50%;
+  padding:.6em;
+  border-radius:999px;
+  line-height:.75em;
+  color: white;
+  background:rgba(255,0,0,.85);
+  text-align:center;
+  min-width:2em;
+  font-weight:bold;
+}
+  
+</style>
+<head>
+  <title>SpaceAiro</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/base1.css' %}">
+  <script src="{% static 'js/main.js' %}"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
+  <script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+
+
+</head>
+<body class="d-flex flex-column min-vh-100vh">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark ">
+  <a class="navbar-brand" href="{% url 'feed:index' %}">Spaceairo</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="{% url 'feed:index' %}">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'feed:categories' %}">Products</a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link " href="{% url 'feed:wishlist' %}">Whislist</a>
+      </li>
+    </ul>
+    <ul class="navbar-nav navbar-right">
+      <li class="mt-2">
+      <form class="form-inline my-3 my-lg-0" method="GET" action="{% url 'users:search_users' %}">
+      <input class="form-control mr-sm-2 " type="search" name='q' placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+  </li>
+  <li class="nav-item">
+        <a class="nav-link " href="{% url 'users:notification' %}">
+          <span class="fa-stack fa-1x" data-count="1">
+            <i class="fa fa-circle fa-stack-2x"></i>
+            <i class="fa fa-bell fa-stack-1x fa-inverse"></i>
+          </span></a>
+      </li>
+  <li class="pt-1 pl-1">
+        {% if user.is_authenticated %}
+        <a href="{% url 'users:dashboard' %}"><i class="fa fa-user-circle pl-2 btn " style="font-size:24px;color:white;"></i></a>
+        <a href="{% url 'users:logout' %}"><i class="fa fa-sign-out pl-2 btn " style="font-size:24px;color:white;"></i></a>
+        {% else %}
+        <a href="{% url 'users:login' %}"><i class="fa fa-sign-in pl-2 btn " style="font-size:16px;color:white;">Login</i></a>
+       <a href="{% url 'users:register' %}"><button class="btn " style="font-size:16px;color:white;">join free</button></a>
+
+        {% endif %} 
+      </li>
+    </ul>    
+  </div>
+</nav>
+<br>
+
+<main class="flex-fill mb-2">
+  {% block content %}
+  {% endblock content%}
+  {% block jsfiles %}
+  {% endblock jsfiles %}
+  
+</main>
+    <footer class=" mt-auto bg-dark  text-center ">
+      <!-- Grid container -->
+      <div class="container p-4 pb-0">
+        <!-- Section: Social media -->
+        <section class="">
+          <!-- Facebook -->
+          <a href="#" class="fa fa-facebook btn btn-outline-light btn-floating m-1"></a>
+
+          <!-- Twitter -->
+          <a href="#" class="fa fa-twitter btn btn-outline-light btn-floating m-1"></a>
+
+          <!-- Google -->
+          <a href="#" class="fa fa-google btn btn-outline-light btn-floating m-1"></a>
+
+          <!-- Instagram -->
+          <a href="#" class="fa fa-instagram btn btn-outline-light btn-floating m-1"></a>
+
+          <!-- Linkedin -->
+          <a href="#" class="fa fa-linkedin btn btn-outline-light btn-floating m-1"></a>
+
+          <!-- Github -->
+        </section>
+        <!-- Section: Social media -->
+      </div>
+      <!-- Grid container -->
+      <div >
+        <a href="{% url 'feed:rules' 'about' %}"style="color: white;padding-right: 10px;">About</a>
+        <a href="{% url 'feed:rules' 'privacy' %}"style="color: white; padding-right: 10px;">Privacy Policy</a>
+        <a href="{% url 'feed:rules' 'condition' %}"style="color: white;">Condition of Use</a>
+      </div>
+
+      <!-- Copyright -->
+      <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);color:white;">
+        © 2021 Copyright:
+        <a class="" href="#">SpaceAiros</a>
+      </div>
+      <!-- Copyright -->
+    </footer>
+
+</body>
+</html>
+

@@ -1,0 +1,78 @@
+{% extends 'feed/base.html'%}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-8">
+      {% if wish %}
+       <div class="card card-signin my-5">
+        <div class="card-body">
+          {% for user_p in wish %}
+          <a href="{% url 'feed:postdetails' user_p.post.id %}">
+            {% for p in user_p.post.img.all %}
+          {% if forloop.counter == 1 %}
+            <img src="{{p.pimages.url }}"  class="rounded mr-2" width="40"height="40"  alt=""/></a>
+          {% endif %}
+            {% endfor %}
+        
+          <a class="text-dark" href="{% url 'feed:postdetails' user_p.post.id %}"><b>{{ user_p.post.title}}</b></a>
+          <small><a class="btn btn-danger float-right"  href="{% url 'feed:deletelike' user_p.id  %}">Unlist</a></small>
+          <br /><br />
+          {% endfor %}
+        </div>
+      </div>
+      {% else %}
+      <h5>
+        <i>There is no wish list just add some</i> <a href="{% url 'feed:index' %}">Products</a>
+      </h5>
+       
+      {% endif %}
+    </div>
+    <div class="col-md-4">
+      <div class="card card-signin my-5">
+        <a href="{% url 'users:dashboard' %}"
+          ><img
+            class="card-img-top"
+            src="{{ request.user.profile.image.url }}"
+            alt=""
+        /></a>
+        <div class="card-body">
+          <h5 class="card-title text-center">{{ request.user }}</h5>
+          <h6 class="text-center">
+            {{ request.user.profile.friends.count }}
+            <p class="text-muted">following</p>
+          </h6>
+          <p class="card-text text-center">{{ request.user.profile.bio }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endblock content %}
+
+  
+  {% block jsfiles %}
+  <script>
+$(".like").click(function (e) {
+    var id = this.id;
+    var href = $('.like').find('a').attr('href');
+    e.preventDefault();
+
+    $.ajax({
+        url: href,
+        data: {
+          'likeId': id
+        },
+        success: function(response){
+          if(response.liked){
+            $('#likebtn' + id).html("remove");
+            $('#likebtn' + id).css("color", "white")
+          }
+          else{
+            $('#likebtn' + id).html("add");
+            $('#likebtn' + id).css("color", "white")
+          }
+        }
+      })
+});
+</script>
+
+  {% endblock jsfiles %}

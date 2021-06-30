@@ -1,0 +1,412 @@
+{% extends 'feed/base.html' %}
+{% load static %}
+{% block content %}
+<style type="text/css">
+  .img-fluid2 {
+  max-width:100%;
+  height: 100px;}
+.nav-tabs .nav-link, .nav-tabs .nav-link.active, .nav-tabs .nav-link:hover {
+    border: 0;
+    border-bottom: 1px solid grey;
+    color: gray;
+}
+
+.nav-tabs .nav-link.active {
+    color: #000000;
+    border-radius: 0;
+    border-bottom: 2px solid blue;
+    border-spacing: 12px;
+}
+#id_comment{
+  border: none;
+  border-bottom: 2px solid #009999;
+  width: 100%;
+}
+
+.rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center
+}
+
+.rating>input {
+    display: none
+}
+
+.rating>label {
+    position: relative;
+    width: 0.8em;
+    font-size: 3vw;
+    color:red;
+    cursor: pointer
+}
+
+.rating>label::before {
+    content: "\2605";
+    position: absolute;
+    opacity: 0
+}
+
+.rating>label:hover:before,
+.rating>label:hover~label:before {
+    opacity: 1 !important
+}
+
+.rating>input:checked~label:before {
+    opacity: 1
+}
+
+.rating:hover>input:checked~label:before {
+    opacity: 0.4
+}
+.rating-star {
+  unicode-bidi: bidi-override;
+  color: #c5c5c5;
+  font-size: 25px;
+  height: 25px;
+  width: 100px;
+  margin: 0 auto;
+  position: relative;
+  padding: 0;
+  text-shadow: 0px 1px 0 #a2a2a2;
+}
+
+.rating-upper {
+  color: red;
+  padding: 0;
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+}
+
+.rating-lower {
+  padding: 0;
+  display: flex;
+  z-index: 0;
+}
+
+</style>
+<div class="container">
+	<div class="card">
+		<div class="card-body ">
+			<div class="row">
+				<div class="col-md-4">
+					{% for p in photo %}
+			  			<div class="mySlides ">
+			  			<img class="img-fluid" src="{{p.pimages.url}}" style="height: 500px">
+			  			</div>
+			        {% endfor %}			
+				</div>
+				<div class="col-md-8">
+					<h3><strong>{{post.title|title}}</strong></h3>
+	          			<div class="row">
+		          			<div class="col-md-3">
+								<div class="rating-star">
+								    <div class="rating-upper" style="width: {{ratevalue}}%">
+								        <span>★</span>
+								        <span>★</span>
+								        <span>★</span>
+								        <span>★</span>
+								        <span>★</span>
+								    </div>
+								    <div class="rating-lower">
+								        <span>★</span>
+								        <span>★</span>
+								        <span>★</span>
+								        <span>★</span>
+								        <span>★</span>
+								    </div>
+								</div><br>
+								<p>{{ratevalue}}/10</p>
+							</div>
+							<div class="col-md-5 mt-2">
+								<strong><i>{{post.rates.count}} rates</i></strong>
+							</div>
+							<div class="col-md-4" >
+						    {% if request.user == post.user_name %}
+								<a  href="{% url 'feed:editpost' post.id %}"><button class="btn btn-outline-info mr-3">Update</button></a>
+								<button class="btn btn-outline-danger mr-3" data-toggle="modal" data-target="#exampleModalCenter{{post.id}}">Delete</button>
+								
+								<div class="modal fade" id="exampleModalCenter{{post.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+									  <div class="modal-dialog modal-dialog-centered" role="document">
+									    <div class="modal-content">
+									      <div class="modal-header">
+									        <h5 class="modal-title" id="exampleModalLongTitle">Delete Post</h5>
+									        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									          <span aria-hidden="true">&times;</span>
+									        </button>
+									      </div>
+									      <div class="modal-body text-center">
+									          <p>Are you sure you want to delete your account?</p>
+										      <div class="clearfix">
+										        <button type="button" class="btn btn-lg btn-secondary cancelbtn">Cancel</button>
+										        <button type="button" class="btn btn-lg btn-danger deletebtn"><a style="color:white;" href="{% url 'feed:deletepost' post.id %}"> Delete</a></button>
+										      </div>
+									      </div>
+									      
+									    </div>
+									  </div>
+									</div>
+								{% endif %}
+							</div>
+						</div><br>
+						{% if post.price != None %}
+	          			<h5 style="color: orange;">${{post.price}}</h5>{% endif %}
+	          			<br>
+	          			<p>{{post.disc | truncatechars:200|safe}}</p>
+	          			<p>Post type :{{post.post_type}}</p>	
+	          			<button class="btn btn-primary wish" id ="{{post.id}}" style="background-color: #009999;color: white;">
+	          				{% if is_wished %}
+			            		<a href="{% url 'feed:wish' %}" style="color:white; font-size: 16px;" id="wishbtn{{ post.id }}"><h6>&#10084; unwishlist</h6></a>
+			        		{% else %}
+			            		<a href="{% url 'feed:wish' %}" style="color:white; font-size: 16px;" id="wishbtn{{ post.id }}"> &#10084; wishlist</a>
+			        		{% endif %}
+			        	</button>
+			        	{% if post.buyurl != None %}
+	          			<a href="{{post.buyurl}}" target="_blank"><button class="btn btn-primary" style="background-color: #009999;color: white;"><i class="fa fa-shopping-cart pl-1 btn " style="font-size:10px;color:white;"></i>Buy</button></a>{% endif %}
+	          			  <button type="button" style="background-color: #009999; color:white;" class="btn btn-primary" data-toggle="modal" data-target="#myModal{{post.id}}">
+							    Share
+							  </button>
+
+							  <!-- The Modal -->
+							  <div class="modal fade" id="myModal{{post.id}}">
+							    <div class="modal-dialog">
+							      <div class="modal-content">
+							      
+							        <!-- Modal Header -->
+							        <div class="modal-header">
+							          <h4 class="modal-title">Modal Heading</h4>
+							          <button type="button" class="close" data-dismiss="modal">&times;</button>
+							        </div>
+							        
+							        <!-- Modal body -->
+							        <div class="modal-body">
+							        	 <a href="https://plus.google.com/share?url=http://127.0.0.1:8000{{ request.get_full_path|urlencode }}" class="fa fa-google btn btn-outline-info btn-lg"></a>
+										 <a href="http://www.linkedin.com/shareArticle?url=http://127.0.0.1:8000{{ request.get_full_path|urlencode }}&title={{post.title}}&summary=&source=http://127.0.0.1:8000" class="fa fa-linkedin btn btn-outline-info btn-lg"></a>
+										  <a href="http://www.facebook.com/sharer/sharer.php?u=http://127.0.0.1:8000{{ request.get_full_path|urlencode }}"class="fa fa-facebook btn btn-outline-info btn-lg"></a>
+							        </div>
+							        
+							        <!-- Modal footer -->
+							        <div class="modal-footer">
+							          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+							        </div>
+							        
+							      </div>
+							    </div>
+							  </div>
+	          			<div class="row mt-4">
+          				{% for p in photo %}
+          				<div class="col-sm-3 ">
+          					<img class="demo cursor img-fluid2" src="{{p.pimages.url}}" width="140px" height="100px" onclick='currentSlide("{{forloop.counter}}")' alt="">
+          				</div>
+          				{% endfor %}
+          			</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+</div>
+
+<div class="container">
+	    <div class="row mb-2">
+	    	<div class="col-md-4">
+	    		<div class="card card-signin my-5">
+		    		<div class="card-body">
+			    		<div class="row">
+			    			<div class="col-md-4">
+			    			<ul class="nav nav-tabs md-tabs" id="myTabMD" role="tablist">
+				                <li class="nav-item waves-effect waves-light btn ">
+				                  <a class="nav-link " id="disc-tab-md" data-toggle="tab" href="#disc-md" role="tab" aria-controls="disc-md" aria-selected="true">Discription</a>
+				                </li>
+				                <li class="nav-item waves-effect waves-light btn">
+				                  <a class="nav-link active" id="review-tab-md" data-toggle="tab" href="#review-md" role="tab" aria-controls="review-md" aria-selected="false">review</a>
+				                </li>
+				                <li class="nav-item waves-effect waves-light btn">
+				                  <a class="nav-link" id="information-tab-md" data-toggle="tab" href="#information-md" role="tab" aria-controls="information-md" aria-selected="false">Creater</a>
+				                </li>
+				                <li>
+				                	<div class="rating" id="{{post.id}}">
+				                	 <input type="radio" name="rating" value="5" id="5"><label for="5">☆</label>
+				                	  <input type="radio" name="rating" value="4" id="4"><label for="4">☆</label> 
+				                	  <input type="radio" name="rating" value="3" id="3"><label for="3">☆</label> 
+				                	  <input type="radio" name="rating" value="2" id="2"><label for="2">☆</label>
+				                	  <input type="radio" name="rating" value="1" id="1"><label for="1">☆</label>
+				                	</div>
+				                	    <button type="button" id = "{{post.id}}" class="btn btn-sm btn-outline-info ratingstar"><a href="{% url 'feed:ratingstar' %}">
+				                	    	Submit</a>
+				                	    </button>
+				                	    <div id="result{{post.id}}"></div>
+				                </li>
+				              </ul>
+   				            </div>
+		          		</div>
+		    		</div>
+	    		</div>
+	    	</div>	    		
+	    	<div class="col-md-8">
+	    		<div class="card card-signin my-5">
+	    			<div class="card-body">
+	    				<div class="tab-content" id="myTabContentMD">
+                			<div class="tab-pane fade show " id="disc-md" role="tabpanel" aria-labelledby="disc-tab-md">
+                				<p>{{post.disc|safe}}</p>
+                			</div>
+			                <div class="tab-pane show active" id="review-md" role="tabpanel" aria-labelledby="review-tab-md">
+					            {% if post.details.all %}
+			    				{% for detail in comment %}
+				    				<a href="{% url 'users:profile_v' detail.username.profile.id %}">
+				    					<img src="{{ detail.username.profile.image.url }}" class="rounded-circle" width="30" height="30" alt=""></a>
+				          			<a class="text-dark" href="{% url 'users:profile_v' detail.username.profile.id %}"><b>{{ detail.username }}</b></a>
+				          			<br>
+				          			<small>{{ detail.comment_date }}</small>
+					          		{% if detail.username == request.user %}
+					          			<a href="{% url 'feed:del_comment' detail.id post.id %}">delete</a>
+					          		{% endif %}
+				          			<br><br>
+				          			<p class="card-text text-dark">{{ detail.comment }}</p>
+				    				<hr class="my-1">
+				    			{% endfor %}
+				    			{% else %}
+				    				<p>No comments to show!</p>
+				    			{% endif %}
+			    				<form class="px-2" method = "POST"  action="">
+			    					{% csrf_token %}
+						            <fieldset class="form-group"><br>
+						                <div style="width: 100%;">{{form.comment}}</div>
+						            </fieldset>
+						            <div class="form-group">
+						                <button class="btn btn-lg btn-primary text-uppercase" style="background-color: #009999;" type="submit">Comment</button><br>
+						            </div>
+						        </form>
+			              </div>
+			                <div class="tab-pane fade  show" id="information-md" role="tabpanel" aria-labelledby="information-tab-md">
+	                			<a href="{% url 'users:profile_v' post.user_name.profile.id %}">			                		
+		    					<img src="{{ post.user_name.profile.image.url }}" class="rounded-circle" width="30" height="30" alt=""></a>
+		                		<a class="text-dark" href="{% url 'users:profile_v' post.user_name.profile.id %}"><b>{{ post.user_name.profile.user }}</b></a> 
+		                		<br><br>
+		                		<p>{{post.user_name.profile.bio}}</p>
+		                		<p>{{post.user_name.profile.About|safe}}</p>
+		                		<a href="{{post.user_name.profile.url}}" target="_blank"><h4>visit website</h4></a>
+			                </div>
+			              </div>
+			            </div>
+	    			</div>
+	    		</div>
+	    	</div>
+	    </div>
+	</div>
+	    
+</div>
+{% endblock content %}
+{% block jsfiles %}
+<script>
+var slideIndex = 1;
+showSlides(slideIndex);
+
+function plusSlides(n) {
+  showSlides(slideIndex += n);
+}
+
+function currentSlide(n) {
+  showSlides(slideIndex = n);
+}
+
+function showSlides(n) {
+  var i;
+  var slides = document.getElementsByClassName("mySlides");
+  var dots = document.getElementsByClassName("demo");
+  var captionText = document.getElementById("caption");
+  if (n > slides.length) {slideIndex = 1}
+  if (n < 1) {slideIndex = slides.length}
+  for (i = 0; i < slides.length; i++) {
+      slides[i].style.display = "none";
+  }
+  for (i = 0; i < dots.length; i++) {
+      dots[i].className = dots[i].className.replace(" active", "");
+  }
+  slides[slideIndex-1].style.display = "block";
+  dots[slideIndex-1].className += " active";
+  captionText.innerHTML = dots[slideIndex-1].alt;
+}
+</script>
+<script>
+$(".like").click(function (e) {
+    var id = this.id;
+    var href = $('.like').find('a').attr('href');
+    e.preventDefault();
+
+    $.ajax({
+        url: href,
+        data: {
+          'likeId': id
+        },
+        success: function(response){
+          if(response.liked){
+            $('#likebtn' + id).html("&#10084;unwishlist");
+            $('#likebtn' + id).css("color", "white")
+          }
+          else{
+            $('#likebtn' + id).html("&#10084;wishlist");
+            $('#likebtn' + id).css("color", "white")
+          }
+        }
+      })
+});
+</script>
+<script>
+$(".wish").click(function (e) {
+    var id = this.id;
+    var href = $('.wish').find('a').attr('href');
+    e.preventDefault();
+
+    $.ajax({
+        url: href,
+        data: {
+          'wishId': id
+        },
+        success: function(response){
+          if(response.wished){
+            $('#wishbtn' + id).html("&#10084;unwishlist");
+            $('#wishbtn' + id).css("color", "white")
+          }
+          else{
+            $('#wishbtn' + id).html("&#10084;wishliste");
+            $('#wishbtn' + id).css("color", "white")
+          }
+        }
+      })
+});
+</script>
+<script>
+       $(".ratingstar").click(function(e){
+        var selValue = $("input[type='radio']:checked").val();
+        var id = this.id;
+        var href = $(".ratingstar").find('a').attr('href');
+        e.preventDefault();
+        $.ajax({
+        	url:href,
+        	data:{
+        		'rateid':id,
+        		'ratevalue':selValue
+   		},
+   		success:function(reponse){
+   			if(reponse.rated){
+   				$('#result' + id).html("success");
+   			}
+   			else{
+   				$('#result'+ id).html('Login to rate');
+   			}
+   		},
+
+   	});
+        
+    });
+
+
+</script>
+
+{% endblock jsfiles %}

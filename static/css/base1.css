@@ -1,0 +1,28 @@
+a{
+	text-decoration: none !important;
+}
+.checked{
+	color:red;
+}
+.cursor{
+	cursor: pointer;
+}
+.mySlides{
+	display: none;
+}
+.demo{
+	opacity: 0.6
+}
+.activa,
+.demo:hover{
+	opacity: 1;
+}
+
+.topsector{
+	width: 110px;
+	height: 110px;
+	border-radius: 50%;
+}
+.django-ckeditor-widget{
+	width: 100%
+}

@@ -1,0 +1,126 @@
+{% extends 'feed/base.html'%}
+{% block content %}
+
+<div class="main-content">
+  <div class="container-fluid mt-7">
+    <div class="row" style="margin:10px 10% 10px 10%">
+      <div class="col-xl-8 m-auto order-xl-2 mb-5 mb-xl-0">
+        <div class="card card-profile shadow">
+          <div class="row justify-content-center text-center">
+            <div class="col-lg-3 order-lg-2">
+              <div class="card-profile-image">
+                <a href="{{ u.profile.image.url }}">
+                  <img
+                    src="{{ u.profile.image.url }}"
+                    class="rounded-circle img-fluid "
+                    width="160px"
+                    height="160px"
+                  />
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4"></div>
+          <div class="card-body pt-0 pt-md-4">
+            <div class="row">
+              <div class="col">
+                <div class="card-profile-stats d-flex justify-content-center mt-md-5">
+                  <div>
+                    <span class="heading">{{ u.profile.friends.count }}</span>
+                    {% if request.user == u %}
+                    <span class="description"><a href="{% url 'users:friend_list' %}">followers</a></span>
+                    <span class="description">{{post_count}}posts</span>                    
+                    <span class="description"><a href="{% url 'feed:wishlist' %}">Wishlist</a></span>
+                    {% else %}
+                    <span class="description">followers</span>
+                    <span class="description">{{post_count}}posts</span>                    
+                    <span class="description">Wishlist</span>
+                    {% endif %}
+                    
+                    </div>
+                </div>
+              </div>
+            </div>
+            <div class="">
+              <h3> {{ u }}</h3>
+              <p><strong>Bio</strong>{{ u.profile.bio }}</p>
+              <p>{{u.profile.url}}</p>
+              <p><strong> Profile</strong> {{u.profile.profile_type}}</p>
+              <hr class="my-3" />
+              <button class="btn btn-info" data-toggle="collapse" data-target="#demo">about</button>
+              <div id="demo" class="collapse">
+              <p>{{ u.profile.About|safe}}</p>
+              </div>
+              {% if request.user == u %}
+              <a class="btn btn-info" href="{% url 'users:editprofile' %}">Edit Profile</a>
+              <a class="btn btn-info" href="{% url 'feed:create_post' %}">create post</a>
+               {% else %}
+               {% if button == 'follow' %}
+               <a class="btn btn-primary" href="{% url 'users:add_friends' u.id %}">Follow</a>
+               {% else %}
+                <a class="btn btn-danger" href="{% url 'users:delete_friend' u.id %}">Unfollow</a>
+                {% endif %}
+               {% endif %}
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      <div class="col-xl-4 order-xl-2">
+        <div class="card">
+          <div class="card-body">
+            <h3>News</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br />
+    <div class="container-fluid">
+    <div class="row " style="margin:10px 10% 10px 10%">
+          <div class="col-md-8">
+            <div class="row">
+                  {% for post in post %}
+                  {% if post.img.all %}
+                    <div class="col-md-3 mb-3" style="margin-right: -10px">
+                        <div class="card">
+                            {% for p in post.img.all %}
+                            {% if forloop.counter == 1 %}<a href="{% url 'feed:postdetails' post.id %}">
+                            <img class="img-fluid w-100" alt="100%x280" src="{{p.pimages.url}}" style="height: 250px;"></a>
+                            {% endif %}
+                            {% endfor %}
+                            <div class="card-body" align="center">
+                                {{post.title}}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+          </div>
+            <div class="col-xl-4">
+              <div class="card">
+                <div class="card-body">
+                  <h4>Activities writes</h4><hr>
+                  {% for post in post %}
+                  {% if not post.img.all %}
+                  <div class="row">
+                    <div class="col-md mb-3" style="margin-right: -10px">
+                        <div class=""><a href="{% url 'feed:postdetails' post.id %}">
+                                <strong>{{post.title}}</strong> <small>{{post.date_posted}}</small>{% if request.user %}<a  href="{% url 'feed:editpost' post.id %}">edit</a><a href="{% url 'feed:deletepost' post.id %}"> Delete</a>{% endif %}
+                            <div class="pt-3">
+                                {{post.disc|safe}}
+                            </div></a>
+                        </div>
+                    </div>
+                  </div> 
+                  {% endif %}
+                    {% endfor %}
+                </div>
+              </div>
+            </div>
+      </div></div>
+    </div>
+</div>
+<br style="padding-bottom: 100px;">
+
+{% endblock content %} 

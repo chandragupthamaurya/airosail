@@ -1,0 +1,67 @@
+footer {
+      background-color:grey;
+      margin-top: 10%;
+      padding: 1px;
+    }
+
+.card {
+  /* Add shadows to create the "card" effect */
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+
+}
+
+/* On mouse-over, add a deeper shadow */
+.card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+.v1{
+	border-left: 2px green solid;
+	height: 33px;
+}
+.createform{
+  color: red;
+}
+a {
+text-decoration: none;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+  height: 100px;
+  width: 100px;
+  outline: black;
+  background-size: 100%, 100%;
+  border-radius:;
+  margin-top:50%;
+  font-size: 40px;
+  background-image: none;
+}
+.carprev{
+  margin-left:-150px;
+  padding:0 20px 0 20px;
+  border: 1px solid green ;
+}
+
+.carnext{
+  margin-right:-38px;
+  padding:0 20px 0 20px;
+  border: 1px solid green;
+}
+
+.fa-stack[data-count]:after{
+  position:absolute;
+  right:0%;
+  top:1%;
+  content: attr(data-count);
+  font-size:30%;
+  padding:.6em;
+  border-radius:999px;
+  line-height:.75em;
+  color: white;
+  background:rgba(255,0,0,.85);
+  text-align:center;
+  min-width:2em;
+  font-weight:bold;
+}

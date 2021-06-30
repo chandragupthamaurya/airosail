@@ -1,0 +1,254 @@
+{% extends "feed/base.html" %}
+{% load static %}
+
+{% block content %}
+<style type="text/css">
+	.comments{
+	border:0px solid;
+	border-radius: 10px;
+	margin-top: 2px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+}
+</style>
+ 	<div class="container-fluid" style="padding:0 3% 0 8%">
+	    <div class="row">
+	    	<div class="col-sm-3">
+	    		<div class="card card-signin my-3">
+		        	<div class="card-body">
+		        		{% if request.user == u.user %}
+			        	<div class="text-center">
+			        		<a href="{% url 'users:dashboard' %}" >
+			        			<img src="{{ u.image.url }}" class="rounded" width="100" height="100" alt="">
+			        		</a>
+			        		<h2>{{u.user}}</h2>
+		        		</div>
+		        		<hr>
+		        		<div class="row">
+		        			<div class="col-md-auto">
+		        				<button class="btn mb-2 mb-md-0 btn-outline-info btn-round" type="button">
+		        					<span>{{u.friends.count}}<br> Following</span>
+		        				</button>
+		        			</div>
+		        			<div class="col-md-auto">
+		        				<button class="btn mb-2 mb-md-0 btn-outline-info btn-round" type="button">
+		        					<span>{{follower}}<br>Follower</span>
+		        				</button>
+		        			</div>
+		        			<div class="col-md-auto">
+		        				<button class="btn mb-2 mb-md-0 btn-outline-info btn-floating" type="button">
+		        					<span>{{post_count}}<br>Posts</span>
+		        				</button>
+		        			</div>
+		        		</div>
+		        		{% else %}
+		        		<h5>Login is required</h5>
+		        		{% endif %}
+		        	</div>
+	      		</div>
+	    	</div>
+	    	<div class="col-md-6">
+	    		{% for post in post%}
+	    		<div class="card card-signin my-3">
+	    			<div class="card-body">
+	    				<a href="{% url 'users:profile_v' post.user_name.profile.id %}">
+	    					<img src="{{ post.user_name.profile.image.url }}" class="rounded-circle" width="50" height="50" alt="">
+	    				</a>
+	    				<a class="text-dark" href="{{ post.user_name.profile.id }}"><b>{{ post.user_name }}</b></a>
+
+	    				<a tabindex="0" class="float-right" role="button" data-placement="left" data-toggle="popover" data-trigger="focus" data-html="true" data-content="<a href='{% url 'feed:reports' post.id  %}'>report</a>"><i class="fa fa-ellipsis-v float-right fa-1x fa-three" ></i><br>
+	    				</a>
+
+	    				<small class="text-muted">Posted on {{ post.date_posted }}</small><br><br>
+	    				{% if not post.img.all %}
+	    				{% if user.is_authenticated %}
+	    				<div >{{post.disc |safe}}</div>
+	    				{% endif %}
+	    				{% else %}
+	    				{% if user.is_authenticated %}
+	    				<div >{{post.disc |safe|truncatechars:200}}</div>
+	    				{% endif %}
+	    				{% for p in post.img.all %}
+			           		{% if forloop.counter == 1 %} 
+				       		<a href="{% url 'feed:postdetails' post.id %}">
+				       			<img class="card-img-top" src="{{ p.pimages.url }}" width="300" height="400" alt="">
+				       		</a>
+				       		{% endif %}
+			        	{% endfor %}
+			        	{% endif %}
+	    			</div>
+	    			<div class="card-footer">
+	    				<button class="btn btn-white mr-3 like" id="{{ post.id }}"> 
+	    					{% for l in post.likes.all %}
+    						{% if l.user == request.user %}
+				            	<a href="{% url 'feed:post-like' %}" style="color:red;" id="likebtn{{ post.id }}"><i class="fa fa-flash "style="font-size: 18px;"></i></a>| {{post.likes.count}}
+				        	{% else %}
+				            	<a href="{% url 'feed:post-like' %}" style="" id="likebtn{{ post.id }}"> <i class="fa fa-flash" style="font-size: 18px"></i></a>| {{post.likes.count}}
+				        	{% endif %}
+				        	{% empty %}
+				       			<a href="{% url 'feed:post-like' %}" style="" id="likebtn{{ post.id }}"> <i class="fa fa-flash" style="font-size: 18px"></i></a>| {{post.likes.count}}
+				        	{% endfor %}
+				       
+				    	</button>
+<!-- wish button-->
+				    	<button class="btn btn-outline-info wish" title="save wishlist" id="{{post.id}}">
+							{% for w in post.wishs.all %}
+    						{% if w.user == request.user %}	
+    						<a href="{% url 'feed:wish' %}" style="color:red;" id="wishbtn{{ post.id }}"><i class="fa fa-magnet "style="font-size: 18px;"></i></a> 
+				        	{% else %}
+				            	<a href="{% url 'feed:wish' %}" style="" id="wishbtn{{ post.id }}"> <i class="fa fa-magnet" style="font-size: 18px"></i></a> 
+				        	{% endif %}
+				        	{% empty %}
+   			            	<a href="{% url 'feed:wish' %}" style="" id="wishbtn{{ post.id }}"> <i class="fa fa-magnet" style="font-size: 18px"></i></a> 
+				        	{% endfor %}
+				        </button>
+<!--  end wish button-->
+
+	          			<a class="btn btn-outline-info" href="{% url 'feed:postdetails' post.id%}">
+	          				<i class="fa fa-commenting-o"></i></a>
+
+	          				<button class="btn btn-outline-info" data-toggle="modal" data-target="#myModal{{post.id}}"><i class="fa fa-share"></i></button>
+							<div class="modal fade" id="myModal{{post.id}}">
+							    <div class="modal-dialog">
+							      <div class="modal-content">
+							      
+							        <!-- Modal Header -->
+							        <div class="modal-header">
+							          <h4 class="modal-title">Modal Heading</h4>
+							          <button type="button" class="close" data-dismiss="modal">&times;</button>
+							        </div>
+							        
+							        <!-- Modal body -->
+							        <div class="modal-body">
+							        	 <a href="https://plus.google.com/share?url=http://127.0.0.1:8000{{ request.get_full_path|urlencode }}" class="fa fa-google btn btn-outline-info btn-lg"></a>
+										 <a href="http://www.linkedin.com/shareArticle?url=http://127.0.0.1:8000{{ request.get_full_path|urlencode }}&title={{post.title}}&summary=&source=http://127.0.0.1:8000" class="fa fa-linkedin btn btn-outline-info btn-lg"></a>
+										  <a href="http://www.facebook.com/sharer/sharer.php?u=http://127.0.0.1:8000{{ request.get_full_path|urlencode }}"class="fa fa-facebook btn btn-outline-info btn-lg"></a>
+							        </div>
+							        
+							        <!-- Modal footer -->
+							        <div class="modal-footer">
+							          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+							        </div>
+							        
+							      </div>
+							    </div>
+							  </div>							        
+							     
+	          				{% if post.details.all %}
+	          				<small>Most Relevent Comment</small>
+	          				<div class="comments">
+	          			{% for com in post.details.all %}
+	          				{% if forloop.last %}
+	          				<a href="{% url 'users:profile_v' com.username.profile.id %}">
+				    		<img src="{{ com.username.profile.image.url }}" class="rounded-circle" width="30" height="30" alt="">	
+				          	<b>{{ com.username }}</b></a>         	
+				          	<small>{{ com.comment_date }}</small><a href="{% url 'feed:postdetails' post.id %}">
+	          				<h6 style="padding-left: 25px;padding-top: 10px;color: black; padding-bottom: 5px;">{{com.comment}}</h6></a>
+	          				{% endif %}
+	          			{% endfor %}
+	          		</div>
+	          		{% endif %}
+	    			</div>
+	    		</div>
+   	    		{% endfor %}
+	    	</div>
+	  	   <div class="col-md-3">
+	  	   		<div class="card card-signin my-3">
+	        		<div class="card-body"><h3>Top List</h3>
+	        			<div class="row">
+	        			{% for c in cat %}
+	        			<div class="col-md-auto" style="margin-right: -25px;">
+	        			<form  action="{% url 'feed:categories' %}" method="GET">
+	        				<button type="submit" name="submit" class="btn btn-dark btn-rounded mb-1">
+	        					<input type="hidden" name="cvalue" value="{{c}}">{{c}}
+	        				</button>
+	        			</form>
+	        		</div>
+	        			{% endfor %}
+	        			</div>	  
+	        		</div>
+	      		</div>
+	  	   </div>
+		</div>
+	</div>
+
+{% if is_paginated %}
+
+      {% if page_obj.has_previous %}
+        <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
+        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+      {% endif %}
+
+      {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+          <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+          <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+      {% endfor %}
+
+      {% if page_obj.has_next %}
+        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
+        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+      {% endif %}
+
+    {% endif %}
+
+{% endblock content %}
+{% block jsfiles %}
+<script>
+$(".like").click(function (e) {
+    var id = this.id;
+    var href = $('.like').find('a').attr('href');
+    e.preventDefault();
+
+    $.ajax({
+        url: href,
+        data: {
+          'likeId': id
+        },
+        success: function(response){
+          if(response.liked){
+            $('#likebtn' + id).html("<i class='fa fa-flash' style='font-size: 18px'></i>");
+            $('#likebtn' + id).css("color", "red")
+          }
+          else{
+            $('#likebtn' + id).html("<i class='fa fa-flash' style='font-size: 18px'></i>");
+            $('#likebtn' + id).css("color", "")
+          }
+        }
+      })
+});
+</script>
+ <script>
+$(document).ready(function(){
+  $('[data-toggle="popover"]').popover();
+
+});
+</script>
+
+<script>
+$(".wish").click(function (e) {
+    var id = this.id;
+    var href = $('.wish').find('a').attr('href');
+    e.preventDefault();
+
+    $.ajax({
+        url: href,
+        data: {
+          'wishId': id
+        },
+        success: function(response){
+          if(response.wished){
+            $('#wishbtn' + id).html("<i class='fa fa-magnet' style='font-size: 18px'></i>");
+            $('#wishbtn' + id).css("color","red")
+          }
+          else{
+            $('#wishbtn' + id).html("<i class='fa fa-magnet' style='font-size: 18px'></i>");
+            $('#wishbtn' + id).css("color", "")
+          }
+        }
+      })
+});
+</script>
+{% endblock jsfiles %}
