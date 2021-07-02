@@ -20,8 +20,7 @@ class userview():
     def cat(self):
         catlist = ['agriculture','pets','architecture','arts','transport','education','trading','books','charity','energy','entertainment',
         'games','marketing','advertising','manufacturing','fashion','human','resources','photography','property','science','spiritual','technology',
-        'websites',
-        'app']
+        'websites','app',]
         return catlist
 
 uv= userview()
@@ -170,7 +169,8 @@ def add_friends(request,id):
         print(request_rev)
         request_rev.delete()
     else:
-        frequest,created = FriendRequest.objects.get_or_create(to_user=user2,from_user=user1)        
+        if user2.profile.profile_type == 'people':
+            frequest,created = FriendRequest.objects.get_or_create(to_user=user2,from_user=user1)        
     return redirect('users:dashboard')
 
 @login_required
