@@ -51,7 +51,7 @@ categories
 </button>
 <div class="dropdown-menu">
 {% for c in cat %}
-<button class="dropdown-item" type="button"> <input type="checkbox" name="check" value="{{c}}">{{c|title}} </button>
+<button class="dropdown-item" type="button"> <input type="checkbox" name="check" {% for f in feed %}{% if f == c %}checked="checked"{% endif %}{% endfor %} value="{{c}}">{{c|title}} </button>
 {% endfor %}
 </div>
 </div><br>

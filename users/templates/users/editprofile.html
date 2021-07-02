@@ -62,30 +62,9 @@ id="sampleDropdownMenu" data-toggle="dropdown">
 Feed categories
 </button>
 <div class="dropdown-menu">
-<button class="dropdown-item" type="button"> <input type="checkbox" name="check" value="agriculture">Agriculture </button>
-<button class="dropdown-item" type="button"> <input type="checkbox" name="check" value="pets">Pets</button>
-<button class="dropdown-item" type="button">  <input type="checkbox" name="check" value="architecture">Architecture</button>
-<button class="dropdown-item" type="button">  <input type="checkbox" name="check" value="arts">Arts</button>
-<button class="dropdown-item" type="button">  <input type="checkbox" name="check" value="transport">Transport</button>
-<button class="dropdown-item" type="button">  <input type="checkbox" name="check" value="education">Education</button>
-<button class="dropdown-item" type="button">  <input type="checkbox" name="check" value="trading">Trading</button>
-<button class="dropdown-item" type="button">  <input type="checkbox" name="check" value="books">Books & Literature</button>
-<button class="dropdown-item" type="button">  <input type="checkbox" name="check" value="charity">Charity/Aid/Welfare</button>
-<button class="dropdown-item" type="button">  <input type="checkbox" name="check" value="energy">Energy</button>
-<button class="dropdown-item" type="button">  <input type="checkbox" name="check" value="entertainment">Entertainment</button>
-<button class="dropdown-item" type="button">  <input type="checkbox"name="check" value="games">Games</button>
-<button class="dropdown-item" type="button">  <input type="checkbox"name="check" value="marketing">Marketing & Advertising</button>
-<button class="dropdown-item" type="button">  <input type="checkbox"name="check" value="manugacturing">Manufacturing</button>
-<button class="dropdown-item" type="button">  <input type="checkbox"name="check" value="fashion">Fashion </button>
-<button class="dropdown-item" type="button">  <input type="checkbox"name="check" value="humanresources">Human Resources </button>
-<button class="dropdown-item" type="button">  <input type="checkbox"name="check" value="photography">Photography </button>
-<button class="dropdown-item" type="button">  <input type="checkbox"name="check" value="property">Property & Real Estate </button>
-<button class="dropdown-item" type="button">  <input type="checkbox"name="check" value="science">Science </button>
-<button class="dropdown-item" type="button">  <input type="checkbox"name="check" value="spiritual">Spiritual  </button>
-<button class="dropdown-item" type="button">  <input type="checkbox"name="check" value="technologly">Technology </button>
-<button class="dropdown-item" type="button">  <input type="checkbox"name="check" value="websites">websites </button>
-<button class="dropdown-item" type="button">  <input type="checkbox"name="check" value="app">App </button>
-
+{% for c in cat %}
+<button class="dropdown-item" type="button"> <input type="checkbox" {% for f in feed %}{% if f == c %}checked="checked"{% endif %}{% endfor %} name="check" value="{{c}}" id ="{{c}}">{{c|title}} </button>
+{% endfor %}
 </div>
 </div><br>
 	<div class=" text-center">
@@ -95,4 +74,13 @@ Feed categories
 </div>
 </div>
 </div><br>
+{% block jsfiles %}
+<script type="text/javascript">
+
+	{% for f in feed %}
+		$(#f).attr('checked','checked');
+	{% endfor %}
+
+</script>
+{%  endblock jsfiles %}
 {% endblock content %}

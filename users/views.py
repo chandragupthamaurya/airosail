@@ -8,11 +8,23 @@ from .forms import registerForm,ProfileUpdateForm,UserUpdateForm
 from .models import Profile,FriendRequest
 from feed.models import Post,comments,Like,PostImages
 from django.core.mail import send_mail
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model,update_session_auth_hash 
+from django.contrib.auth.forms import PasswordChangeForm
 import random
 from django.utils.timezone import now
 User = get_user_model()
+
+class userview():
+    def cat(self):
+        catlist = ['agriculture','pets','architecture','arts','transport','education','trading','books','charity','energy','entertainment',
+        'games','marketing','advertising','manufacturing','fashion','human','resources','photography','property','science','spiritual','technology',
+        'websites',
+        'app']
+        return catlist
+
+uv= userview()
 			
 def register(request):
     if request.user.is_authenticated:
@@ -34,30 +46,69 @@ def register(request):
         context = {'form':form}
         return render(request,'registration/register.html',context)
 
+def newlogin(request):
+    if request.method == "POST":
+        email = request.POST['username']
+        raw_password = request.POST['password']
+
+        try:
+            account = authenticate(username=User.objects.get(email=email).username,password=raw_password)
+            if account is not None:
+                auth_login(request,account)
+                return redirect('users:dashboard')
+        except:
+            account = authenticate(username=email, password=raw_password)
+            if account is not None:
+                auth_login(request, account)
+                return redirect('users:dashboard')
+        return render( request,'registration/login.html')
+
+
+def cpassword(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important!
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('users:cpassword')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = PasswordChangeForm(request.user)
+
+    context={
+        'form': form
+    }
+    return render(request, 'registration/cpassword.html', context)
+
 @login_required
 def profile_setting(request):
     return render(request,'users/profile_setting.html')
+
 def about(request):
     return render(request,'users/about.html')
-
-
 @login_required
 def editprofile(request):
+    cat = uv.cat()
     if request.method !='POST':
         u_form = UserUpdateForm(instance =request.user)
         p_form = ProfileUpdateForm(instance= request.user.profile)
+        feed = request.user.profile.feed.split(",")
+        print(feed)
     else:
         u_form = UserUpdateForm(request.POST, instance=request.user)
         p_form = ProfileUpdateForm(data = request.POST, files=request.FILES, instance=request.user.profile)
         cat = request.POST.getlist('check')
         c = ",".join(cat)
+        print(c)
         if u_form.is_valid() and p_form.is_valid():
             u_form.save()
             pro_obj = p_form.save()
             pro_obj.feed = c
             pro_obj.save()
             return redirect('users:dashboard')
-    context={'u_form':u_form,'p_form':p_form}
+    context={'u_form':u_form,'p_form':p_form,'cat':cat,'feed':feed}
     return render(request,'users/editprofile.html',context)
 
 
@@ -94,11 +145,9 @@ def dashboard(request):
     post = Post.objects.filter(user_name=you).order_by('-date_posted')
     frequest = FriendRequest.objects.filter(to_user = you)
     for fr in frequest:
-        print(fr.from_user)
         if fr.from_user not in friends:
             pass
         else:
-            print(fr)
             fr.delete()
 
     context = {
@@ -110,13 +159,6 @@ def dashboard(request):
     }
 
     return render(request, "users/dashboard.html", context)
-
-@login_required
-def search_users(request):
-    query = request.GET.get('q')
-    object_list = User.objects.filter(username__icontains=query)
-    context ={'users': object_list}
-    return render(request, "users/search_users.html", context)
  
 @login_required
 def add_friends(request,id):
@@ -158,11 +200,40 @@ def friend_list(request):
 
 @login_required
 def users_list(request):
-    return render(request,'users/users_list.html')
+    post_feed =[]
+    user_feed = request.user.profile.feed
+    feed = user_feed.split(",")
+    post_list =Post.objects.all()
+    for p in post_list:
+        for f in feed:
+            if f in p.post_type.split(","):
+                if not post_feed.count(p.user_name.profile):
+                    post_feed.append(p.user_name.profile)
+    context={"post_feed":post_feed}
+    return render(request,'users/users_list.html',context)
 
 @login_required
 def notification(request):
     friend_req = FriendRequest.objects.filter(to_user = request.user)
-    print(friend_req,request.META['REMOTE_ADDR'])
+    anylike = Post.objects.filter(user_name = request.user)
     context={'frinedreq':friend_req}
     return render(request,'users/notification.html',context)
+
+def search(request):
+    object_list =[]
+    query = request.GET.get('q')
+    user_list = User.objects.filter(username__icontains=query)
+    pro_list= Profile.objects.filter(state__icontains=query)|Profile.objects.filter(country__icontains=query)
+    post_list =Post.objects.filter(title__icontains=query)
+    for u in user_list:
+        if u not in object_list:
+            object_list.append(u)
+    for p in post_list:
+        if p not in object_list:
+            object_list.append(p)
+    for pro in pro_list:
+        if pro not in object_list:
+            object_list.append(pro.user)
+    print(object_list)    
+    context ={'users': object_list}
+    return render(request, "users/search_users.html", context)

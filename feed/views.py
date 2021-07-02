@@ -110,6 +110,8 @@ def editpost(request,id):
 	if request.method != 'POST':
 		p_form = NewPostForm(instance = details)
 		i_form = NewPostImage()
+		feed = details.post_type.split(",")
+		print(feed)
 	else:
 		p_form = NewPostForm(instance= details,data=request.POST)
 		i_form = NewPostImage(request.POST or None,request.FILES or None)
@@ -128,7 +130,7 @@ def editpost(request,id):
 					photo.save()
 				return redirect('feed:postdetails',id =id)
 			return redirect('feed:postdetails',id =id)
-	context = {'postform':p_form,'imageform':i_form,'det':details,'img':photos,'cat':ind.catagories()}
+	context = {'postform':p_form,'imageform':i_form,'det':details,'img':photos,'cat':ind.catagories(),'feed':feed}
 	return render(request,'feed/editpost.html',context)
 
 def postdetails(request,id):
@@ -180,9 +182,16 @@ def deletepost(request,id):
 
 def categories(request):
 	value = request.GET.get('cvalue')
-	print(value)
-	post = None
-	context = {"allpost":post}
+	post = Post.objects.all()
+	postlist =[]
+	for p in post:
+		cate = p.post_type.split(",")
+		for c in cate:
+			if c == value:
+				postlist.append(p)
+
+	
+	context = {"allpost":postlist}
 	return render(request,'feed/products.html',context)
 
 @login_required

@@ -5,6 +5,8 @@
     <div class="col-md-8">
       {% if friends %}
       <div class="card card-signin my-5">
+        <a href="{% url 'users:users_list' %}" class="btn btn-primary">Explore</a></i>
+
         <div class="card-body">
           {% for user_p in friends %}
           <a href="{% url 'users:profile_v' user_p.id %}">
@@ -17,8 +19,8 @@
       </div>
       {% else %}
       <h5>
-        <i>You have no friends now! Make some new
-          <a href="{% url 'users:users_list' %}">friends here!</a></i>
+        <i>You have no connections now! Make some new
+          <a href="{% url 'users:users_list' %}">connections</a></i>
       </h5>
       {% endif %}
        

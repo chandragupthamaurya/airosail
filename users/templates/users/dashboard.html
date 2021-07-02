@@ -25,19 +25,20 @@
             <div class="row">
               <div class="col">
                 <div class="card-profile-stats d-flex justify-content-center mt-md-5">
-                  <div>
-                    <span class="heading">{{ u.profile.friends.count }}</span>
+                  
                     {% if request.user == u %}
-                    <span class="description"><a href="{% url 'users:friend_list' %}">followers</a></span>
-                    <span class="description">{{post_count}}posts</span>                    
-                    <span class="description"><a href="{% url 'feed:wishlist' %}">Wishlist</a></span>
-                    {% else %}
-                    <span class="description">followers</span>
-                    <span class="description">{{post_count}}posts</span>                    
-                    <span class="description">Wishlist</span>
-                    {% endif %}
-                    
-                    </div>
+                     <div class="btn-group btn-group-lg">
+                        <a type="button" class="btn btn-outline-success" href="{% url 'users:friend_list' %}">{{ u.profile.friends.count }}Following</a>
+                        <button type="button" class="btn btn-outline-success">{{post_count}}posts</button>
+                        <a type="button" class="btn btn-outline-success" href="{% url 'feed:wishlist' %}">Wishlist</a>
+                      </div> 
+                      {% else %}
+                       <div class="btn-group btn-group-lg">
+                          <button type="button" class="btn btn-outline-success">{{ u.profile.friends.count }}Following</button>
+                          <button type="button" class="btn btn-outline-success">{{post_count}}posts</button>
+                          <button type="button" class="btn btn-outline-success">Wishlist</button>
+                        </div> 
+                      {% endif %}
                 </div>
               </div>
             </div>

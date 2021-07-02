@@ -6,9 +6,26 @@
 			<div class="card">
 				<div class="card-header"><h1>Notification</h1></div>
 				<div class="card-body">
+			<div class="row pb-2">
 					{% for note in frinedreq %}
-					<p>{{note.from_user|title}}</p>
+            	<div class="col-md-auto">
+                <a href="{% url 'users:profile_v' note.from_user.profile.id %}"> 
+                  <img src="{{ note.from_user.profile.image.url }}" class="rounded mr-2" width="100" height="100" alt=""/>
+                </a>
+              </div>
+              <div class="col">
+                <a class="text-dark" href="{% url 'users:profile_v' note.from_user.profile.id %}"><b>{{note.from_user|title}} is following you</b></a>
+                <p><strong>Profile :</strong>{{note.profile_type}}</p>
+               <p><strong>Bio:</strong>{{note.bio|truncatewords:100}}</p>
+					<small class="float-right">
+	            		<a class="btn btn-primary mr-2" href="{% url 'users:add_friends' note.from_user.profile.id %}">follow</a>
+	          		</small>
+	          		<small class="float-right">
+	            		<a class="btn btn-primary mr-2" href="{% url 'users:cancel_friend' note.from_user.profile.id %}">cancel</a>
+	          		</small>
+
 					{% endfor %}
+				</div>
 				</div>
 			</div>			
 		</div>

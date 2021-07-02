@@ -3,39 +3,35 @@
 <div class="container">
   <div class="row">
     <div class="col-md-8">
-      {% if users %}
+      {% if post_feed %}
       <div class="card card-signin my-5">
         <div class="card-body">
-          {% for user_p in users %}
-          <a href="{{ user_p.get_absolute_url }}"
-            ><img
-              src="{{ user_p.image.url }}"
-              class="rounded mr-2"
-              width="40"
-              height="40"
-              alt=""
-          /></a>
-          <a class="text-dark" href="{{ user_p.get_absolute_url }}"
-            ><b>{{ user_p }}</b></a
-          >
-          {% if not user_p.user in sent %}
+          {% for user_p in post_feed %}
+          {% if user_p.user != request.user %}
+          <div class="row pb-2">
+            <div class="col-md-auto">
+                <a href="{% url 'users:profile_v' user_p.id %}"> 
+                  <img src="{{ user_p.image.url }}" class="rounded mr-2" width="100" height="100" alt=""/>
+                </a>
+              </div>
+              <div class="col">
+                <a class="text-dark" href="{% url 'users:profile_v' user_p.id %}"><b>{{ user_p }}</b></a>
+                <p><strong>Profile :</strong>{{user_p.profile_type}}</p>
+               <p><strong>Bio:</strong>{{user_p.bio|truncatewords:100}}</p>
+
+              </div>
+        </div>
+          {% if user_p.user not in request.user.profile.friends %}
           <small class="float-right">
-            <a
-              class="btn btn-primary mr-2"
-              href="{% url 'send_friend_request' user_p.id %}"
-              >Add Friend</a
-            >
+            <a class="btn btn-primary mr-2" href="{% url 'users:add_friends' user_p.id %}">follow</a>
           </small>
           {% else %}
           <small class="float-right">
-            <a
-              class="btn btn-warning mr-2"
-              href="{% url 'cancel_friend_request' user_p.id %}"
-              >Cancel Request</a
-            >
+            <a class="btn btn-danger mr-2" href="{% url 'users:delete_friend' user_p.id %}">Unfollow</a>
           </small>
           {% endif %}
           <br /><br />
+          {% endif %}
           {% endfor %}
         </div>
       </div>
@@ -43,9 +39,11 @@
       <h5><i>No new people to add now! Please come back later!</i></h5>
       {% endif %}
     </div>
+
+
     <div class="col-md-4">
       <div class="card card-signin my-5">
-        <a href="{{ request.user.profile.get_absolute_url }}"
+        <a href="{% url 'users:dashboard' %}"
           ><img
             class="card-img-top"
             src="{{ request.user.profile.image.url }}"

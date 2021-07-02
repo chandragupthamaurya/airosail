@@ -26,9 +26,25 @@ input,select{
 	</div>
 	<div class="card" style="background-color: lightgrey;">
 		<div class="card-body" style="padding-left: 5%;padding-right: 5%;">
-<form method="post" action="{% url 'users:login' %}" >    
-	{% csrf_token %}    
-	{% for field in form %}
+<form method="post" action="{% url 'users:newlogin' %}" >    
+	{% csrf_token %}
+	<label for= "id_username">Username:</label><br>
+  <input id="id_username" type="text" name="username" required="">
+  <label for="id_password">Password</label><br>
+  <input type="password" name="password" id= "id_password" required="">
+	
+	 <button type="submit" class="btn btn-primary">Login</button>
+	<button type="reset" class="btn btn-primary">Reset</button>
+	</form>
+	<div>
+		<a href="{% url 'users:register'%}">Register</a>
+		<a href="{% url 'password_reset'%}">reset password</a>
+	</div>
+</div>
+</div>
+</div>
+{% endblock content %}
+{% for field in form %}
 	<p>
 		{{ field.label_tag}}<br>
 		<div class="">{{field}}
@@ -40,14 +56,15 @@ input,select{
 		{% endfor %}
 	</p>  
 	{% endfor %}
-	 <button type="submit" class="btn btn-primary">Login</button>
-	<button type="reset" class="btn btn-primary">Reset</button>
-	</form>
-	<div>
-		<a href="{% url 'users:register'%}">Not a member register</a>
-		<a href="{% url 'password_reset'%}">reset password</a>
-	</div>
-</div>
-</div>
-</div>
-{% endblock content %}
+	<div class="input-group mb-3">
+    <div class="input-group-prepend">
+      <span class="input-group-text">@</span>
+    </div>
+    <input type="username" name="username" class="form-control" placeholder="Username">
+  </div>
+  <div class="input-group mb-3">
+    <div class="input-group-prepend">
+      <span class="input-group-text">@</span>
+    </div>
+    <input type="password" name="password" class="form-control" placeholder="password">
+  </div>

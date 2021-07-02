@@ -15,7 +15,7 @@
     border-spacing: 12px;
 }
 </style>
-<div class="container-fluid">
+<div class="container">
 	    <div class="row mb-2">
 	    	<div class="col-md-2">
 	    		<div class="card card-signin my-5">
@@ -24,13 +24,13 @@
 			    			<div class="col-md-4">
 			    			<ul class="nav nav-tabs md-tabs" id="myTabMD" role="tablist">
 				                <li class="nav-item waves-effect waves-light btn ">
-				                  <a class="nav-link {% if about %} active {% endif %} " id="disc-tab-md" data-toggle="tab" href="#disc-md" role="tab" aria-controls="disc-md" aria-selected="true">About</a>
+				                  <a class="nav-link {% if about %} active {% endif %} " id="disc-tab-md" data-toggle="tab" href="#about" role="tab" aria-controls="about" aria-selected="true">About</a>
 				                </li>
 				                <li class="nav-item waves-effect waves-light btn">
-				                  <a class="nav-link {% if privacy %} active {% endif %}" id="review-tab-md" data-toggle="tab" href="#review-md" role="tab" aria-controls="review-md" aria-selected="false">privacy</a>
+				                  <a class="nav-link {% if privacy %} active {% endif %}" id="review-tab-md" data-toggle="tab" href="#privacy" role="tab" aria-controls="privacy" aria-selected="false">privacy</a>
 				                </li>
 				                <li class="nav-item waves-effect waves-light btn">
-				                  <a class="nav-link {% if condition %} active {% endif %}" id="information-tab-md" data-toggle="tab" href="#information-md" role="tab" aria-controls="information-md" aria-selected="false">condition to use</a>
+				                  <a class="nav-link {% if condition %} active {% endif %}" id="information-tab-md" data-toggle="tab" href="#condition" role="tab" aria-controls="condition" aria-selected="false">condition to use</a>
 				                </li>
 				                
 				              </ul>
@@ -43,13 +43,21 @@
 	    		<div class="card card-signin my-5">
 	    			<div class="card-body">
 	    				<div class="tab-content" id="myTabContentMD">
-                			<div class="tab-pane fade show " id="disc-md" role="tabpanel" aria-labelledby="disc-tab-md">
-                				<p>About</p>
+                			<div class="tab-pane  show {% if about %} active {% endif %}" id="about" role="tabpanel" aria-labelledby="disc-tab-md">
+                				<h1>About</h1>
+
+                				<div>
+                					<h2>Welcome to Airosail</h2>
+                					<p>The Airosail is full felged social promotion site is used to promote your business,app,website,services,product to reach millions of user by Airosail</p>
+                					<p>Airosail uses many tool to market you product that you can use to reach the end customers,it help to develop your business, product and service
+                				it provide own on site rating systems to increase the product sales and Get comment from user to improve your product and service for user </p>
+                				</div>
                 			</div>
-			                <div class="tab-pane show active" id="review-md" role="tabpanel" aria-labelledby="review-tab-md">
+			                <div class="tab-pane show {% if privacy %} active {% endif %}" id="privacy" role="tabpanel" aria-labelledby="review-tab-md">
 					            <h1>privacy</h1>
+					            <h2>What kinds of information do we collect? </h2>
 			              </div>
-			                <div class="tab-pane fade  show" id="information-md" role="tabpanel" aria-labelledby="information-tab-md">
+			                <div class="tab-pane  show {% if condition %} active {% endif %}" id="condition" role="tabpanel" aria-labelledby="information-tab-md">
 			                	<h1>condition to use</h1>
 
 			                </div>

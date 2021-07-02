@@ -24,7 +24,10 @@ class Profile(models.Model):
 	friends = models.ManyToManyField("Profile", blank=True)
 	About = models.TextField(blank=True,null=True)
 	url = models.URLField(max_length=100,blank=True)
-	location = models.CharField(max_length=200,blank=True)
+	address = models.CharField(max_length=200,blank=True)
+	city = models.CharField(max_length=50,blank=True)
+	state = models.CharField(max_length=50,blank=True)
+	country = models.CharField(max_length=50,blank = True)
 	profile_type =models.CharField(choices=profiletype,default='others',max_length=100)
 	feed =models.CharField(max_length=500,blank=True)
 
