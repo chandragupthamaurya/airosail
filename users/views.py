@@ -4,10 +4,10 @@ from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse, HttpResponseRedirect,Http404
 from django.urls import reverse
 from django.conf import settings
-from .forms import registerForm,ProfileUpdateForm,UserUpdateForm
+from .forms import registerForm,ProfileUpdateForm,UserUpdateForm,ContactForm
 from .models import Profile,FriendRequest
 from feed.models import Post,comments,Like,PostImages
-from django.core.mail import send_mail
+from django.core.mail import send_mail,BadHeaderError
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model,update_session_auth_hash 
@@ -90,11 +90,11 @@ def about(request):
 @login_required
 def editprofile(request):
     cat = uv.cat()
+    feed = None
     if request.method !='POST':
         u_form = UserUpdateForm(instance =request.user)
         p_form = ProfileUpdateForm(instance= request.user.profile)
         feed = request.user.profile.feed.split(",")
-        print(feed)
     else:
         u_form = UserUpdateForm(request.POST, instance=request.user)
         p_form = ProfileUpdateForm(data = request.POST, files=request.FILES, instance=request.user.profile)
@@ -212,6 +212,23 @@ def users_list(request):
     context={"post_feed":post_feed}
     return render(request,'users/users_list.html',context)
 
+def contact(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            subject = "Website Inquiry" 
+            message = form.cleaned_data['content']
+            email_from = form.cleaned_data['email']
+            email_to= settings.EMAIL_HOST_USER 
+            try:
+                send_mail(subject, message, email_from,email_to) 
+            except BadHeaderError:
+                return HttpResponse('Invalid header found.')
+            return redirect ("feed:index")      
+    else:
+        form = ContactForm()
+    context={'form':form}
+    return render(request,'users/contact.html',context)
 @login_required
 def notification(request):
     friend_req = FriendRequest.objects.filter(to_user = request.user)
@@ -235,5 +252,5 @@ def search(request):
         if pro not in object_list:
             object_list.append(pro.user)
     print(object_list)    
-    context ={'users': object_list}
+    context ={'users': object_list,'post':post_list}
     return render(request, "users/search_users.html", context)

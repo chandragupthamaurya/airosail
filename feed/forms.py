@@ -4,11 +4,11 @@ from ckeditor.widgets import CKEditorWidget
 
 
 class NewPostForm(forms.ModelForm):
-	disc = forms.CharField(required = False,widget=CKEditorWidget())
+	descriptions = forms.CharField(required = False,widget=CKEditorWidget())
 
 	class Meta:
 		model = Post
-		fields = ['title','disc', 'price', 'buyurl','tags',]
+		fields = ['title','descriptions', 'price', 'buyurl','tags',]
 		
 class NewCommentForm(forms.ModelForm):
 

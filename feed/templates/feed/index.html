@@ -62,11 +62,11 @@
 	    				<small class="text-muted">Posted on {{ post.date_posted }}</small><br><br>
 	    				{% if not post.img.all %}
 	    				{% if user.is_authenticated %}
-	    				<div >{{post.disc |safe}}</div>
+	    				<div >{{post.descriptions |safe}}</div>
 	    				{% endif %}
 	    				{% else %}
 	    				{% if user.is_authenticated %}
-	    				<div >{{post.disc |safe|truncatechars:200}}</div>
+	    				<div >{{post.descriptions |safe|truncatechars:200}}</div>
 	    				{% endif %}
 	    				{% for p in post.img.all %}
 			           		{% if forloop.counter == 1 %} 
@@ -78,29 +78,40 @@
 			        	{% endif %}
 	    			</div>
 	    			<div class="card-footer">
+	    	<!--like button -->
 	    				<button class="btn btn-white mr-3 like" id="{{ post.id }}"> 
-	    					{% for l in post.likes.all %}
+    						{% for l in post.likes.all %}
     						{% if l.user == request.user %}
-				            	<a href="{% url 'feed:post-like' %}" style="color:red;" id="likebtn{{ post.id }}"><i class="fa fa-flash "style="font-size: 18px;"></i></a>| {{post.likes.count}}
+				            	<a href="{% url 'feed:post-like' %}" style="color:red;" id="likebtn{{ post.id }}"><i class="fa fa-flash "style="font-size: 18px;"></i></a>| <span id="likespan{{post.id}}">{{post.likes.count}}</span>
 				        	{% else %}
-				            	<a href="{% url 'feed:post-like' %}" style="" id="likebtn{{ post.id }}"> <i class="fa fa-flash" style="font-size: 18px"></i></a>| {{post.likes.count}}
+				        	{% if forloop.counter == post.likes.all|length|add:"-1" %}
+				            	<a href="{% url 'feed:post-like' %}" style="" id="likebtn{{ post.id }}"> <i class="fa fa-flash" style="font-size: 18px"></i></a>| <span id="likespan{{post.id}}">{{post.likes.count}}</span>
+				        	
+				        	{% endif %}
 				        	{% endif %}
 				        	{% empty %}
-				       			<a href="{% url 'feed:post-like' %}" style="" id="likebtn{{ post.id }}"> <i class="fa fa-flash" style="font-size: 18px"></i></a>| {{post.likes.count}}
+				        	<a href="{% url 'feed:post-like' %}" style="" id="likebtn{{ post.id }}"> <i class="fa fa-flash" style="font-size: 18px"></i></a>|<span id="likespan{{post.id}}">{{post.likes.count}}</span>
+
 				        	{% endfor %}
-				       
+				        	 
 				    	</button>
+				        	
+			<!--like button -->
+
 <!-- wish button-->
 				    	<button class="btn btn-outline-info wish" title="save wishlist" id="{{post.id}}">
-							{% for w in post.wishs.all %}
-    						{% if w.user == request.user %}	
+							{% for l in post.wishs.all %}
+    						{% if l.user == request.user %}
     						<a href="{% url 'feed:wish' %}" style="color:red;" id="wishbtn{{ post.id }}"><i class="fa fa-magnet "style="font-size: 18px;"></i></a> 
 				        	{% else %}
+				        	{% if forloop.counter == post.wishs.all|length|add:"-1" %}
 				            	<a href="{% url 'feed:wish' %}" style="" id="wishbtn{{ post.id }}"> <i class="fa fa-magnet" style="font-size: 18px"></i></a> 
 				        	{% endif %}
+				        	{% endif %}
 				        	{% empty %}
-   			            	<a href="{% url 'feed:wish' %}" style="" id="wishbtn{{ post.id }}"> <i class="fa fa-magnet" style="font-size: 18px"></i></a> 
+				        	<a href="{% url 'feed:wish' %}" style="" id="wishbtn{{ post.id }}"> <i class="fa fa-magnet" style="font-size: 18px"></i></a> 
 				        	{% endfor %}
+				        	
 				        </button>
 <!--  end wish button-->
 
@@ -135,7 +146,6 @@
 							  </div>							        
 							     
 	          				{% if post.details.all %}
-	          				<small>Most Relevent Comment</small>
 	          				<div class="comments">
 	          			{% for com in post.details.all %}
 	          				{% if forloop.last %}
@@ -211,10 +221,12 @@ $(".like").click(function (e) {
           if(response.liked){
             $('#likebtn' + id).html("<i class='fa fa-flash' style='font-size: 18px'></i>");
             $('#likebtn' + id).css("color", "red")
+            $('#likespan'+ id).html(response.like_count)
           }
           else{
             $('#likebtn' + id).html("<i class='fa fa-flash' style='font-size: 18px'></i>");
             $('#likebtn' + id).css("color", "")
+            $('#likespan'+ id).html(response.like_count)
           }
         }
       })

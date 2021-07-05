@@ -102,8 +102,10 @@
 				</div>
 				<div class="col-md-8">
 					<h3><strong>{{post.title|title}}</strong>
-						<a tabindex="0" class="float-right" role="button" data-placement="left" data-toggle="popover" data-trigger="focus" data-html="true" data-content="<a href='{% url 'feed:reports' post.id  %}'>report</a>"><i class="fa fa-ellipsis-v float-right fa-1x fa-three" ></i><br>
+						<!--popover to report -->
+						<a tabindex="0" class="float-right" role="button" data-placement="left" data-toggle="popover" data-trigger="focus" data-html="true" data-content="<a href='{% url 'feed:reports' post.id  %}'><h5>report</h5></a>"><i class="fa fa-ellipsis-v float-right fa-1x fa-three" ></i><br>
 	    				</a>
+	    				<!--end popover -->
 					</h3>
 	          			<div class="row">
 		          			<div class="col-md-3">
@@ -159,20 +161,18 @@
 						{% if post.price != None %}
 	          			<h5 style="color: orange;">${{post.price}}</h5>{% endif %}
 	          			<br>
-	          			<p><strong>Discription:</strong>{{post.disc | truncatechars:200|safe}}</p>
+	          			<p><strong>Discription:</strong>{{post.descriptions | truncatechars:200|safe}}</p>
 	          			<p><strong>Post type :</strong>{{post.post_type}}</p>
+
 
 	          			 <!-- like button-->
 	          			<button class="btn btn-white mr-3 like" id="{{ post.id }}"> 
-	    					{% for l in post.likes.all %}
-    						{% if l.user == request.user %}
-				            	<a href="{% url 'feed:post-like' %}" style="color:red;" id="likebtn{{ post.id }}"><i class="fa fa-flash "style="font-size: 18px;"></i></a>| {{post.likes.count}}
+	          				{% if is_liked %}
+				            	<a href="{% url 'feed:post-like' %}" style="color:red;" id="likebtn{{ post.id }}"><i class="fa fa-flash "style="font-size: 18px;"></i></a>| <span id="likespan{{post.id}}">{{post.likes.count}}</span>
+	          				
 				        	{% else %}
-				            	<a href="{% url 'feed:post-like' %}" style="" id="likebtn{{ post.id }}"> <i class="fa fa-flash" style="font-size: 18px"></i></a>| {{post.likes.count}}
+				            	<a href="{% url 'feed:post-like' %}" style="" id="likebtn{{ post.id }}"> <i class="fa fa-flash" style="font-size: 18px"></i></a>| <span id="likespan{{post.id}}">{{post.likes.count}}</span>
 				        	{% endif %}
-				        	{% empty %}
-				       			<a href="{% url 'feed:post-like' %}" style="" id="likebtn{{ post.id }}"> <i class="fa fa-flash" style="font-size: 18px"></i></a>| {{post.likes.count}}
-				        	{% endfor %}
 				       
 				    	</button>
 	  				<!-- like end button-->
@@ -180,15 +180,12 @@
 
   				<!-- wishlist button-->
 	          			<button class="btn btn-primary wish" id ="{{post.id}}" style="background-color: #009999;color: white;">
-	          				{% for w in post.wishs.all %}
-    						{% if w.user == request.user %}	
+    						{% if is_wished %}	
     						<a href="{% url 'feed:wish' %}" style="color:red;" id="wishbtn{{ post.id }}"><i class="fa fa-magnet "style="font-size: 18px;"></i></a> 
 				        	{% else %}
-				            	<a href="{% url 'feed:wish' %}" style="" id="wishbtn{{ post.id }}"> <i class="fa fa-magnet" style="font-size: 18px;color:white;"> unwishlist</i> </a> 
+				            	<a href="{% url 'feed:wish' %}" style="" id="wishbtn{{ post.id }}"> <i class="fa fa-magnet" style="font-size: 18px;color:white;"> </i> </a> 
 				        	{% endif %}
-				        	{% empty %}
-   			            	<a href="{% url 'feed:wish' %}" style="" id="wishbtn{{ post.id }}"> <i class="fa fa-magnet" style="font-size: 18px;color:white;"> wishlist</i> </a> 
-				        	{% endfor %}
+				        	
 			        	</button>
 				<!-- wishlist end button-->
 
@@ -197,6 +194,10 @@
 	          			  <button type="button" style="background-color: #009999; color:white;" class="btn btn-primary" data-toggle="modal" data-target="#myModal{{post.id}}">
 							    Share
 							  </button>
+						<button type="button" style="background-color: #009999; color:white;" class="btn btn-primary">
+							    <i class="fa fa-eye"> {{post.view_count}}</i>
+							  </button>
+
 
 							  <!-- The Modal -->
 							  <div class="modal fade" id="myModal{{post.id}}">
@@ -235,8 +236,6 @@
 			</div>
 		</div>
 	</div>
-
-
 </div>
 
 <div class="container">
@@ -248,7 +247,7 @@
 			    			<div class="col-md-4">
 			    			<ul class="nav nav-tabs md-tabs" id="myTabMD" role="tablist">
 				                <li class="nav-item waves-effect waves-light btn ">
-				                  <a class="nav-link " id="disc-tab-md" data-toggle="tab" href="#disc-md" role="tab" aria-controls="disc-md" aria-selected="true">Discription</a>
+				                  <a class="nav-link " id="disc-tab-md" data-toggle="tab" href="#disc-md" role="tab" aria-controls="disc-md" aria-selected="true">Description</a>
 				                </li>
 				                <li class="nav-item waves-effect waves-light btn">
 				                  <a class="nav-link active" id="review-tab-md" data-toggle="tab" href="#review-md" role="tab" aria-controls="review-md" aria-selected="false">review</a>
@@ -280,22 +279,24 @@
 	    			<div class="card-body">
 	    				<div class="tab-content" id="myTabContentMD">
                 			<div class="tab-pane fade show " id="disc-md" role="tabpanel" aria-labelledby="disc-tab-md">
-                				<p>{{post.disc|safe}}</p>
+                				<p>{{post.descriptions|safe}}</p>
                 			</div>
 			                <div class="tab-pane show active" id="review-md" role="tabpanel" aria-labelledby="review-tab-md">
 					            {% if post.details.all %}
-			    				{% for detail in comment %}
+			    				{% for detail in comment|slice:":10" %}
+			    				<div id = "com{{detail.id}}">
 				    				<a href="{% url 'users:profile_v' detail.username.profile.id %}">
 				    					<img src="{{ detail.username.profile.image.url }}" class="rounded-circle" width="30" height="30" alt=""></a>
 				          			<a class="text-dark" href="{% url 'users:profile_v' detail.username.profile.id %}"><b>{{ detail.username }}</b></a>
 				          			<br>
 				          			<small>{{ detail.comment_date }}</small>
 					          		{% if detail.username == request.user %}
-					          			<a href="{% url 'feed:del_comment' detail.id post.id %}">delete</a>
+					          			<a class = "del_com" data-comid="{{ detail.id }}" id="com{{ detail.id }}" href="{% url 'feed:del_comment' %}">delete</a>
 					          		{% endif %}
 				          			<br><br>
 				          			<p class="card-text text-dark">{{ detail.comment }}</p>
 				    				<hr class="my-1">
+				    			</div>
 				    			{% endfor %}
 				    			{% else %}
 				    				<p>No comments to show!</p>
@@ -309,6 +310,7 @@
 						                <button class="btn btn-lg btn-primary text-uppercase" style="background-color: #009999;" type="submit">Comment</button><br>
 						            </div>
 						        </form>
+						        <a href="{% url 'feed:comment_list' post.id %}">see more -></a>
 			              </div>
 			                <div class="tab-pane fade  show" id="information-md" role="tabpanel" aria-labelledby="information-tab-md">
 	                			<a href="{% url 'users:profile_v' post.user_name.profile.id %}">			                		
@@ -375,10 +377,12 @@ $(".like").click(function (e) {
           if(response.liked){
             $('#likebtn' + id).html("<i class='fa fa-flash' style='font-size: 18px'></i>");
             $('#likebtn' + id).css("color", "red")
+            $('#likespan'+ id).html(response.like_count)
           }
           else{
             $('#likebtn' + id).html("<i class='fa fa-flash' style='font-size: 18px'></i>");
             $('#likebtn' + id).css("color", "")
+            $('#likespan'+ id).html(response.like_count)
           }
         }
       })
@@ -397,11 +401,11 @@ $(".wish").click(function (e) {
         },
         success: function(response){
           if(response.wished){
-            $('#wishbtn' + id).html("<i class='fa fa-magnet 'style='font-size: 18px;'></i> unwishlist");
+            $('#wishbtn' + id).html("<i class='fa fa-magnet 'style='font-size: 18px;'></i>");
             $('#wishbtn' + id).css("color", "red")
           }
           else{
-            $('#wishbtn' + id).html("<i class='fa fa-magnet 'style='font-size: 18px;'></i> wishlist");
+            $('#wishbtn' + id).html("<i class='fa fa-magnet 'style='font-size: 18px;'></i>");
             $('#wishbtn' + id).css("color", "white")
           }
         }
@@ -430,7 +434,6 @@ $(".wish").click(function (e) {
    		},
 
    	});
-        
     });
 </script>
 <script type="text/javascript">
@@ -438,5 +441,21 @@ $(".wish").click(function (e) {
   $('[data-toggle="popover"]').popover();
 
 });
+</script>
+<script type="text/javascript">
+	$(".del_com").click(function(e){
+		var comid = $(this).attr('data-comid');
+		var href = $(this).attr('href');
+		e.preventDefault();
+		$.ajax({
+			method:"GET",
+			url: href,
+			data:{'comid': comid},
+
+			success:function(response){
+				$('#com'+comid).remove()
+			},
+		});
+	});
 </script>
 {% endblock jsfiles %}

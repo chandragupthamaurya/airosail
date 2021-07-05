@@ -1,9 +1,9 @@
 from django.shortcuts import render,redirect,get_object_or_404
-from django.http import HttpResponse,HttpResponseRedirect
+from django.http import HttpResponse,HttpResponseRedirect,JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from .forms import NewPostForm,NewCommentForm,NewPostImage
-from .models import Post,comments,Like,PostImages,Rating,Wishlist
+from .models import Post,comments,Like,PostImages,Rating,Wishlist,PostViews
 from users.models import Profile
 from django.contrib import messages
 from django.core.paginator import Paginator
@@ -107,16 +107,14 @@ def editpost(request,id):
 	ind = indexwork()
 	details = Post.objects.get(id= id)
 	photos = PostImages.objects.filter(Imgtitle= details)
+	feed = details.post_type.split(",")
 	if request.method != 'POST':
 		p_form = NewPostForm(instance = details)
 		i_form = NewPostImage()
-		feed = details.post_type.split(",")
-		print(feed)
 	else:
 		p_form = NewPostForm(instance= details,data=request.POST)
 		i_form = NewPostImage(request.POST or None,request.FILES or None)
 		cat = request.POST.getlist('check')
-		print(cat)
 		c = ','.join(cat)
 		files = request.FILES.getlist('images')
 		if p_form.is_valid() and i_form.is_valid():
@@ -136,10 +134,21 @@ def editpost(request,id):
 def postdetails(request,id):
 	post = Post.objects.get(id=id)
 	photo = PostImages.objects.filter(Imgtitle=post)
+	def get_client_ip(request):
+		x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+		if x_forwarded_for:
+			ip = x_forwarded_for.split(',')[0]
+		else:
+			ip = request.META['REMOTE_ADDR']
+		return ip
+	PostViews.objects.get_or_create(IPAddres = get_client_ip(request),post=post)
+
 	if request.user.is_authenticated:
 		is_wished = Wishlist.objects.filter(user = request.user ,post = post)
+		is_liked = Like.objects.filter(user = request.user,post=post)
 	else:
 		is_wished = None
+		is_liked = None
 	comment = comments.objects.filter(post=post, reply= None).order_by('-id')
 	rate = Rating.objects.filter(post = post)
 	a=0
@@ -149,7 +158,6 @@ def postdetails(request,id):
 		b = 0
 	else:
 		b = (a/len(rate))/10
-	
 
 	if request.method == 'POST':
 		form = NewCommentForm(request.POST)
@@ -171,7 +179,7 @@ def postdetails(request,id):
 			return redirect('feed:postdetails', id = post.id)
 	else:
 		form = NewCommentForm()
-	context = {'post':post,'photo':photo,'form':form,'is_wished':is_wished,'comment':comment,'ratevalue':b} 
+	context = {'post':post,'photo':photo,'form':form,'is_wished':is_wished,'is_liked':is_liked,'comment':comment,'ratevalue':round(b,2),} 
 	return render(request,'feed/postdetails.html',context)
 
 @login_required
@@ -209,13 +217,43 @@ def changeimage(request,imgid,postid,value):
 		
 	return redirect('feed:editpost',id = postid )
 
+def comment_list(request,id):
+	post = Post.objects.get(id=id)
+	comment = comments.objects.filter(post=post, reply= None).order_by('-id')
+	if request.method == 'POST':
+		form = NewCommentForm(request.POST)
+		if form.is_valid():
+			reply_id = request.POST.get('reply_id')
+			print(reply_id)
+			reply_com = None
+			if reply_id:
+				reply_com = comments.objects.get(id = reply_id)
+			data = form.save(commit = False)
+			if request.user.is_authenticated:
+				data.username = request.user
+				data.reply = reply_com
+				data.post = post
+				data.save()
+			else:
+				pass
+			
+			return redirect('feed:comment_list', id = post.id)
+	else:
+		form = NewCommentForm()
+
+	context={'post':post,'form':form,'comment':comment}
+	return render(request,'feed/comment.html',context)
 
 @login_required
-def del_comment(request,id,postid):
-	comment = comments.objects.get(id = id)
-	if comment.username == request.user:
-		comment.delete()
-	return redirect('feed:postdetails',id = postid)
+def del_comment(request):
+	if request.is_ajax() and request.method=="GET":
+		comid = request.GET.get('comid')
+		comment = comments.objects.get(id = comid)
+		if comment.username == request.user:
+			comment.delete()
+		return HttpResponse('success',True)
+	else:
+		return HttpResponse('unsuccess',False)
 
 @login_required
 def like(request):
@@ -229,8 +267,10 @@ def like(request):
 	else:
 		liked = True
 		Like.objects.create(user=user, post=post)
+	like_count = post.likes.all().count()
 	resp = {
-        'liked':liked
+        'liked':liked,
+        'like_count':like_count
     }
 	response = json.dumps(resp)
 	return HttpResponse(response, content_type = "application/json")
@@ -294,5 +334,5 @@ def rules(request,value):
 		context={'condition':value}
 	return render(request,'feed/rules.html',context)
 def reports(request,id):
-	
+		
 	return render(request,'feed/wishlist.html')

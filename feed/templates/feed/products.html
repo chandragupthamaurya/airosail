@@ -13,16 +13,45 @@
                 {% endif %}
                 {% endfor %}
                 <div class="card-body d-flex flex-column" align="center">
-                    <p class="card-text">Stars</p>
+                    <p class="card-text">{{post.title}}</p>
                     <div class="mt-auto">
-                    <button class="btn btn-outline-primary btn-block like" id ="{{post.id}}">
-                    {% if is_liked %}
-                      <a href="{% url 'feed:post-like' %}" style=" font-size: 16px;" id="likebtn{{ post.id }}">&#10084;unwishlist</a>
-                      {% else %}
-                      <a href="{% url 'feed:post-like' %}" style=" font-size: 16px;" id="likebtn{{ post.id }}"> &#10084;wishlist</a>
-                      {% endif %}
-                    </button><br>
-                    <a href="{% url 'feed:postdetails' post.id %}"><button class="btn btn-outline-primary">Explore</button></a>
+           <!--like button -->
+              <button class="btn btn-white mr-3 like" id="{{ post.id }}"> 
+                {% for l in post.likes.all %}
+                {% if l.user == request.user %}
+                      <a href="{% url 'feed:post-like' %}" style="color:red;" id="likebtn{{ post.id }}"><i class="fa fa-flash "style="font-size: 18px;"></i></a>| {{post.likes.count}}
+                  {% else %}
+                  {% if forloop.counter == post.likes.all|length|add:"-1" %}
+                      <a href="{% url 'feed:post-like' %}" style="" id="likebtn{{ post.id }}"> <i class="fa fa-flash" style="font-size: 18px"></i></a>| <span id="likespan{{post.id}}">{{post.likes.count}}</span>
+                  
+                  {% endif %}
+                  {% endif %}
+                  {% empty %}
+                  <a href="{% url 'feed:post-like' %}" style="" id="likebtn{{ post.id }}"> <i class="fa fa-flash" style="font-size: 18px"></i></a>|  <span id="likespan{{post.id}}">{{post.likes.count}}</span>
+
+                  {% endfor %}
+                   
+              </button>
+                  
+      <!--like button -->
+
+<!-- wish button-->
+              <button class="btn btn-outline-info wish" title="save wishlist" id="{{post.id}}">
+              {% for l in post.wishs.all %}
+                {% if l.user == request.user %}
+                <a href="{% url 'feed:wish' %}" style="color:red;" id="wishbtn{{ post.id }}"><i class="fa fa-magnet "style="font-size: 18px;"></i></a> 
+                  {% else %}
+                  {% if forloop.counter == post.wishs.all|length|add:"-1" %}
+                      <a href="{% url 'feed:wish' %}" style="" id="wishbtn{{ post.id }}"> <i class="fa fa-magnet" style="font-size: 18px"></i></a> 
+                  {% endif %}
+                  {% endif %}
+                  {% empty %}
+                  <a href="{% url 'feed:wish' %}" style="" id="wishbtn{{ post.id }}"> <i class="fa fa-magnet" style="font-size: 18px"></i></a> 
+                  {% endfor %}
+                  
+                </button>
+<!--  end wish button-->
+
                   </div>
                 </div>
             </div>
@@ -30,7 +59,65 @@
         {% endfor %}
 </div>
 </div>
-{% endblock content %}
 
 {% block jsfiles %}
+<script>
+$(".like").click(function (e) {
+    var id = this.id;
+    var href = $('.like').find('a').attr('href');
+    e.preventDefault();
+
+    $.ajax({
+        url: href,
+        data: {
+          'likeId': id
+        },
+        success: function(response){
+          if(response.liked){
+            $('#likebtn' + id).html("<i class='fa fa-flash' style='font-size: 18px'></i>");
+            $('#likebtn' + id).css("color", "red")
+            $('#likespan'+ id).html(response.like_count)
+          }
+          else{
+            $('#likebtn' + id).html("<i class='fa fa-flash' style='font-size: 18px'></i>");
+            $('#likebtn' + id).css("color", "")
+            $('#likespan'+ id).html(response.like_count)
+          }
+        }
+      })
+});
+</script>
+ <script>
+$(document).ready(function(){
+  $('[data-toggle="popover"]').popover();
+
+});
+</script>
+
+<script>
+$(".wish").click(function (e) {
+    var id = this.id;
+    var href = $('.wish').find('a').attr('href');
+    e.preventDefault();
+
+    $.ajax({
+        url: href,
+        data: {
+          'wishId': id
+        },
+        success: function(response){
+          if(response.wished){
+            $('#wishbtn' + id).html("<i class='fa fa-magnet' style='font-size: 18px'></i>");
+            $('#wishbtn' + id).css("color","red")
+          }
+          else{
+            $('#wishbtn' + id).html("<i class='fa fa-magnet' style='font-size: 18px'></i>");
+            $('#wishbtn' + id).css("color", "")
+          }
+        }
+      })
+});
+</script>
 {% endblock jsfiles %}
+{% endblock content %}
+

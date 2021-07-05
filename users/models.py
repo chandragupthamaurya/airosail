@@ -18,12 +18,13 @@ def profile_pics(instance,filename):
 
 class Profile(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
-	image = models.ImageField(default='default.png', upload_to='profile_pics')
+	image = models.ImageField(default='airosail.jpg', upload_to='profile_pics')
 	slug = AutoSlugField(populate_from='user')
 	bio = models.CharField(max_length=200, blank=True)
 	friends = models.ManyToManyField("Profile", blank=True)
 	About = models.TextField(blank=True,null=True)
 	url = models.URLField(max_length=100,blank=True)
+	phone = models.CharField(max_length=12,blank=True)
 	address = models.CharField(max_length=200,blank=True)
 	city = models.CharField(max_length=50,blank=True)
 	state = models.CharField(max_length=50,blank=True)

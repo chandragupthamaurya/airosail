@@ -3,13 +3,13 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-md-8" style="padding-left: 10%;">
-      {% if  users is 'None' %}
+      {% if not users or post  %}
       <br /><br />
       <h2><i>No such item found!</i></h2>
       {% else %}
       <div class="card card-signin my-5">
         <div class="card-body">
-          {% for user_p in users %}
+        {% for user_p in users %}
           {% if request.user != user_p %}
           <div class="row pb-2">
             <div class="col-md-auto">
@@ -21,15 +21,37 @@
                 <a class="text-dark" href="{% url 'users:profile_v' user_p.profile.id %}"><b>{{ user_p }}</b></a>
                 <p><strong>Profile :</strong>{{user_p.profile.profile_type}}</p>
                <p><strong>Bio:</strong>{{user_p.profile.bio}}</p>
-
               </div>
-        </div>
-        {% else %}
-           <br /><br />
-          <h2><i>No such item found!</i></h2>
-
-        {% endif %}
-          {% endfor %}
+            </div>
+            {% if user_p.profile not in request.user.profile.friends.all %}
+          <small class="float-right">
+            <a class="btn btn-primary mr-2" href="{% url 'users:add_friends' user_p.id %}">follow</a>
+          </small>
+          {% else %}
+          <small class="float-right">
+            <a class="btn btn-danger mr-2" href="{% url 'users:delete_friend' user_p.id %}">Unfollow</a>
+          </small>
+          {% endif %}
+            {% endif %}
+        {% endfor %}
+        {% for post in post %}
+          {% if request.user != post.user_name %}
+          <div class="row pb-2">
+            <div class="col-md-auto">
+                {% for p in post.img.all %}
+                 {% if forloop.counter == 1 %}<a href="{% url 'feed:postdetails' post.id %}">
+                  <img class="img-fluid w-100" alt="100%x280" src="{{p.pimages.url}}" style="height: 250px;"></a>
+                 {% endif %}
+                {% endfor %}         
+              </div>
+              <div class="col">
+                <a class="text-dark" href="{% url 'users:profile_v' user_p.profile.id %}"><b>{{ post.title }}</b></a>
+                <p><strong>Post type :</strong>{{post.post_type}}</p>
+               
+              </div>
+            </div>
+            {% endif %}
+        {% endfor %}
         </div><hr>
       </div>
       {% endif %}

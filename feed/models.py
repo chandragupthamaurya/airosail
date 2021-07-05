@@ -11,7 +11,7 @@ def post_pic(instance,filename):
 
 class Post(models.Model):
 	title = models.CharField(max_length = 255)
-	disc =RichTextField(null=True,blank =True)
+	descriptions =RichTextField(null=True,blank =True)
 	date_posted = models.DateTimeField(auto_now_add=True)
 	user_name = models.ForeignKey(User,on_delete=models.CASCADE)
 	price = models.IntegerField(null= True,blank=True)
@@ -19,12 +19,24 @@ class Post(models.Model):
 	tags =TaggableManager(blank=True)
 	post_type = models.CharField(max_length=300,blank=True,null=True)
 
+	@property
+	def view_count(self):
+		return PostViews.objects.filter(post=self).count()
+	
+
 	def __str__(self):
 		return self.title
 
 class PostImages(models.Model):
 	Imgtitle = models.ForeignKey(Post,related_name='img',on_delete=models.CASCADE)
 	pimages = models.FileField(upload_to='post_pic',null=True,blank=True)
+
+class PostViews(models.Model):
+	IPAddres = models.GenericIPAddressField(default="45.243.82.169")
+	post = models.ForeignKey(Post,related_name='pview' ,on_delete=models.CASCADE)
+
+	def __str__(self):
+		return '{0} in {1} post',format(self.IPAddres,self.post.title)
 
 class comments(models.Model):
 	post = models.ForeignKey(Post,related_name='details',on_delete=models.CASCADE)

@@ -12,6 +12,7 @@ urlpatterns = [
     path('change_password/',views.cpassword,name="cpassword"),
 	path('accounts/profile/',views.dashboard,name='dashboard'),
     path('profile_setting/',views.profile_setting,name='profile_setting'),
+    path('contact/',views.contact,name='contact'),
     path('about/',views.about,name='about'),
     path('editprofile/',views.editprofile,name='editprofile'),
     path('search/',views.search, name='search'),

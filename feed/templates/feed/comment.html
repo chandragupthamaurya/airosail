@@ -1,0 +1,121 @@
+{% extends 'feed/base.html' %}
+{% block content %}
+<style type="text/css">
+	#id_comment{
+  border: none;
+  border-bottom: 2px solid #009999;
+  width: 100%;
+}
+</style>
+<div class="container">
+{% for p in post.img.all %}
+	{% if forloop.counter == 1 %} 
+	<a href="{% url 'feed:postdetails' post.id %}">
+		<img class="card-img-top" src="{{ p.pimages.url }}" width="300" height="400" alt="">
+	</a>
+	{% endif %}
+</div>
+
+<!-- comment -->
+<div class="container">
+	<div class="card card-sigin my-3">
+		<div class="card-body">
+			<form class="px-2" method = "POST"  action="" class='commentid' id="{{post.id}}">
+		    {% csrf_token %}
+			    <fieldset class="form-group"><br>
+			        <div style="width: 100%;">{{form.comment}}</div>
+				</fieldset>
+				<div class="form-group">
+	            	<button class="btn btn-lg btn-primary text-uppercase" style="background-color: #009999;" type="submit">Comment</button><br>
+				</div>
+			</form>
+			{% if post.details.all %}
+			{% for detail in comment %}
+			<div id="com{{detail.id}}">
+				<a href="{% url 'users:profile_v' detail.username.profile.id %}">
+					<img src="{{ detail.username.profile.image.url }}" class="rounded-circle" width="30" height="30" alt=""></a>
+				<a class="text-dark" href="{% url 'users:profile_v' detail.username.profile.id %}">
+					<b>{{ detail.username }}</b>
+				</a>
+					<br>
+				<small>{{ detail.comment_date }}</small>
+				{% if detail.username == request.user %}
+						<a class = "del_com" data-comid="{{ detail.id }}" id="com{{ detail.id }}" href="{% url 'feed:del_comment' %}">delete</a>
+				{% endif %}
+				<br><br>
+				<p class="card-text text-dark">{{ detail.comment }}<a class="btn pl-4" data-toggle="collapse" data-target="#comment{{detail.id}}"><i class="fa fa-reply "></i></a></p>
+				<div id="comment{{detail.id}}" class="collapse">
+						<form class="px-2" method = "POST"  action="" reply_id="{{detail.id}}">
+			    		{% csrf_token %}
+			    		<fieldset class="form-group"><br>
+			        		<div style="width: 100%;">{{form.comment}}</div>
+						</fieldset>
+						<div class="form-group">
+						 <input type="hidden" name="reply_id" value="{{ detail.id }}">
+	            		<button class="btn btn-outline-info text-uppercase"  name="submit" type="submit"><i class="fa fa-reply"></i></button>
+	            		<br>
+						</div>
+					</form>
+              		</div>
+			</div>
+				{% for reply in detail.replies.all %}
+				<div class="pl-3" id="com{{reply.id}}">
+				<a href="{% url 'users:profile_v' reply.username.profile.id %}">
+					<img src="{{ reply.username.profile.image.url }}" class="rounded-circle" width="30" height="30" alt="">
+					<b style="padding-left: 10px;padding-right: 10px;color: black;">{{ reply.username }}</b>
+				</a>
+				<span><small>{{ reply.comment_date }}</small></span>
+				<span>
+					{% if reply.username == request.user %}
+						<a class = "del_com" data-comid="{{ reply.id }}" id="com{{ reply.id }}" href="{% url 'feed:del_comment' %}">delete</a>
+					{% endif %}
+				</span>	
+					<br><br>
+				<p class="card-text text-dark">{{ reply.comment }}<a class="btn pl-4 btn-outline-info" data-toggle="collapse" data-target="#demo{{reply.id}}"><i class="fa fa-reply"></i></a></p>
+				</div>
+			<div id="demo{{reply.id}}" class="collapse">
+						<form class="px-2" method = "POST"  action="" reply_id="{{detail.id}}">
+			    		{% csrf_token %}
+			    		<fieldset class="form-group"><br>
+			        		<div style="width: 100%;">{{form.comment}}</div>
+						</fieldset>
+						<div class="form-group">
+						 <input type="hidden" name="reply_id" value="{{ detail.id }}">
+	            		<button class="btn btn-outline-info text-uppercase" name="submit" type="submit"><i class="fa fa-reply"></i></button>
+	            		<br>
+						</div>
+              		</div>
+
+				{% endfor %}
+
+             		 
+				<hr class="my-1">
+			{% endfor %}
+			{% else %}
+			<p>No comments to show!</p>
+			{% endif %}				
+			</div>
+		</div>
+	</div>
+</div>
+{% endfor %}
+
+{% block jsfiles %}
+<script type="text/javascript">
+	$(".del_com").click(function(e){
+		var comid = $(this).attr('data-comid');
+		var href = $(this).attr('href');
+		e.preventDefault();
+		$.ajax({
+			method:"GET",
+			url: href,
+			data:{'comid': comid},
+
+			success:function(response){
+				$('#com'+comid).remove()
+			},
+		});
+	});
+</script>
+{% endblock jsfiles %}
+{% endblock content %}

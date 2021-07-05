@@ -58,7 +58,7 @@ body{
 <body class="d-flex flex-column min-vh-100vh">
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark ">
-  <a class="navbar-brand" href="{% url 'feed:index' %}">AiroSail</a>
+  <a class="navbar-brand" href="{% url 'feed:index' %}"><h2><span  style="font-family: 'Impact', fantasy;">A</span>irosail</h2></a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -73,7 +73,7 @@ body{
       </li>
 
       <li class="nav-item">
-        <a class="nav-link " href="{% url 'feed:wishlist' %}">Whislist</a>
+        <a class="nav-link " href="{% url 'feed:wishlist' %}">Wislist</a>
       </li>
       <ul class="">
       <li class="nav-item  ">
@@ -81,7 +81,7 @@ body{
           <div class="col-xs-4">
           <input class="form-control mr-sm-2 " type="search" name='q' placeholder="Search" aria-label="Search">
         </div>
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit"><i class="fa fa-search"></i></button>
         </form>
       </li>
       </ul>
@@ -153,7 +153,8 @@ body{
       <div >
         <a href="{% url 'feed:rules' 'about' %}"style="color: white;padding-right: 10px;">About</a>
         <a href="{% url 'feed:rules' 'privacy' %}"style="color: white; padding-right: 10px;">Privacy Policy</a>
-        <a href="{% url 'feed:rules' 'condition' %}"style="color: white;">Condition of Use</a>
+        <a href="{% url 'feed:rules' 'condition' %}"style="color: white;padding-right: 10px;">Condition of Use</a>
+        <a href="{% url 'users:contact' %}"style="color: white;">Contact</a>
       </div>
 
       <!-- Copyright -->
@@ -166,4 +167,3 @@ body{
 
 </body>
 </html>
-
