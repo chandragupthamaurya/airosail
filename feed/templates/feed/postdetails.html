@@ -168,8 +168,7 @@
 	          			 <!-- like button-->
 	          			<button class="btn btn-white mr-3 like" id="{{ post.id }}"> 
 	          				{% if is_liked %}
-				            	<a href="{% url 'feed:post-like' %}" style="color:red;" id="likebtn{{ post.id }}"><i class="fa fa-flash "style="font-size: 18px;"></i></a>| <span id="likespan{{post.id}}">{{post.likes.count}}</span>
-	          				
+				            	<a href="{% url 'feed:post-like' %}" style="color:red;" id="likebtn{{ post.id }}"><i class="fa fa-flash "style="font-size: 18px;"></i></a>| <span id="likespan{{post.id}}">{{post.likes.count}}</span>         				
 				        	{% else %}
 				            	<a href="{% url 'feed:post-like' %}" style="" id="likebtn{{ post.id }}"> <i class="fa fa-flash" style="font-size: 18px"></i></a>| <span id="likespan{{post.id}}">{{post.likes.count}}</span>
 				        	{% endif %}
@@ -317,7 +316,6 @@
 		    					<img src="{{ post.user_name.profile.image.url }}" class="rounded-circle" width="30" height="30" alt=""></a>
 		                		<a class="text-dark" href="{% url 'users:profile_v' post.user_name.profile.id %}"><b>{{ post.user_name.profile.user }}</b></a> 
 		                		<br><br>
-		                		<p>{{post.user_name.profile.bio}}</p>
 		                		<p>{{post.user_name.profile.About|safe}}</p>
 		                		<a href="{{post.user_name.profile.url}}" target="_blank"><h4>visit website</h4></a>
 			                </div>

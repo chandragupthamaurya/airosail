@@ -18,6 +18,8 @@ class Post(models.Model):
 	buyurl = models.URLField(max_length=255,blank=True,null=True)
 	tags =TaggableManager(blank=True)
 	post_type = models.CharField(max_length=300,blank=True,null=True)
+	likes = models.ManyToManyField(User,blank=True,related_name='like')
+	wishlist = models.ManyToManyField(User,blank=True,related_name='wish')
 
 	@property
 	def view_count(self):
@@ -45,13 +47,6 @@ class comments(models.Model):
 	comment_date = models.DateTimeField(auto_now_add=True)
 	reply = models.ForeignKey('comments', on_delete=models.CASCADE, related_name="replies", null=True)
 
-class Like(models.Model):
-	user = models.ForeignKey(User,related_name='likes', on_delete=models.CASCADE)
-	post = models.ForeignKey(Post,related_name='likes', on_delete=models.CASCADE)
-
-class Wishlist(models.Model):
-	user = models.ForeignKey(User,related_name='wishs', on_delete=models.CASCADE)
-	post = models.ForeignKey(Post,related_name='wishs', on_delete=models.CASCADE)
 class Rating(models.Model):
 	user = models.ForeignKey(User,related_name='rates', on_delete=models.CASCADE)
 	post = models.ForeignKey(Post,related_name='rates', on_delete=models.CASCADE)

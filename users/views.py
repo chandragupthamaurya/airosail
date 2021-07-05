@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.conf import settings
 from .forms import registerForm,ProfileUpdateForm,UserUpdateForm,ContactForm
 from .models import Profile,FriendRequest
-from feed.models import Post,comments,Like,PostImages
+from feed.models import Post,comments,PostImages
 from django.core.mail import send_mail,BadHeaderError
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -217,11 +217,15 @@ def contact(request):
         form = ContactForm(request.POST)
         if form.is_valid():
             subject = "Website Inquiry" 
-            message = form.cleaned_data['content']
+            body ={
+            'message' : form.cleaned_data['content'],
+            'email_from' : form.cleaned_data['email']
+            }
             email_from = form.cleaned_data['email']
-            email_to= settings.EMAIL_HOST_USER 
+            email_to = settings.EMAIL_HOST_USER 
+            message = "\n".join(body.values())
             try:
-                send_mail(subject, message, email_from,email_to) 
+                send_mail(subject, message,email_from,email_to) 
             except BadHeaderError:
                 return HttpResponse('Invalid header found.')
             return redirect ("feed:index")      

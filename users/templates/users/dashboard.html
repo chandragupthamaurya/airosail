@@ -44,9 +44,9 @@
             </div>
             <div class="">
               <h3> {{ u }}</h3>
-              <p><strong>Bio</strong>{{ u.profile.bio }}</p>
-              <p>{{u.profile.url}}</p>
-              <p><strong> Profile</strong> {{u.profile.profile_type}}</p>
+              <p><b>Bio: </b>{{ u.profile.bio }}</p>
+              <p><b>website:</b> {{u.profile.url}}</p>
+              <p><b> Profile:</b> {{u.profile.profile_type}}</p>
               <hr class="my-3" />
               <button class="btn btn-info" data-toggle="collapse" data-target="#demo">about</button>
               <div id="demo" class="collapse">
@@ -64,13 +64,29 @@
                {% endif %}
             </div>
           </div>
-          
         </div>
       </div>
       <div class="col-xl-4 order-xl-2">
         <div class="card">
           <div class="card-body">
-            <h3>News</h3>
+            <h3>Details</h3><hr>
+            <div class="pl-4">
+              <div class="row mb-3">
+                <i><b>Name:</b> {{u}}</i>
+              </div>
+              <div class="row mb-3">
+                <i><b>phone:</b> {{u.profile.phone}}</i>
+              </div>
+              <div class="row mb-3">
+                <i><b>Address: </b> {{u.profile.address}}</i>
+              </div>
+              <div class="row mb-3">
+                <i><b>state: </b> {{u.profile.state}}</i>
+              </div>
+              <div class="row mb-3">
+                <i><b>country: </b> {{u.profile.country}}</i>
+              </div>
+            </div>
           </div>
         </div>
       </div>

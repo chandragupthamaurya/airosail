@@ -24,7 +24,7 @@
 			        		<h2>{{u.user}}</h2>
 		        		</div>
 		        		<hr>
-		        		<div class="row">
+		        		<div class="row justify-content-center">
 		        			<div class="col-md-auto " style="margin-right: -5%;">
 		        				<button class="btn mb-2 mb-md-0 btn-outline-info btn-round" type="button">
 		        					<span>{{u.friends.count}}<br> Following</span>
@@ -54,7 +54,7 @@
 	    				<a href="{% url 'users:profile_v' post.user_name.profile.id %}">
 	    					<img src="{{ post.user_name.profile.image.url }}" class="rounded-circle" width="50" height="50" alt="">
 	    				</a>
-	    				<a class="text-dark" href="{{ post.user_name.profile.id }}"><b>{{ post.user_name }}</b></a>
+	    				<a class="text-dark" href="{% url 'users:profile_v' post.user_name.profile.id %}"><b>{{ post.user_name }}</b></a>
 
 	    				<a tabindex="0" class="float-right" role="button" data-placement="left" data-toggle="popover" data-trigger="focus" data-html="true" data-content="<a href='{% url 'feed:reports' post.id  %}'>report</a>"><i class="fa fa-ellipsis-v float-right fa-1x fa-three" ></i><br>
 	    				</a>
@@ -80,38 +80,24 @@
 	    			<div class="card-footer">
 	    	<!--like button -->
 	    				<button class="btn btn-white mr-3 like" id="{{ post.id }}"> 
-    						{% for l in post.likes.all %}
-    						{% if l.user == request.user %}
+	    					{% if request.user in post.likes.all  %}
 				            	<a href="{% url 'feed:post-like' %}" style="color:red;" id="likebtn{{ post.id }}"><i class="fa fa-flash "style="font-size: 18px;"></i></a>| <span id="likespan{{post.id}}">{{post.likes.count}}</span>
+	    					
 				        	{% else %}
-				        	{% if forloop.counter == post.likes.all|length|add:"-1" %}
 				            	<a href="{% url 'feed:post-like' %}" style="" id="likebtn{{ post.id }}"> <i class="fa fa-flash" style="font-size: 18px"></i></a>| <span id="likespan{{post.id}}">{{post.likes.count}}</span>
 				        	
 				        	{% endif %}
-				        	{% endif %}
-				        	{% empty %}
-				        	<a href="{% url 'feed:post-like' %}" style="" id="likebtn{{ post.id }}"> <i class="fa fa-flash" style="font-size: 18px"></i></a>|<span id="likespan{{post.id}}">{{post.likes.count}}</span>
-
-				        	{% endfor %}
-				        	 
 				    	</button>
 				        	
 			<!--like button -->
 
-<!-- wish button-->
+			<!-- wish button-->
 				    	<button class="btn btn-outline-info wish" title="save wishlist" id="{{post.id}}">
-							{% for l in post.wishs.all %}
-    						{% if l.user == request.user %}
+    						{% if request.user in post.wishlist.all %}
     						<a href="{% url 'feed:wish' %}" style="color:red;" id="wishbtn{{ post.id }}"><i class="fa fa-magnet "style="font-size: 18px;"></i></a> 
 				        	{% else %}
-				        	{% if forloop.counter == post.wishs.all|length|add:"-1" %}
 				            	<a href="{% url 'feed:wish' %}" style="" id="wishbtn{{ post.id }}"> <i class="fa fa-magnet" style="font-size: 18px"></i></a> 
-				        	{% endif %}
-				        	{% endif %}
-				        	{% empty %}
-				        	<a href="{% url 'feed:wish' %}" style="" id="wishbtn{{ post.id }}"> <i class="fa fa-magnet" style="font-size: 18px"></i></a> 
-				        	{% endfor %}
-				        	
+				        	{% endif %}			        	
 				        </button>
 <!--  end wish button-->
 

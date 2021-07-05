@@ -7,14 +7,14 @@
        <div class="card card-signin my-5">
         <div class="card-body">
           {% for user_p in wish %}
-          <a href="{% url 'feed:postdetails' user_p.post.id %}">
-            {% for p in user_p.post.img.all %}
+          <a href="{% url 'feed:postdetails' user_p.id %}">
+            {% for p in user_p.img.all %}
           {% if forloop.counter == 1 %}
-            <img src="{{p.pimages.url }}"  class="rounded mr-2" width="40"height="40"  alt=""/></a>
+            <img src="{{p.pimages.url }}"  class="rounded mr-2" width="50"height="50"  alt=""/></a>
           {% endif %}
             {% endfor %}
         
-          <a class="text-dark" href="{% url 'feed:postdetails' user_p.post.id %}"><b>{{ user_p.post.title}}</b></a>
+          <a class="text-dark" href="{% url 'feed:postdetails' user_p.id %}"><b>{{ user_p.title}}</b></a>
           <small><a class="btn btn-danger float-right"  href="{% url 'feed:deletelike' user_p.id  %}">Unlist</a></small>
           <br /><br />
           {% endfor %}

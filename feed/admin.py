@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Post,comments,Like,PostImages,Rating,Wishlist
+from .models import Post,comments,PostImages,Rating
 
 
 class PostImageAdmin(admin.StackedInline):
@@ -13,6 +13,4 @@ class PostAdmin(admin.ModelAdmin):
        model = Post
 
 admin.site.register(comments)
-admin.site.register(Like)
-admin.site.register(Wishlist)
 admin.site.register(Rating)

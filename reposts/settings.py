@@ -23,11 +23,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY",get_random_secret_key())
+#SECRET_KEY = os.getenv("DJANGO_SECRET_KEY",get_random_secret_key())
+SECRET_KEY = 'django-insecure-(90wuzqvb541#=-6(03&j6er&3r&0&3ea%_c4=#^@d8axs#*c4'
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG =  os.getenv("DEBUG",'False') == 'True'
+#DEBUG =  os.getenv("DEBUG",'False') == 'True'
+DEBUG = True
 
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS","127.0.0.1,localhost").split(",")
 
@@ -155,8 +157,10 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+EMAIL_HOST_USER = "spaceairoinfo@gmail.com"
+EMAIL_HOST_PASSWORD = "spaceairoinfo@00001"
+#EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+#EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

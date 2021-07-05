@@ -3,7 +3,7 @@ from django.http import HttpResponse,HttpResponseRedirect,JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from .forms import NewPostForm,NewCommentForm,NewPostImage
-from .models import Post,comments,Like,PostImages,Rating,Wishlist,PostViews
+from .models import Post,comments,PostImages,Rating,PostViews
 from users.models import Profile
 from django.contrib import messages
 from django.core.paginator import Paginator
@@ -68,7 +68,7 @@ def index(request):
 		p = request.user.profile #user profile for frindlist
 		follower = ind.followers(request.user)# indexclass
 		postlist = ind.postlist_filter_byfeed(p,post,request)# index class
-		
+
 	context = {'post':postlist,'u':p,'post_count':post_count.count,'follower':follower,'cat':incat}
 	return render(request,'feed/index.html',context)
 
@@ -142,13 +142,13 @@ def postdetails(request,id):
 			ip = request.META['REMOTE_ADDR']
 		return ip
 	PostViews.objects.get_or_create(IPAddres = get_client_ip(request),post=post)
-
 	if request.user.is_authenticated:
-		is_wished = Wishlist.objects.filter(user = request.user ,post = post)
-		is_liked = Like.objects.filter(user = request.user,post=post)
+		is_liked = post.likes.filter(id =request.user.id).exists()
+		is_wished = post.wishlist.filter(id = request.user.id).exists()
 	else:
-		is_wished = None
-		is_liked = None
+		is_liked = False
+		is_wished = False
+
 	comment = comments.objects.filter(post=post, reply= None).order_by('-id')
 	rate = Rating.objects.filter(post = post)
 	a=0
@@ -179,7 +179,7 @@ def postdetails(request,id):
 			return redirect('feed:postdetails', id = post.id)
 	else:
 		form = NewCommentForm()
-	context = {'post':post,'photo':photo,'form':form,'is_wished':is_wished,'is_liked':is_liked,'comment':comment,'ratevalue':round(b,2),} 
+	context = {'post':post,'photo':photo,'form':form,'comment':comment,'ratevalue':round(b,2),'is_liked':is_liked,'is_wished':is_wished} 
 	return render(request,'feed/postdetails.html',context)
 
 @login_required
@@ -198,7 +198,6 @@ def categories(request):
 			if c == value:
 				postlist.append(p)
 
-	
 	context = {"allpost":postlist}
 	return render(request,'feed/products.html',context)
 
@@ -256,17 +255,18 @@ def del_comment(request):
 		return HttpResponse('unsuccess',False)
 
 @login_required
+
 def like(request):
 	post_id = request.GET.get("likeId", "")
 	user = request.user
 	post = Post.objects.get(pk=post_id)
-	liked= False
-	like = Like.objects.filter(user=user, post=post)
-	if like:
-		like.delete()
+	liked = False
+	if post.likes.filter(id= request.user.id).exists():
+		print('True')
+		post.likes.remove(user)
 	else:
+		post.likes.add(request.user)
 		liked = True
-		Like.objects.create(user=user, post=post)
 	like_count = post.likes.all().count()
 	resp = {
         'liked':liked,
@@ -275,33 +275,39 @@ def like(request):
 	response = json.dumps(resp)
 	return HttpResponse(response, content_type = "application/json")
 
+@login_required
 def wish(request):
 	post_id = request.GET.get("wishId", "")
 	user = request.user
 	post = Post.objects.get(pk=post_id)
 	wished= False
-	wish = Wishlist.objects.filter(user=user, post=post)
-	if wish:
-		wish.delete()
+	if post.wishlist.filter(id=user.id).exists():
+		post.wishlist.remove(user)
 	else:
 		wished = True
-		Wishlist.objects.create(user=user, post=post)
+		post.wishlist.add(user)
 	resp = {
         'wished':wished
     }
 	response = json.dumps(resp)
 	return HttpResponse(response, content_type = "application/json")
+
 @login_required
 def deletelike(request,id):
-	wish = Wishlist.objects.get(id = id)
-	if wish.user == request.user:
-		wish.delete()
+	post = Post.objects.get(id = id)
+	if post.wishlist.filter(id = request.user.id).exists():
+		post.wishlist.remove(request.user)
 	return redirect('feed:wishlist')
 
 @login_required
 def wishlist(request):
-	p = request.user.profile
-	wish = Wishlist.objects.filter(user=request.user)
+	pro= request.user.profile
+	post = Post.objects.all()
+	wish = []
+	for p in post:
+		if p.wishlist.filter(id=request.user.id):
+			wish.append(p)
+	print(wish)
 	context ={'wish':wish }
 	return render(request,'feed/wishlist.html',context)
 
@@ -335,4 +341,9 @@ def rules(request,value):
 	return render(request,'feed/rules.html',context)
 def reports(request,id):
 		
-	return render(request,'feed/wishlist.html')
+	return redirect('users:contact')
+def search(request):
+	if request.method == "GET":
+		value = request.GET.get('q')
+	response = json.dumps(resp)
+	return HttpResponse(response,content_type="application/json")

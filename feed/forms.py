@@ -1,5 +1,5 @@
 from django import forms
-from .models import comments, Post,PostImages,Like
+from .models import comments, Post,PostImages
 from ckeditor.widgets import CKEditorWidget
 
 

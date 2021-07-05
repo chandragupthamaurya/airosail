@@ -21,4 +21,5 @@ urlpatterns = [
 	path('ratingstar/',views.ratingstar,name='ratingstar'),
     path('rules/<str:value>/',views.rules,name='rules'),
     path('reports/<int:id>/',views.reports,name="reports"),
+    path('search/',views.search,name="search"),
     ]

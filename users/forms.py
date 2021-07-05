@@ -57,7 +57,7 @@ class ProfileUpdateForm(forms.ModelForm):
 
 	class Meta:
 		model = Profile
-		fields = ('bio','image','About','url','profile_type','phone','address','state','country')
+		fields = ('bio','image','About','url','profile_type','phone','address','city','state','country')
 
 class ContactForm(forms.Form):
 	name = forms.CharField(required=True)

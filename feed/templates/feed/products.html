@@ -2,9 +2,11 @@
 {% load static %}
 {% block content %}
 <div class="px-5">
- <div class="row">
+    <input class="form-control mt-4 mb-4" id="myInput" type="text" placeholder="Filter ..">
+
+ <div class="row" id="myDIV">
       {% for post in allpost %}
-        <div class="col-md-2 mb-3" style="margin-right: -10px">
+        <div class="col-md-2 mb-3" style="margin-right: -10px" >
             <div class="card">
               {% for p in post.img.all %}
               {% if forloop.counter == 1 %}
@@ -14,22 +16,16 @@
                 {% endfor %}
                 <div class="card-body d-flex flex-column" align="center">
                     <p class="card-text">{{post.title}}</p>
+                    <i><b>state</b>{{post.user_name.profile.state|title}} </i><i><b>country</b>{{post.user_name.profile.country|title}} </i>
                     <div class="mt-auto">
            <!--like button -->
               <button class="btn btn-white mr-3 like" id="{{ post.id }}"> 
-                {% for l in post.likes.all %}
-                {% if l.user == request.user %}
-                      <a href="{% url 'feed:post-like' %}" style="color:red;" id="likebtn{{ post.id }}"><i class="fa fa-flash "style="font-size: 18px;"></i></a>| {{post.likes.count}}
+                {% if  request.user in post.likes.all %}
+                      <a href="{% url 'feed:post-like' %}" style="color:red;" id="likebtn{{ post.id }}"><i class="fa fa-flash "style="font-size: 18px;"></i></a>| <span id="likespan{{post.id}}">{{post.likes.count}}</span>
                   {% else %}
-                  {% if forloop.counter == post.likes.all|length|add:"-1" %}
                       <a href="{% url 'feed:post-like' %}" style="" id="likebtn{{ post.id }}"> <i class="fa fa-flash" style="font-size: 18px"></i></a>| <span id="likespan{{post.id}}">{{post.likes.count}}</span>
                   
                   {% endif %}
-                  {% endif %}
-                  {% empty %}
-                  <a href="{% url 'feed:post-like' %}" style="" id="likebtn{{ post.id }}"> <i class="fa fa-flash" style="font-size: 18px"></i></a>|  <span id="likespan{{post.id}}">{{post.likes.count}}</span>
-
-                  {% endfor %}
                    
               </button>
                   
@@ -37,18 +33,11 @@
 
 <!-- wish button-->
               <button class="btn btn-outline-info wish" title="save wishlist" id="{{post.id}}">
-              {% for l in post.wishs.all %}
-                {% if l.user == request.user %}
+                {% if request.user in post.wishlist.all %}
                 <a href="{% url 'feed:wish' %}" style="color:red;" id="wishbtn{{ post.id }}"><i class="fa fa-magnet "style="font-size: 18px;"></i></a> 
                   {% else %}
-                  {% if forloop.counter == post.wishs.all|length|add:"-1" %}
                       <a href="{% url 'feed:wish' %}" style="" id="wishbtn{{ post.id }}"> <i class="fa fa-magnet" style="font-size: 18px"></i></a> 
-                  {% endif %}
-                  {% endif %}
-                  {% empty %}
-                  <a href="{% url 'feed:wish' %}" style="" id="wishbtn{{ post.id }}"> <i class="fa fa-magnet" style="font-size: 18px"></i></a> 
-                  {% endfor %}
-                  
+                  {% endif %}                  
                 </button>
 <!--  end wish button-->
 
@@ -117,6 +106,17 @@ $(".wish").click(function (e) {
         }
       })
 });
+</script>
+<script type="text/javascript">
+ $(document).ready(function(){
+  $("#myInput").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $(".card").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+
 </script>
 {% endblock jsfiles %}
 {% endblock content %}
