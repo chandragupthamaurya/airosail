@@ -1,0 +1,226 @@
+{% extends 'feed/base.html' %}
+{% block content %}
+
+<style type="text/css">
+	.nav-tabs .nav-link, .nav-tabs .nav-link.active, .nav-tabs .nav-link:hover {
+    border: 0;
+    border-bottom: 1px solid grey;
+    color: gray;
+}
+
+.nav-tabs .nav-link.active {
+    color: #000000;
+    border-radius: 0;
+    border-bottom: 2px solid blue;
+    border-spacing: 12px;
+}
+.div2 {
+  width: 500px;
+  height: 200px;
+ margin-bottom: 20px;
+  border: 1px solid blue;
+}
+.msgcss{
+	border:1px solid black;
+	padding:10px;
+	box-shadow: 1px 1px grey;
+}
+.togglecolor{
+	background-color: #D3D3D3;
+}
+div.scroll {
+        background-color: ;
+        width: 600px;
+        height: 350px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        text-align: ;
+      }
+
+
+</style>
+	
+<div class="container-fluid">
+	    <div class="row mb-2"> 
+	    	    <div class="col-md-4">
+	    			<div class="card card-signin my-5">
+		    			<div class="card-body ">
+		    				<div class="chat ">
+		    					<span name = "{{request.user.id}}"></span>
+		    				<div class=" div2 img-fluid scroll pr-2 pl-2"  data=''>
+		    					<div class="reciver"></div><div class="sender float-right"></div>
+		    					
+		    				</div>
+		    			</div>
+		    				<div>
+				            	<form method="POST"  id = "messageform" data-postid="" >
+										{% csrf_token %}
+								 	<input  class="img-fluid" type="text" name="message" id="message" placeholder="message" style="width: 400px;">
+								 	<button class="btn btn-outline-info" type="submit" name="submit" ><i class="fa fa-send"></i></button>
+								 </form>
+				            </div>
+		    			</div>
+	    			</div>
+	    		</div>   		
+	    	<div class="col-md-4">
+	    		<div class="card card-signin my-5">
+	    			<div class="card-body">
+			            <h1>Messages</h1>
+			            {% for send in s %}
+<!-- it contains reply button and delete button-->
+						{% if send.reciver != request.user %}
+						<div  id="del{{ send.reciver.id }}" class="upmsg">
+							<div class="msgcss sendbtn" name="{{send.reciver}}" id="{{send.reciver.id}}">
+								<img src="{{send.reciver.profile.image.url}}" class="rounded-circle" width="50" height="50" alt="">
+								<b>{{send.reciver}}</b><br>
+				            <i class="sendmsg">{{send.message}}</i>
+
+
+				            <a class = "del_msg float-right" data-msgid="{{ send.reciver.id }}"  href="{% url 'users:del_message' %}">
+				            <i class="fa fa-trash"></i></a><br>
+	<!-- it is the model for reply button-->
+				            
+				        	</div>
+				        </div>
+				        {% else %}
+				        	<div  id="del{{ send.sender.id }}" class="upmsg" >
+							<div class="msgcss sendbtn" name="{{send.sender}}" id="{{send.sender.id}}">
+								<img src="{{send.sender.profile.image.url}}" class="rounded-circle" width="50" height="50" alt="">
+								<b>{{send.sender}}</b><br>
+				            <i class="sendmsg">{{send.message}}</i>
+
+
+				            <a class = "del_msg float-right" data-msgid="{{ send.sender.id }}"  href="{% url 'users:del_message' %}">
+				            <i class="fa fa-trash"></i></a><br>
+	<!-- it is the model for reply button-->
+				            
+				        	</div>
+				        </div>
+				        {% endif %}
+			          {% endfor %}
+			          <div id="upmsg"></div>
+			        </div>
+			    </div>
+			</div>
+			{% if wish %}
+			<div class="col-md-4">
+				<div class="card card-signin my-5">
+					<div class="card-body">
+						{% for wish in wish %}
+							<div  id="del{{ wish.id }}" class="">
+							<div class="msgcss sendbtn" name="{{wish.user_name}}" id="{{wish.user_name.id}}">
+								{% for p in wish.img.all %}
+						          {% if forloop.counter == 1 %}
+						            <img src="{{p.pimages.url }}"  class="rounded mr-2" width="50"height="50"  alt=""/></a>
+						          {% endif %}
+						         {% endfor %}
+								<i>{{wish.title}}</i><b>owner: {{wish.user_name}}</b><br>
+				            <i class="sendmsg"></i>	
+				            </div>
+				           </div>					
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+			{% endif %}
+	    	</div>
+	    </div>
+	</div>	
+</div>
+{% block jsfiles %}
+<script type="text/javascript">
+$(document).off().on('submit','#messageform',function(e){
+		var user_id = $(this).attr('data-postid')
+		var message = $('input[name=message]').val()
+        e.preventDefault();
+        if(message != ' '){
+        $.ajax({
+        	async: true,
+            type:'POST',
+            url:'{% url "users:msg_user" %}',
+            data:
+            {
+                message:message,
+                user_id:$(this).attr('data-postid'),
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+            },
+            success:function(response){
+            		$('#messageform')[0].reset();
+					$('.div2').append('<div class="float-right">'+response.message+'</div><br>\n');
+            		$('.togglecolor i.sendmsg').html(response.message)
+   					$('.div2').scrollTop($('.div2')[0].scrollHeight);
+
+                }
+            })
+        }
+        });
+
+</script>
+<script type="text/javascript">
+	$(".del_msg").click(function(e){
+		var msgid = $(this).attr('data-msgid');
+		var href = $(this).attr('href');
+		e.preventDefault();
+		$.ajax({
+			method:"GET",
+			url: href,
+			data:{'msgid': msgid},
+
+			success:function(response){
+				$('#del'+msgid).remove()
+			},
+		});
+	});
+</script>
+<script type="text/javascript">
+		$(".sendbtn").click(function(){
+		var msgid = $("#messageform").attr('data-postid')
+		var name = $(this).attr('name');
+		var id = this.id
+		$('.chat span').html("<h4>"+name+'</h4>');
+		$('#messageform').attr('data-postid', id);
+		$('.togglecolor').removeClass('togglecolor')
+		$('#'+id).addClass('togglecolor');
+		updatemsg();
+
+	});
+		
+</script>
+<script type="text/javascript">
+	function updatemsg(){
+			var updateid = $("#messageform").attr('data-postid');
+			var name = $('.chat span').attr('name');
+			if(updateid == ''){
+				$.getJSON("{% url 'users:updatemsg' %}",function(rowz){
+					console.log(rowz)
+					for(var i = 0;i < 1;i++){
+					$('.upmsg').append()
+					}
+				});
+			}else{
+			$.getJSON("{% url 'users:updatemsg' %}",{'updateid':updateid},function(rowz){
+			var prev = $('.div2').attr('data');
+			if(prev != rowz.length){
+				$('.div2').empty();
+				for(var i = 0 ,j=1 ; i < rowz.length ; i++){
+					if(rowz[i][j].sender == name){
+						$('.div2').append('<div class="float-right">'+rowz[i][j].message+'</div>\n<br><small style="float:right;font-size:8px;">'+rowz[i][0]+'</small><br>\n');
+						}else{
+							$('.div2').append('<div>'+rowz[i][j].message+'</div>\n<small style="font-size:8px;">'+rowz[i][0]+'</small>\n');
+							}
+						}
+				$('.div2').scrollTop($('.div2')[0].scrollHeight);
+				$('.div2').attr('data',rowz.length);
+			}
+			});
+			setTimeout('updatemsg()',6000);
+			}
+			
+		}
+	$(document).ready(function(){
+		$.ajaxSetup({cache:false});
+		updatemsg();
+	});
+</script>
+{% endblock jsfiles %}
+{% endblock content %}

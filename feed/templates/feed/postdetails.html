@@ -193,10 +193,10 @@
 	          			  <button type="button" style="background-color: #009999; color:white;" class="btn btn-primary" data-toggle="modal" data-target="#myModal{{post.id}}">
 							    Share
 							  </button>
-						<button type="button" style="background-color: #009999; color:white;" class="btn btn-primary">
+							<button type="button" style="background-color: #009999; color:white;" class="btn btn-primary">
 							    <i class="fa fa-eye"> {{post.view_count}}</i>
-							  </button>
-
+							</button>
+							
 
 							  <!-- The Modal -->
 							  <div class="modal fade" id="myModal{{post.id}}">
@@ -224,6 +224,39 @@
 							      </div>
 							    </div>
 							  </div>
+							  {% if user.is_authenticated %}
+							  <a type = "button" class="btn messagemodel" data-toggle="modal" data-target="#messagemodel{{post.id}}" >message</a>
+							  {% endif %}
+							  
+							  <!-- The Modal -->
+							  <div class="modal fade" id="messagemodel{{post.id}}" class="messagemodel">
+							    <div class="modal-dialog">
+							      <div class="modal-content">
+							      
+							        <!-- Modal Header -->
+							        <div class="modal-header">
+							          <h4 class="modal-title">Modal Heading</h4>
+							          <button type="button" class="close" data-dismiss="modal">&times;</button>
+							        </div>
+							        
+							        <!-- Modal body -->
+							        <div class="modal-body">
+							        	 <form method="POST"  id = "messageform" data-postid="{{ post.id }}" >
+							  				{% csrf_token %}
+							        	 	<input type="text" name="message" id="message" placeholder="message">
+							        	 	<button class="btn" type="submit" name="submit" >send</button>
+							        	 </form>
+							        </div>
+							        
+							        <!-- Modal footer -->
+							        <div class="modal-footer">
+							          <button type="button" class="btn btn-danger" id="msgclose" data-dismiss="modal">Close</button>
+							        </div>
+							        
+							      </div>
+							    </div>
+							  </div>
+
 	          			<div class="row mt-4">
           				{% for p in photo %}
           				<div class="col-sm-3 ">
@@ -455,5 +488,26 @@ $(".wish").click(function (e) {
 			},
 		});
 	});
+</script>
+
+<script type="text/javascript">
+$(document).off().on('submit','#messageform',function(e){
+	var postid = $(this).attr('data-postid')
+        e.preventDefault();
+        $.ajax({
+            type:'POST',
+            url:'{% url "users:message" %}',
+            data:
+            {
+                message:$("#message").val(),
+                postid:$(this).attr('data-postid'),
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+            },
+            success:function(response){
+            		$('#messageform')[0].reset();
+            		$("#msgclose").trigger("click");
+                }
+            })
+        });
 </script>
 {% endblock jsfiles %}

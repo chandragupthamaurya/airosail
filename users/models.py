@@ -55,5 +55,14 @@ class FriendRequest(models.Model):
 	def __str__(self):
 		return "From {}, to {}".format(self.from_user.username, self.to_user.username)
 
+class Messages(models.Model):
+	sender = models.ForeignKey(settings.AUTH_USER_MODEL,related_name='sender',on_delete=models.CASCADE)
+	reciver =  models.ForeignKey(settings.AUTH_USER_MODEL,related_name='reciver',on_delete=models.CASCADE)
+	msg_date = models.DateTimeField(auto_now_add=True)
+	message = models.CharField(max_length=200,blank=True)
+
+	def __str__(self):
+		return str(self.sender)
+
 
 # Create your models here.

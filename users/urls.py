@@ -22,5 +22,10 @@ urlpatterns = [
     path('delete_friend/<int:id>/',views.delete_friend, name='delete_friend'),
     path('friend_list/',views.friend_list, name='friend_list'),
     path('users_list/',views.users_list,name='users_list'),
-    path('notification/',views.notification,name = 'notification')
+    path('notification/',views.notification,name = 'notification'),
+    path('message/',views.message,name='message'),
+    path('msg_user/',views.msg_user,name='msg_user'),
+    path('updatemsg/',views.updatemsg,name='updatemsg'),
+    path('inboxmessage/',views.inboxmessage,name='inboxmessage'),
+    path('del_message/',views.del_message,name='del_message'),
     ]

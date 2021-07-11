@@ -53,8 +53,16 @@ class indexwork():
 							postlist.append(i)				
 							break
 		return postlist
+	def wishlistdata(self,request):
+		pro= request.user.profile
+		post = Post.objects.all()
+		wish = []
+		for p in post:
+			if p.wishlist.filter(id=request.user.id):
+				wish.append(p)
+		return wish
 
-
+ind = indexwork()
 def index(request):
 	ind = indexwork()
 	incat = ind.catagories()
@@ -68,6 +76,7 @@ def index(request):
 		p = request.user.profile #user profile for frindlist
 		follower = ind.followers(request.user)# indexclass
 		postlist = ind.postlist_filter_byfeed(p,post,request)# index class
+		print(postlist)
 
 	context = {'post':postlist,'u':p,'post_count':post_count.count,'follower':follower,'cat':incat}
 	return render(request,'feed/index.html',context)
@@ -179,6 +188,7 @@ def postdetails(request,id):
 			return redirect('feed:postdetails', id = post.id)
 	else:
 		form = NewCommentForm()
+
 	context = {'post':post,'photo':photo,'form':form,'comment':comment,'ratevalue':round(b,2),'is_liked':is_liked,'is_wished':is_wished} 
 	return render(request,'feed/postdetails.html',context)
 
@@ -301,13 +311,7 @@ def deletelike(request,id):
 
 @login_required
 def wishlist(request):
-	pro= request.user.profile
-	post = Post.objects.all()
-	wish = []
-	for p in post:
-		if p.wishlist.filter(id=request.user.id):
-			wish.append(p)
-	print(wish)
+	wish = ind.wishlistdata(request)
 	context ={'wish':wish }
 	return render(request,'feed/wishlist.html',context)
 

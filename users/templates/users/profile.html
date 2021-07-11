@@ -55,6 +55,38 @@
               <a class="btn btn-info" href="{% url 'users:editprofile' %}">Edit Profile</a>
               <a class="btn btn-info" href="{% url 'feed:create_post' %}">create post</a>
                {% else %}
+               <!--message button and model -->
+                <a type = "button" class="btn messagemodel" data-toggle="modal" data-target="#messagemodel{{u.id}}" >message</a>
+
+                <!-- The Modal -->
+                <div class="modal fade" id="messagemodel{{u.id}}" class="messagemodel">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                    
+                      <!-- Modal Header -->
+                      <div class="modal-header">
+                        <h4 class="modal-title">Message</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                      </div>
+                      
+                      <!-- Modal body -->
+                      <div class="modal-body">
+                         <form method="POST"  id = "messageform" data-postid="{{u.id}}" >
+                        {% csrf_token %}
+                          <input type="text" name="message" id="message" placeholder="message">
+                          <button class="btn" type="submit" name="submit" >send</button>
+                         </form>
+                      </div>
+                      
+                      <!-- Modal footer -->
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" id="msgclose" data-dismiss="modal">Close</button>
+                      </div>
+                      
+                    </div>
+                  </div>
+                </div>
+
                {% if button == 'follow' %}
                <a class="btn btn-primary" href="{% url 'users:add_friends' u.id %}">Follow</a>
                {% else %}
@@ -129,4 +161,26 @@
 </div>
 <br style="padding-bottom: 100px;">
 
+{% block jsfiles %}
+<script type="text/javascript">
+$(document).off().on('submit','#messageform',function(e){
+  var user_id = $(this).attr('data-postid')
+        e.preventDefault();
+        $.ajax({
+            type:'POST',
+            url:'{% url "users:msg_user" %}',
+            data:
+            {
+                message:$("#message").val(),
+                user_id:$(this).attr('data-postid'),
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+            },
+            success:function(response){
+                $('#messageform')[0].reset();
+                $("#msgclose").trigger("click");
+                }
+            })
+        });
+</script>
+{% endblock jsfiles %}
 {% endblock content %} 

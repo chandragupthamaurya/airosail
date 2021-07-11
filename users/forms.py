@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import ValidationError
-from .models import Profile
+from .models import Profile,Messages
 from ckeditor.widgets import CKEditorWidget
 
 """feed_choose=(
@@ -30,6 +30,7 @@ from ckeditor.widgets import CKEditorWidget
 	)"""
 class registerForm(UserCreationForm):
 	email = forms.EmailField(required = True, error_messages={'exists':'this already exists!'})
+	username = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'company name/username'}))
 
 	class Meta:
 		model = User
@@ -64,3 +65,8 @@ class ContactForm(forms.Form):
 	email = forms.EmailField(required=True)
 	content = forms.CharField(required=True,widget=forms.Textarea)
 
+class MessageForm(forms.ModelForm):
+
+	class Meta:
+		model = Messages
+		fields = ('message',)

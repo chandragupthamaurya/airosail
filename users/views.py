@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.forms import UserCreationForm
-from django.http import HttpResponse, HttpResponseRedirect,Http404
+from django.http import HttpResponse, HttpResponseRedirect,Http404,JsonResponse
 from django.urls import reverse
 from django.conf import settings
-from .forms import registerForm,ProfileUpdateForm,UserUpdateForm,ContactForm
-from .models import Profile,FriendRequest
+from .forms import registerForm,ProfileUpdateForm,UserUpdateForm,ContactForm,MessageForm
+from .models import Profile,FriendRequest,Messages
 from feed.models import Post,comments,PostImages
 from django.core.mail import send_mail,BadHeaderError
 from django.contrib import messages
@@ -14,8 +14,12 @@ from django.contrib.auth import get_user_model,update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 import random
 from django.utils.timezone import now
+from django.forms.models import model_to_dict 
+import json
+from feed.views import indexwork
 User = get_user_model()
-
+ 
+ind = indexwork()
 class userview():
     def cat(self):
         catlist = ['agriculture','pets','architecture','arts','transport','education','trading','books','charity','energy','entertainment',
@@ -123,7 +127,6 @@ def profile_v(request,id):
         button_status = 'unfollow'
         post = Post.objects.filter(user_name=u).order_by('-date_posted')
 
-    print(button_status)
     context = {
         'u': u,
         'friends_list': friends,
@@ -166,7 +169,6 @@ def add_friends(request,id):
     user1.profile.friends.add(user2.profile)
     if(FriendRequest.objects.filter(from_user= user2, to_user=user1).first()):
         request_rev = FriendRequest.objects.filter(from_user=user2,to_user=user1).first()
-        print(request_rev)
         request_rev.delete()
     else:
         if user2.profile.profile_type == 'people':
@@ -218,8 +220,9 @@ def contact(request):
         if form.is_valid():
             subject = "Website Inquiry" 
             body ={
+            'name' : form.cleaned_data['name'],
+            'email_from' : form.cleaned_data['email'],
             'message' : form.cleaned_data['content'],
-            'email_from' : form.cleaned_data['email']
             }
             email_from = form.cleaned_data['email']
             email_to = settings.EMAIL_HOST_USER 
@@ -239,6 +242,97 @@ def notification(request):
     anylike = Post.objects.filter(user_name = request.user)
     context={'frinedreq':friend_req}
     return render(request,'users/notification.html',context)
+
+@login_required
+def message(request):
+    post_id = request.POST.get('postid')
+    print(post_id,"yes")
+    post = Post.objects.get(id = post_id )
+    if request.method== 'POST':
+        message = request.POST.get('message')
+        msgobject = Messages.objects.create(sender= request.user,reciver=post.user_name,message = message)
+
+        return HttpResponse('success',True)
+    else:
+        return HttpResponse('unsuccess',False)
+
+@login_required
+def msg_user(request):
+    user_id = request.POST.get('user_id')
+    user = User.objects.get(id=user_id)
+    if request.method == 'POST':
+        message = request.POST.get('message')
+        print(message)
+        m = Messages.objects.create(sender= request.user,reciver=user,message = message)
+        msg = m.message
+    resp = {'message':msg}
+
+    response = json.dumps(resp)
+    return HttpResponse(response, content_type = "application/json")
+
+        
+@login_required
+def inboxmessage(request):
+    wish = ind.wishlistdata(request)
+    inbox = Messages.objects.filter(reciver=request.user).order_by('-msg_date')
+    sendbox = Messages.objects.filter(sender= request.user).order_by('-msg_date')
+    message = Messages.objects.filter(reciver=request.user).order_by('-msg_date')|Messages.objects.filter(sender=request.user).order_by('-msg_date')
+    s =[]
+    name = []
+    for msg in sendbox:
+        if msg.reciver not in name:
+            s.append(msg)
+            name.append(msg.reciver)
+    for msg in inbox:
+        if msg.sender not in name:
+            s.append(msg)
+            name.append(msg.sender)
+    context={'inbox':inbox,
+            'sendbox':sendbox,
+            's':s,'wish':wish}
+    return render(request,'users/messages.html',context)
+
+@login_required
+def updatemsg(request):
+    messages = Messages.objects.all().order_by('-msg_date')
+    updateid = request.GET.get('updateid')
+    prvowner = 0
+    if not updateid:
+        omsglist ={}
+        ownermsg = Messages.objects.filter(reciver= request.user)
+        if prvowner < len(ownermsg):
+            for omsg in ownermsg:
+                sender = str(omsg.sender)
+                omsglist[omsg.msg_date.strftime("%m/%d/%Y,%H:%M:%S")] = [omsg.message,sender,omsg.sender.id]
+        prvowner = len(ownermsg)
+        print(prvowner)
+        msglistsort = sorted(omsglist.items(),reverse = True)
+        response = json.dumps(msglistsort)
+        return HttpResponse(response,content_type="application/json")
+    else:
+        msglist = {}
+        user = User.objects.get(id = updateid)
+        inbox  = Messages.objects.filter(sender = user,reciver=request.user)
+        sendbox = Messages.objects.filter(reciver = user, sender= request.user)
+        for i in inbox:
+            msglist[i.msg_date.strftime("%m/%d/%Y,%H:%M:%S")] = model_to_dict(i)
+        for s in sendbox:
+            msglist[s.msg_date.strftime("%m/%d/%Y,%H:%M:%S")] = model_to_dict(s)
+        msglistsort = sorted(msglist.items())
+        response = json.dumps(msglistsort)
+        return HttpResponse(response,content_type="application/json")
+
+
+@login_required
+def del_message(request):
+    if request.is_ajax() and request.method=="GET":
+        msgid = request.GET.get('msgid')
+        user = User.objects.get(id = msgid)
+        message = Messages.objects.filter(sender = user,reciver=request.user)|Messages.objects.filter(reciver= user,sender= request.user)
+        message.delete()
+        return HttpResponse('success',True)
+    else:
+        return HttpResponse('unsuccess',False)
 
 def search(request):
     object_list =[]

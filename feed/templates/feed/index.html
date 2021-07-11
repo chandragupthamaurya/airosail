@@ -48,7 +48,9 @@
 	      		</div>
 	    	</div>
 	    	<div class="col-md-6">
+	    		{% if post != None %}
 	    		{% for post in post%}
+	    		{% if post.user_name.profile.id != None  %}
 	    		<div class="card card-signin my-3">
 	    			<div class="card-body">
 	    				<a href="{% url 'users:profile_v' post.user_name.profile.id %}">
@@ -146,7 +148,9 @@
 	          		{% endif %}
 	    			</div>
 	    		</div>
+	    		{% endif %}
    	    		{% endfor %}
+   	    		{% endif %}
 	    	</div>
 	  	   <div class="col-md-3">
 	  	   		<div class="card card-signin my-3">

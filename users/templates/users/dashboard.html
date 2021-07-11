@@ -78,6 +78,9 @@
                 <i><b>phone:</b> {{u.profile.phone}}</i>
               </div>
               <div class="row mb-3">
+                <i><b>Email:</b> {{u.email}}</i>
+              </div>
+              <div class="row mb-3">
                 <i><b>Address: </b> {{u.profile.address}}</i>
               </div>
               <div class="row mb-3">
@@ -140,4 +143,27 @@
 </div>
 <br style="padding-bottom: 100px;">
 
+
+{% block jsfiles %}
+<script type="text/javascript">
+$(document).on('submit','#messageform',function(e){
+  var postid = $(this).attr('data-postid')
+        e.preventDefault();
+        $.ajax({
+            type:'POST',
+            url:'{% url "users:message" %}',
+            data:
+            {
+                message:$("#message").val(),
+                postid:$(this).attr('data-postid'),
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+            },
+            success:function(response){
+                $('#messageform')[0].reset();
+                $("#msgclose").trigger("click");
+                }
+            })
+        });
+</script>
+{% endblock jsfiles %}
 {% endblock content %} 
