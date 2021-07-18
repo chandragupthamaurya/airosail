@@ -158,6 +158,7 @@ $(document).off().on('submit','#messageform',function(e){
 </script>
 <script type="text/javascript">
 	$(".del_msg").click(function(e){
+		if (confirm('It will delete the whole conversation')){
 		var msgid = $(this).attr('data-msgid');
 		var href = $(this).attr('href');
 		e.preventDefault();
@@ -170,6 +171,8 @@ $(document).off().on('submit','#messageform',function(e){
 				$('#del'+msgid).remove()
 			},
 		});
+	}
+	return false;
 	});
 </script>
 <script type="text/javascript">

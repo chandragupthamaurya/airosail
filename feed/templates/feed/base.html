@@ -1,4 +1,6 @@
 {% load static %}
+{% load notifications_tags %}
+{% notifications_unread as unread_count %}
 <!DOCTYPE html>
 <html lang="en">
 <style type="text/css">
@@ -20,8 +22,7 @@ body{
   min-height: 1px;
   background-color:;
 }
-  
-.fa-stack[data-count]:after{
+ .fa-stack[data-count]:after{
   position:absolute;
   right:0%;
   top:1%;
@@ -36,6 +37,7 @@ body{
   min-width:2em;
   font-weight:bold;
 }
+ 
   
 </style>
 <head>
@@ -76,6 +78,9 @@ body{
       <li class="nav-item">
         <a class="nav-link " href="{% url 'feed:wishlist' %}">Wislist</a>
       </li>
+      <li class="nav-item">
+        
+      </li>
       <li class="nav-item pl-2">
         <form class="img-fluid" method="GET" action="{% url 'users:search' %}">
           <input type="search" class="img-fluid" name="q" placeholder="search"style="width: 300px;border-radius:50px;">
@@ -87,7 +92,7 @@ body{
     <ul class="navbar-nav navbar-right">
   <li class="nav-item">
         <a class="nav-link " href="{% url 'users:notification' %}">
-          <span class="fa-stack fa-1x" data-count="">
+          <span class="fa-stack fa-1x" data-count="{% if unread_count %}{{unread_count}}{% endif %}">
             <i class="fa fa-circle fa-stack-2x"></i>
             <i class="fa fa-bell fa-stack-1x fa-inverse"></i>
           </span></a>
@@ -151,7 +156,6 @@ body{
       <div >
         <a href="{% url 'feed:rules' 'about' %}"style="color: white;padding-right: 10px;">About</a>
         <a href="{% url 'feed:rules' 'privacy' %}"style="color: white; padding-right: 10px;">Privacy Policy</a>
-        <a href="{% url 'feed:rules' 'condition' %}"style="color: white;padding-right: 10px;">Condition of Use</a>
         <a href="{% url 'users:contact' %}"style="color: white;">Contact</a>
       </div>
 
@@ -165,9 +169,3 @@ body{
 
 </body>
 </html>
-<form class="form-inline my-lg-0 " method="GET" action="{% url 'users:search' %}">
-          <div class="col-xs-4">
-          <input class="form-control mr-sm-2 " type="search" name='q' placeholder="Search" aria-label="Search">
-        </div>
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit"><i class="fa fa-search"></i></button>
-        </form>

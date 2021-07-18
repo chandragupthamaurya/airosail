@@ -28,13 +28,15 @@
                   
                     {% if request.user == u %}
                      <div class="btn-group btn-group-lg">
-                        <a type="button" class="btn btn-outline-success" href="{% url 'users:friend_list' %}">{{ u.profile.friends.count }}Following</a>
-                        <button type="button" class="btn btn-outline-success">{{post_count}}posts</button>
+                        <a type="button" class="btn btn-outline-success" href="{% url 'users:friend_list' 'following' %}">{{ u.profile.friends.count }} Following</a>
+                        <a type="button" class="btn btn-outline-success" href="{% url 'users:friend_list' 'follower' %}">{{follower}} Followers</a>
+                        <button type="button" class="btn btn-outline-success">{{post_count}} posts</button>
                         <a type="button" class="btn btn-outline-success" href="{% url 'feed:wishlist' %}">Wishlist</a>
                       </div> 
                       {% else %}
                        <div class="btn-group btn-group-lg">
                           <button type="button" class="btn btn-outline-success">{{ u.profile.friends.count }}Following</button>
+                          <button type="button" class="btn btn-outline-success">{{follower}}Followers</button>
                           <button type="button" class="btn btn-outline-success">{{post_count}}posts</button>
                           <button type="button" class="btn btn-outline-success">Wishlist</button>
                         </div> 
@@ -109,7 +111,7 @@
                             {% endif %}
                             {% endfor %}
                             <div class="card-body" align="center">
-                                {{post.title}}
+                                {{post.title|truncatewords:1}}
                             </div>
                         </div>
                     </div>

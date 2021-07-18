@@ -1,0 +1,11 @@
+{% autoescape off %}
+
+WELCOME TO ARIOSAIL
+
+The Ariosail is new way to reach  your customer and develop your business
+It will generate the links to your product
+It is used to get the rating and comment from the customers so you can increase your product values
+
+Airosail -(CEO)
+
+{% endautoescape %}

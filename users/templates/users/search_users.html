@@ -1,13 +1,16 @@
 {% extends 'feed/base.html'%}
 {% block content %}
 <div class="container-fluid">
+  <input class="form-control mt-4 mb-4" id="myInput" type="text" placeholder="Filter ..">
   <div class="row">
     <div class="col-md-8" style="padding-left: 10%;">
-      {% if not users or post  %}
+      {% if not users or post %}
       <br /><br />
-      <h2><i>No such item found!</i></h2>
+      <h2><i></i></h2>
       {% else %}
-      <div class="card card-signin my-5">
+
+
+      <div class="card card-signin  filter">
         <div class="card-body">
         {% for user_p in users %}
           {% if request.user != user_p %}
@@ -21,33 +24,43 @@
                 <a class="text-dark" href="{% url 'users:profile_v' user_p.profile.id %}"><b>{{ user_p }}</b></a>
                 <p><strong>Profile :</strong>{{user_p.profile.profile_type}}</p>
                <p><strong>Bio:</strong>{{user_p.profile.bio}}</p>
+               {% if user_p.profile not in request.user.profile.friends.all %}
+                <small class="float-right">
+                  <a class="btn btn-primary mr-2" href="{% url 'users:add_friends' user_p.id %}">follow</a>
+                </small>
+                {% else %}
+                <small class="float-right">
+                  <a class="btn btn-danger mr-2" href="{% url 'users:delete_friend' user_p.id %}">Unfollow</a>
+                </small>
+                {% endif %}
               </div>
             </div>
-            {% if user_p.profile not in request.user.profile.friends.all %}
-          <small class="float-right">
-            <a class="btn btn-primary mr-2" href="{% url 'users:add_friends' user_p.id %}">follow</a>
-          </small>
-          {% else %}
-          <small class="float-right">
-            <a class="btn btn-danger mr-2" href="{% url 'users:delete_friend' user_p.id %}">Unfollow</a>
-          </small>
-          {% endif %}
+            
             {% endif %}
         {% endfor %}
+</div>
+</div>
+{% endif %}
+{% if not post %}
+{% else %}
+<div class="card card-signin filter">
+        <div class="card-body">
         {% for post in post %}
           {% if request.user != post.user_name %}
           <div class="row pb-2">
             <div class="col-md-auto">
                 {% for p in post.img.all %}
                  {% if forloop.counter == 1 %}<a href="{% url 'feed:postdetails' post.id %}">
-                  <img class="img-fluid w-100" alt="100%x280" src="{{p.pimages.url}}" style="height: 250px;"></a>
+                  <img class="img-fluid w-100" alt="100%x280" src="{{p.pimages.url}}" style="height: 180px;"></a>
                  {% endif %}
                 {% endfor %}         
               </div>
               <div class="col">
-                <a class="text-dark" href="{% url 'users:profile_v' user_p.profile.id %}"><b>{{ post.title }}</b></a>
+                <a class="text-dark" href="{% url 'users:profile_v' post.user_name.profile.id %}"><b>{{ post.title }}</b></a>
                 <p><strong>Post type :</strong>{{post.post_type}}</p>
-               
+                <p><strong>Descriptions :</strong>{{post.descriptions|safe|truncatewords:5}}
+                <i><b>state</b>{{post.user_name.profile.state|title}} </i><br>
+                <i><b>country</b>{{post.user_name.profile.country|title}} </i>             
               </div>
             </div>
             {% endif %}
@@ -56,6 +69,8 @@
       </div>
       {% endif %}
     </div>
+
+
     {% if user.is_authenticated %}
     <div class="col-md-3 ">
       <div class="card card-signin my-5">
@@ -72,7 +87,7 @@
       </div>
     </div>
     {% else %}
-    <div class="col-md-4">
+    <div class="col-md-3">
       <div class="card card-signin my-5">
         <div class="card-body">
           <h1>Airosail</h1>
@@ -81,4 +96,19 @@
     </div>
     {% endif %}
   </div>
-  {% endblock content %}
+</div>
+
+{% block jsfiles %}
+<script type="text/javascript">
+ $(document).ready(function(){
+  $("#myInput").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $(".filter").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+
+</script>
+{% endblock %}
+{% endblock content %}

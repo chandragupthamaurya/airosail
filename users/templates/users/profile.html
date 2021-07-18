@@ -163,7 +163,7 @@
 
 {% block jsfiles %}
 <script type="text/javascript">
-$(document).off().on('submit','#messageform',function(e){
+$(document).on('submit','#messageform',function(e){
   var user_id = $(this).attr('data-postid')
         e.preventDefault();
         $.ajax({

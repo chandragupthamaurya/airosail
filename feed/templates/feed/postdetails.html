@@ -101,7 +101,7 @@
 			        {% endfor %}			
 				</div>
 				<div class="col-md-8">
-					<h3><strong>{{post.title|title}}</strong>
+					<h3><strong>{{post.title|title|truncatewords:3}}</strong>
 						<!--popover to report -->
 						<a tabindex="0" class="float-right" role="button" data-placement="left" data-toggle="popover" data-trigger="focus" data-html="true" data-content="<a href='{% url 'feed:reports' post.id  %}'><h5>report</h5></a>"><i class="fa fa-ellipsis-v float-right fa-1x fa-three" ></i><br>
 	    				</a>
@@ -190,13 +190,12 @@
 
 			        	{% if post.buyurl != None %}
 	          			<a href="{{post.buyurl}}" target="_blank"><button class="btn btn-primary" style="background-color: #009999;color: white;"><i class="fa fa-shopping-cart pl-1 btn " style="font-size:10px;color:white;"></i>Buy</button></a>{% endif %}
-	          			  <button type="button" style="background-color: #009999; color:white;" class="btn btn-primary" data-toggle="modal" data-target="#myModal{{post.id}}">
-							    Share
-							  </button>
 							<button type="button" style="background-color: #009999; color:white;" class="btn btn-primary">
 							    <i class="fa fa-eye"> {{post.view_count}}</i>
 							</button>
-							
+							<button type="button" style="background-color: #009999; color:white;" class="btn btn-primary" data-toggle="modal" data-target="#myModal{{post.id}}">
+							    Share
+							  </button>
 
 							  <!-- The Modal -->
 							  <div class="modal fade" id="myModal{{post.id}}">
@@ -224,6 +223,7 @@
 							      </div>
 							    </div>
 							  </div>
+
 							  {% if user.is_authenticated %}
 							  <a type = "button" class="btn messagemodel" data-toggle="modal" data-target="#messagemodel{{post.id}}" >message</a>
 							  {% endif %}
@@ -256,6 +256,7 @@
 							      </div>
 							    </div>
 							  </div>
+							  
 
 	          			<div class="row mt-4">
           				{% for p in photo %}
@@ -311,6 +312,7 @@
 	    			<div class="card-body">
 	    				<div class="tab-content" id="myTabContentMD">
                 			<div class="tab-pane fade show " id="disc-md" role="tabpanel" aria-labelledby="disc-tab-md">
+                				<strong>{{post.title}}</strong>
                 				<p>{{post.descriptions|safe}}</p>
                 			</div>
 			                <div class="tab-pane show active" id="review-md" role="tabpanel" aria-labelledby="review-tab-md">
@@ -339,7 +341,7 @@
 						                <div style="width: 100%;">{{form.comment}}</div>
 						            </fieldset>
 						            <div class="form-group">
-						                <button class="btn btn-lg btn-primary text-uppercase" style="background-color: #009999;" type="submit">Comment</button><br>
+						                <button class="btn btn-primary" style="background-color: #009999;" type="submit">Comment</button><br>
 						            </div>
 						        </form>
 						        <a href="{% url 'feed:comment_list' post.id %}">see more -></a>
@@ -361,6 +363,7 @@
 	</div>
 	    
 </div>
+
 {% endblock content %}
 {% block jsfiles %}
 <script>
@@ -491,7 +494,7 @@ $(".wish").click(function (e) {
 </script>
 
 <script type="text/javascript">
-$(document).off().on('submit','#messageform',function(e){
+$(document).on('submit','#messageform',function(e){
 	var postid = $(this).attr('data-postid')
         e.preventDefault();
         $.ajax({

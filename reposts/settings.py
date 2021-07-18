@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'users',
     'ckeditor',
     'taggit',
+    'notifications',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -155,10 +156,8 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = "spaceairoinfo@gmail.com"
-EMAIL_HOST_PASSWORD = "spaceairoinfo@00001"
-#EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
-#EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -171,3 +170,6 @@ CKEDITOR_CONFIGS = {
         'width': '100%'
     },
 }
+
+DJANGO_NOTIFICATIONS_CONFIG = { 'USE_JSONFIELD': True}
+

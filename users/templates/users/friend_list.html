@@ -12,8 +12,12 @@
           <a href="{% url 'users:profile_v' user_p.id %}">
             <img src="{{ user_p.image.url }}"  class="rounded mr-2" width="40"height="40"  alt=""/></a>
           <a class="text-dark" href="{% url 'users:profile_v' user_p.id %}"><b>{{ user_p }}</b></a>
-          <small><a class="btn btn-danger float-right"  href="{% url 'users:delete_friend' user_p.id %}">UnFriend</a></small>
+          {% if user_p in request.user.profile.friends.all %}
+          <small><a class="btn btn-danger float-right"  href="{% url 'users:delete_friend' user_p.id %}">unfollow</a></small>
+          {% else %}
+          <small><a class="btn btn-primary float-right"  href="{% url 'users:add_friends' user_p.id %}">follow</a></small>
           <br /><br />
+          {% endif %}<br><br>
           {% endfor %}
         </div>
       </div>

@@ -11,7 +11,7 @@ from django.views.generic import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 import json
 from django.forms import modelformset_factory
-
+from notifications.signals import notify
 from django import template
 User = get_user_model()
 
@@ -23,19 +23,30 @@ def range(min =5):
 # Create your views here.
 class indexwork():
 	def catagories(self):
-		catlist = ['agriculture','pets','architecture','arts','transport','education','trading','books','charity','energy','entertainment',
-		'games','marketing','advertising','manufacturing','fashion','human','resources','photography','property','science','spiritual','technology',
-		'websites',
-		'app']
+		catlist = ['agriculture','foods','organic','agroproducts','health','sports','fitness','yoga','pets','architecture','arts','transport','car','motor','education','tutorials','trading','books','charity','energy','entertainment',
+		'games','smart home','wearable','marketing','advertising','manufacturing','fashion','clothes','footwear','watches','makeup','human','resources','photography','property','science','technology',
+		'websites','app','software']
 		return catlist
+	def subcatagories(self,cate):
+		self.cate = cate
+		if self.cate == fashion:
+			subcat = []
 
-	def followers(self,user):
+
+	def followerscount(self,user):
 		friend_count=0
 		user_list = Profile.objects.all() # take all profile to find the number of followers
 		for ul in user_list:
 			if ul.friends.filter(user=user): # check the followers
 				friend_count +=1
 		return friend_count
+	def followers(self,user):
+		follower =[]
+		user_list = Profile.objects.all()
+		for ul in user_list:
+			if ul.friends.filter(user= user):
+				follower.append(ul)
+		return follower
 
 	def postlist_filter_byfeed(self,p,post,request):
 		frind_post = p.friends.all() #friends list of user
@@ -74,7 +85,7 @@ def index(request):
 	if request.user.is_authenticated:
 		post_count = Post.objects.filter(user_name=request.user) #for total post.count of user
 		p = request.user.profile #user profile for frindlist
-		follower = ind.followers(request.user)# indexclass
+		follower = ind.followerscount(request.user)# indexclass
 		postlist = ind.postlist_filter_byfeed(p,post,request)# index class
 		print(postlist)
 
@@ -86,6 +97,10 @@ def index(request):
 def create_post(request):
 	ind = indexwork()
 	user = request.user
+	prolist = user.profile.friends.all()
+	friendlist =[]
+	for pro in prolist:
+		friendlist.append(pro.user)
 	if request.method == 'POST':
 		p_form = NewPostForm(request.POST)
 		i_form = NewPostImage(request.POST, request.FILES)
@@ -101,7 +116,8 @@ def create_post(request):
 				if f:
 					photo = PostImages(Imgtitle=p_obj, pimages=f)
 					photo.save()
-			messages.success(request,"Yeeew, check it out on the home page!")
+			messages.success(request,"ah success")
+			notify.send(user,recipient=friendlist,verb="post a new advertising",target=p_obj)
 			return redirect("users:dashboard")
 	else:
 		p_form = NewPostForm()

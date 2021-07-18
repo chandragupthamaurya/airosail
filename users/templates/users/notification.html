@@ -27,8 +27,43 @@
 					{% endfor %}
 				</div>
 				</div>
-			</div>			
+				<div class="row">
+					<div class="col-md-12">
+						{% for n in note %}
+						<div class="row pl-3">
+							<div class="col-md-11 del{{n.id}}" >
+								<a href="{% url 'users:profile_v' n.actor.id %}"> 
+		                  		<img src="{{ n.actor.profile.image.url }}" class="rounded mr-2" width="50" height="50" alt=""/>
+		                		</a>
+							<b>{{n.actor}}</b><a href=""> {{n.verb}}</a><br>
+							<small>{{n.timestamp}}</small><a  type="button" class="delnote" id='{{n.id}}'><i class="fa fa-trash float-right" style="font-size: 18px;"></i></a>
+							<hr>
+							</div>
+						</div>
+						{% endfor %}
+					</div>
+				</div>		
 		</div>
 	</div>
+	</div>
 </div>
+</div>
+{% block jsfiles %}
+<script type="text/javascript">
+	$(".delnote").off().click(function(e){
+		var noteid = this.id
+		e.preventDefault();
+		$.ajax({
+			method:"GET",
+			url: "{% url 'users:delnote' %}",
+			data:{'noteid': noteid},
+
+			success:function(response){
+				$('.del'+noteid).remove()
+			},
+		});
+	});
+</script>
+{% endblock jsfiles %}
 {% endblock content %}
+

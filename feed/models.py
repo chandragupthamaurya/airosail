@@ -38,7 +38,7 @@ class PostViews(models.Model):
 	post = models.ForeignKey(Post,related_name='pview' ,on_delete=models.CASCADE)
 
 	def __str__(self):
-		return '{0} in {1} post',format(self.IPAddres,self.post.title)
+		return '%r in %r post'%(self.IPAddres,self.post.title)
 
 class comments(models.Model):
 	post = models.ForeignKey(Post,related_name='details',on_delete=models.CASCADE)
