@@ -188,7 +188,6 @@ def postdetails(request,id):
 		form = NewCommentForm(request.POST)
 		if form.is_valid():
 			reply_id = request.POST.get('reply_id')
-			print(reply_id)
 			reply_com = None
 			if reply_id:
 				reply_com = comments.objects.get(id = reply_id)
@@ -244,7 +243,7 @@ def changeimage(request,imgid,postid,value):
 
 def comment_list(request,id):
 	post = Post.objects.get(id=id)
-	comment = comments.objects.filter(post=post, reply= None).order_by('-id')
+	comment = comments.objects.filter(post=post, reply= None).order_by('-comment_date')
 	if request.method == 'POST':
 		form = NewCommentForm(request.POST)
 		if form.is_valid():
