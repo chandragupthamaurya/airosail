@@ -30,7 +30,7 @@ SECRET_KEY = os.getenv("SECRET_KEY",get_random_secret_key())
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG","False") == "True"
 
-ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS","156.67.218.171,airosial.com,www.airosial.com,127.0.0.1").split(",")
+ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS","156.67.218.171,airosail.com,www.airosail.com,127.0.0.1").split(",")
 
 # Application definition
 
@@ -147,7 +147,7 @@ LOGIN_REDIRECT_URL = 'users:dashboard'
 LOGIN_URL = 'feed:index'
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR,'static')
 STATICFILES_DIRS = (os.path.join('static'),)
 
 MEDIA_URL = '/media/'
