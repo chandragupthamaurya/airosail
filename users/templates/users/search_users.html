@@ -24,6 +24,7 @@
                 <a class="text-dark" href="{% url 'users:profile_v' user_p.profile.id %}"><b>{{ user_p }}</b></a>
                 <p><strong>Profile :</strong>{{user_p.profile.profile_type}}</p>
                <p><strong>Bio:</strong>{{user_p.profile.bio}}</p>
+               {% if user.is_authenticaded %}
                {% if user_p.profile not in request.user.profile.friends.all %}
                 <small class="float-right">
                   <a class="btn btn-primary mr-2" href="{% url 'users:add_friends' user_p.id %}">follow</a>
@@ -31,6 +32,11 @@
                 {% else %}
                 <small class="float-right">
                   <a class="btn btn-danger mr-2" href="{% url 'users:delete_friend' user_p.id %}">Unfollow</a>
+                </small>
+                {% endif %}
+                {% else %}
+                <small class="float-right">
+                  <a class="btn btn-primary mr-2" href="{% url 'users:login' %}">Login</a>
                 </small>
                 {% endif %}
               </div>

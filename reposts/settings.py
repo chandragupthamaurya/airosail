@@ -29,9 +29,9 @@ SECRET_KEY = (Oauth.SECRET_KEY)
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = (Oauth.DEBUG)
+DEBUG = Oauth.DEBUG
 
-ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS","127.0.0.1,156.67.218.171,airosail.com,www.airosail.com").split(",")
+ALLOWED_HOSTS = ["127.0.0.1","localhost","156.67.218.171","airosail.com","www.airosail.com"]
 
 # Application definition
 
@@ -148,7 +148,10 @@ LOGIN_REDIRECT_URL = 'users:dashboard'
 LOGIN_URL = 'feed:index'
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
+if DEBUG:
+    STATIC_ROOT = '/static/'
+else:
+    STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
 STATICFILES_DIRS = (os.path.join('static'),)
 
 MEDIA_URL = '/media/'

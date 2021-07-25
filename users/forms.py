@@ -5,29 +5,6 @@ from django.forms import ValidationError
 from .models import Profile,Messages
 from ckeditor.widgets import CKEditorWidget
 
-"""feed_choose=(
-	('agriculture','agriculture'),
-	('animals','animals'),
-	('architecture','architecture'),
-	('arts','arts'),
-	('transport','transport'),
-	('banking','banking'),
-	('books','books'),
-	('charity','charity'),
-	('energy','energy'),
-	('entertainment','entertainment'),
-	('games','games'),
-	('marketing','marketing'),
-	('manufacturing','manufacturing'),
-	('lifestyle','lifestyle'),
-	('human resources','human resources'),
-	('people','people'),
-	('photography','photography'),
-	('property','property'),
-	('science','science'),
-	('spiritual','spiritual'),
-	('technologly','technologly'),
-	)"""
 class registerForm(UserCreationForm):
 	email = forms.EmailField(required = True, error_messages={'exists':'this already exists!'})
 	username = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'company name/username'}))

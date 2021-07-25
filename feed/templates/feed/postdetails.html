@@ -162,7 +162,7 @@
 	          			<h5 style="color: orange;">${{post.price}}</h5>{% endif %}
 	          			<br>
 	          			<p><strong>Discription: </strong>{{post.descriptions |truncatechars:150|safe}}</p>
-	          			<p><strong>Post type : </strong>{{post.post_type|truncatewords:5}}</p>
+	          			<p><strong>Post type : </strong>{{post.post_type|truncatechars:50}}</p>
 
 
 	          			 <!-- like button-->
