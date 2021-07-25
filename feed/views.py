@@ -87,7 +87,6 @@ def index(request):
 		p = request.user.profile #user profile for frindlist
 		follower = ind.followerscount(request.user)# indexclass
 		postlist = ind.postlist_filter_byfeed(p,post,request)# index class
-		print(postlist)
 
 	context = {'post':postlist,'u':p,'post_count':post_count.count,'follower':follower,'cat':incat}
 	return render(request,'feed/index.html',context)
