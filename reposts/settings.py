@@ -177,11 +177,8 @@ CKEDITOR_CONFIGS = {
             ['Link', 'Unlink'],
             ['RemoveFormat', 'Source']
         ]
-
-        
     },
 }
-CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
 
 DJANGO_NOTIFICATIONS_CONFIG = { 'USE_JSONFIELD': True}
 
