@@ -29,7 +29,7 @@ SECRET_KEY = (Oauth.SECRET_KEY)
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = Oauth.DEBUG
+DEBUG = (Oauth.DEBUG)
 
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS","127.0.0.1,156.67.218.171,airosail.com,www.airosail.com").split(",")
 
@@ -169,9 +169,19 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # extra configs
 CKEDITOR_CONFIGS = {
     'default': {
-        'width': '100%'
+        'width': '100%',
+        'toolbar': 'Custom',
+        'toolbar_Custom': [
+            ['Bold', 'Italic', 'Underline'],
+            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+            ['Link', 'Unlink'],
+            ['RemoveFormat', 'Source']
+        ]
+
+        
     },
 }
+CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
 
 DJANGO_NOTIFICATIONS_CONFIG = { 'USE_JSONFIELD': True}
 
