@@ -15,7 +15,7 @@
 	</a>
 	{% endif %}
 </div>
-
+{% endfor %}
 <!-- comment -->
 <div class="container">
 	<div class="card card-sigin my-3">
@@ -43,7 +43,9 @@
 						<a class = "del_com" data-comid="{{ detail.id }}" id="com{{ detail.id }}" href="{% url 'feed:del_comment' %}">delete</a>
 				{% endif %}
 				<br><br>
-				<p class="card-text text-dark">{{ detail.comment }}<a class="btn pl-4" data-toggle="collapse" data-target="#comment{{detail.id}}"><i class="fa fa-reply "></i></a></p>
+				<p class="card-text text-dark">{{ detail.comment }}
+					<a class="btn pl-4" data-toggle="collapse" data-target="#comment{{detail.id}}"><i class="fa fa-reply "></i></a>
+				</p>
 				<div id="comment{{detail.id}}" class="collapse">
 						<form class="px-2" method = "POST"  action="" reply_id="{{detail.id}}">
 			    		{% csrf_token %}
@@ -84,6 +86,7 @@
 	            		<button class="btn btn-outline-info text-uppercase" name="submit" type="submit"><i class="fa fa-reply"></i></button>
 	            		<br>
 						</div>
+					</form>
               		</div>
 
 				{% endfor %}
@@ -97,8 +100,7 @@
 			</div>
 		</div>
 	</div>
-</div>
-{% endfor %}
+
 
 {% block jsfiles %}
 <script type="text/javascript">

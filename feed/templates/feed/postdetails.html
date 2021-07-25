@@ -161,8 +161,8 @@
 						{% if post.price != None %}
 	          			<h5 style="color: orange;">${{post.price}}</h5>{% endif %}
 	          			<br>
-	          			<p><strong>Discription:</strong>{{post.descriptions | truncatechars:200|safe}}</p>
-	          			<p><strong>Post type :</strong>{{post.post_type}}</p>
+	          			<p><strong>Discription: </strong>{{post.descriptions |truncatechars:150|safe}}</p>
+	          			<p><strong>Post type : </strong>{{post.post_type|truncatewords:5}}</p>
 
 
 	          			 <!-- like button-->
