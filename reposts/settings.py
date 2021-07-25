@@ -179,6 +179,7 @@ CKEDITOR_CONFIGS = {
         ]
     },
 }
+CKEDITOR_BASEPATH = os.path.join(BASE_DIR,"/static/ckeditor/ckeditor/")
 
 DJANGO_NOTIFICATIONS_CONFIG = { 'USE_JSONFIELD': True}
 

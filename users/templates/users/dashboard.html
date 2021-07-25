@@ -20,21 +20,20 @@
               </div>
             </div>
           </div>
-          <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4"></div>
-          <div class="card-body pt-0 pt-md-4">
+          <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4 "></div>
+          <div class="card-body pt-0 pt-md-4 ">
             <div class="row">
               <div class="col">
                 <div class="card-profile-stats d-flex justify-content-center mt-md-5">
-                  
                     {% if request.user == u %}
-                     <div class="btn-group btn-group-lg">
+                     <div class="img-fluid ">
                         <a type="button" class="btn btn-outline-success" href="{% url 'users:friend_list' 'following' %}">{{ u.profile.friends.count }} Following</a>
                         <a type="button" class="btn btn-outline-success" href="{% url 'users:friend_list' 'follower' %}">{{follower}} Followers</a>
-                        <button type="button" class="btn btn-outline-success">{{post_count}} posts</button>
+                        <a type="button" class="btn btn-outline-success">{{post_count}} posts</a>
                         <a type="button" class="btn btn-outline-success" href="{% url 'feed:wishlist' %}">Wishlist</a>
                       </div> 
                       {% else %}
-                       <div class="btn-group btn-group-lg">
+                       <div class="img-fluid">
                           <button type="button" class="btn btn-outline-success">{{ u.profile.friends.count }}Following</button>
                           <button type="button" class="btn btn-outline-success">{{follower}}Followers</button>
                           <button type="button" class="btn btn-outline-success">{{post_count}}posts</button>
@@ -74,22 +73,22 @@
             <h3>Details</h3><hr>
             <div class="pl-4">
               <div class="row mb-3">
-                <i><b>Name:</b> {{u}}</i>
+                <i class="img-fluid"><b>Name:</b> {{u}}</i>
               </div>
               <div class="row mb-3">
-                <i><b>phone:</b> {{u.profile.phone}}</i>
+                <i class="img-fluid"><b>phone:</b> {{u.profile.phone}}</i>
               </div>
               <div class="row mb-3">
-                <i><b>Email:</b> {{u.email}}</i>
+                <i class="img-fluid"><b>Email:</b> {{u.email}}</i>
               </div>
               <div class="row mb-3">
-                <i><b>Address: </b> {{u.profile.address}}</i>
+                <i class="img-fluid"><b>Address: </b> {{u.profile.address}}</i>
               </div>
               <div class="row mb-3">
-                <i><b>state: </b> {{u.profile.state}}</i>
+                <i class="img-fluid"><b>state: </b> {{u.profile.state}}</i>
               </div>
               <div class="row mb-3">
-                <i><b>country: </b> {{u.profile.country}}</i>
+                <i class="img-fluid"><b>country: </b> {{u.profile.country}}</i>
               </div>
             </div>
           </div>
