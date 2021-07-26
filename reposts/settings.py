@@ -83,28 +83,25 @@ WSGI_APPLICATION = 'reposts.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-if os.getenv("DATABASES_URL","") != "":
-    r.urlparse(os.environ.get("DATABASES_URL"))
-    DATABASES = {
-        "default":{
-            'ENGINE':"django.db.backends.postgresql_psycopg2",
-            "NAME":os.path.relpath(r.path,"/"),
-            "USER": r.username,
-            "PASSWORD":r.password,
-            "HOST":r.hostname,
-            "PORT":r.port,
-            "OPTIONS":{"sslmode":"require"},
-
-        }
-    }
-else:
+if DEBUG:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
-
+else:
+    DATABASES = {
+        "default":{
+            'ENGINE':"django.db.backends.postgresql_psycopg2",
+            "NAME":Oauth.DB_NAME,
+            "USER": Oauth.DB_USER,
+            "PASSWORD":Oauth.DB_PASSWORD,
+            "HOST":'localhost',
+            "PORT":'',
+            
+        }
+    }
 
 
 # Password validation
@@ -148,10 +145,7 @@ LOGIN_REDIRECT_URL = 'users:dashboard'
 LOGIN_URL = 'feed:index'
 
 STATIC_URL = '/static/'
-if DEBUG:
-    STATIC_ROOT = '/static/'
-else:
-    STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
 STATICFILES_DIRS = (os.path.join('static'),)
 
 MEDIA_URL = '/media/'
