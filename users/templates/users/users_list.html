@@ -21,7 +21,6 @@
 
               </div>
         </div>
-        {% if user.is_authenticaded %}
           {% if user_p not in request.user.profile.friends.all %}
           <small class="float-right">
             <a class="btn btn-primary mr-2" href="{% url 'users:add_friends' user_p.id %}">follow</a>
@@ -32,7 +31,6 @@
           </small>
           {% endif %}
           <br /><br />
-          {% endif %}
           {% endif %}
           {% endfor %}
         </div>

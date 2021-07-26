@@ -110,7 +110,6 @@ def editprofile(request):
         p_form = ProfileUpdateForm(data = request.POST, files=request.FILES, instance=request.user.profile)
         cat = request.POST.getlist('check')
         c = ",".join(cat)
-        print(c)
         if u_form.is_valid() and p_form.is_valid():
             u_form.save()
             pro_obj = p_form.save()
@@ -195,12 +194,12 @@ def delete_friend(request,id):
     return redirect('users:profile_v', id=user2.id)
 
 @login_required
-def friend_list(request,value):
+def friend_list(request,value): #count the number of follower
     if value == 'following':
         p = request.user.profile
         friends = p.friends.all()
     else:
-        friends = ind.followers(request.user)
+        friends = ind.followers(request.user) #class to get count and follower
     context ={ 'friends':friends}
     return render(request,'users/friend_list.html',context)
 
@@ -218,7 +217,7 @@ def users_list(request):
     context={"post_feed":post_feed}
     return render(request,'users/users_list.html',context)
 
-def contact(request):
+def contact(request):               #contact form
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
@@ -241,7 +240,7 @@ def contact(request):
     context={'form':form}
     return render(request,'users/contact.html',context)
 @login_required
-def notification(request):
+def notification(request):    #notification tab to send notif to user
     friend_req = FriendRequest.objects.filter(to_user = request.user)
     unread = request.user.notifications.unread()
     read = request.user.notifications.read()
@@ -257,7 +256,7 @@ def notification(request):
     return render(request,'users/notification.html',context)
 
 @login_required
-def delnote(request):
+def delnote(request):                         #delete the notification
     noteid = request.GET.get('noteid')
     note = request.user.notifications.get(id=noteid)
     if note:
@@ -265,8 +264,9 @@ def delnote(request):
         return HttpResponse('success',True)
     else:
         return HttpResponse('unsuccess',False)
+
 @login_required
-def message(request):
+def message(request):               #send the message form the post 
     post_id = request.POST.get('postid')
     post = Post.objects.get(id = post_id )
     if request.method== 'POST':
@@ -278,12 +278,11 @@ def message(request):
         return HttpResponse('unsuccess',False)
 
 @login_required
-def msg_user(request):
+def msg_user(request):                # send message to user from inboxmessage
     user_id = request.POST.get('user_id')
     user = User.objects.get(id=user_id)
     if request.method == 'POST':
         message = request.POST.get('message')
-        print(message)
         m = Messages.objects.create(sender= request.user,reciver=user,message = message)
         msg = m.message
     resp = {'message':msg}
@@ -293,7 +292,7 @@ def msg_user(request):
 
         
 @login_required
-def inboxmessage(request):
+def inboxmessage(request):   #message tab in index
     wish = ind.wishlistdata(request)
     inbox = Messages.objects.filter(reciver=request.user).order_by('-msg_date')
     sendbox = Messages.objects.filter(sender= request.user).order_by('-msg_date')
@@ -314,7 +313,7 @@ def inboxmessage(request):
     return render(request,'users/messages.html',context)
 
 @login_required
-def updatemsg(request):
+def updatemsg(request):                # it update message countinuously 6000(microsec)
     messages = Messages.objects.all().order_by('-msg_date')
     updateid = request.GET.get('updateid')
     prvowner = 0
@@ -326,7 +325,6 @@ def updatemsg(request):
                 sender = str(omsg.sender)
                 omsglist[omsg.msg_date.strftime("%m/%d/%Y,%H:%M:%S")] = [omsg.message,sender,omsg.sender.id]
         prvowner = len(ownermsg)
-        print(prvowner)
         msglistsort = sorted(omsglist.items(),reverse = True)
         response = json.dumps(msglistsort)
         return HttpResponse(response,content_type="application/json")
@@ -361,7 +359,6 @@ def search(request):
     user_list = User.objects.filter(username__icontains=query)
     pro_list= Profile.objects.filter(state__icontains=query)|Profile.objects.filter(country__icontains=query)
     post_list =Post.objects.filter(title__icontains=query)
-    print(post_list)
     for u in user_list:
         if u not in object_list:
             object_list.append(u)
@@ -371,6 +368,5 @@ def search(request):
     for pro in pro_list:
         if pro not in object_list:
             object_list.append(pro.user)
-    print(object_list)    
     context ={'users': object_list,'post':post_list}
     return render(request, "users/search_users.html", context)
