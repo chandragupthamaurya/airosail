@@ -45,7 +45,7 @@ def register(request):
                 new_user = form.save()
                 auth_login(request,new_user)
                 subject = "welcome to SpaceAiro"
-                message = render_to_string('emails/welcome.html')
+                message = render_to_string('emails/message.txt')
                 email_from = settings.EMAIL_HOST_USER 
                 recipient_list = [request.user.email, ] 
                 send_mail( subject, message, email_from, recipient_list )
