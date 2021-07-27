@@ -231,8 +231,6 @@ def changeimage(request,imgid,postid,value):
 	photo = PostImages.objects.get(id = imgid)
 	if value == 'change':
 		file = request.FILES['images']
-		print(photo.pimages)
-		print(file)
 		photo.pimages = file
 		photo.save()
 	else:

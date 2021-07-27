@@ -5,7 +5,10 @@ from ckeditor.fields import RichTextField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from taggit.managers import TaggableManager
 # Create your models here.
-
+currency_type=(
+	('INR ₹','INR'),
+	('USD $','USD'),
+)
 def post_pic(instance,filename):
 	return 'postpics/{0}/{1}'.format(instance.id,filename)
 
@@ -14,6 +17,7 @@ class Post(models.Model):
 	descriptions =RichTextField(null=True,blank =True)
 	date_posted = models.DateTimeField(auto_now_add=True)
 	user_name = models.ForeignKey(User,on_delete=models.CASCADE)
+	currency = models.CharField(choices=currency_type,default='INR',max_length=6)
 	price = models.IntegerField(null= True,blank=True)
 	buyurl = models.URLField(max_length=255,blank=True,null=True)
 	tags =TaggableManager(blank=True)

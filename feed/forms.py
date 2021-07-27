@@ -8,7 +8,7 @@ class NewPostForm(forms.ModelForm):
 
 	class Meta:
 		model = Post
-		fields = ['title','descriptions', 'price', 'buyurl','tags',]
+		fields = ['title','descriptions','currency', 'price', 'buyurl','tags',]
 		
 class NewCommentForm(forms.ModelForm):
 

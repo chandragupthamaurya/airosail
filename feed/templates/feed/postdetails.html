@@ -87,6 +87,7 @@
   display: flex;
   z-index: 0;
 }
+.des>p{margin-bottom: 0;}
 
 </style>
 <div class="container">
@@ -159,9 +160,11 @@
 							</div>
 						</div><br>
 						{% if post.price != None %}
-	          			<h5 style="color: orange;">${{post.price}}</h5>{% endif %}
+	          			<h5 >{{post.currency}}<span style="color: orange;"> {{post.price}}</span> </h5>{% endif %}
 	          			<br>
-	          			<p><strong>Discription: </strong>{{post.descriptions |truncatechars:150|safe}}</p>
+	          			<div class="des mb-2">
+	          				<p><strong>Discription: </strong>{{post.descriptions |truncatechars:150|safe}}</p>
+	          			</div>
 	          			<p><strong>Post type : </strong>{{post.post_type|truncatechars:50}}</p>
 
 
@@ -311,7 +314,7 @@
 	    		<div class="card card-signin my-5">
 	    			<div class="card-body">
 	    				<div class="tab-content" id="myTabContentMD">
-                			<div class="tab-pane fade show " id="disc-md" role="tabpanel" aria-labelledby="disc-tab-md">
+                			<div class="tab-pane fade show des " id="disc-md" role="tabpanel" aria-labelledby="disc-tab-md">
                 				<strong>{{post.title}}</strong>
                 				<p>{{post.descriptions|safe}}</p>
                 			</div>
