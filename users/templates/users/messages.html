@@ -37,7 +37,7 @@ div.scroll {
         text-align: ;
       }
 
-
+.statusbtn{display: none;}
 </style>
 	
 <div class="container-fluid">
@@ -67,19 +67,16 @@ div.scroll {
 	    			<div class="card-body">
 			            <h1>Messages</h1>
 			            {% for send in s %}
-<!-- it contains reply button and delete button-->
 						{% if send.reciver != request.user %}
 						<div  id="del{{ send.reciver.id }}" class="upmsg">
 							<div class="msgcss sendbtn" name="{{send.reciver}}" id="{{send.reciver.id}}">
 								<img src="{{send.reciver.profile.image.url}}" class="rounded-circle" width="50" height="50" alt="">
 								<b>{{send.reciver}}</b><br>
 				            <i class="sendmsg">{{send.message}}</i>
-
-
+<!-- it contains  and delete button-->
 				            <a class = "del_msg float-right" data-msgid="{{ send.reciver.id }}"  href="{% url 'users:del_message' %}">
 				            <i class="fa fa-trash"></i></a><br>
-	<!-- it is the model for reply button-->
-				            
+<!-- it is the model for delete button-->
 				        	</div>
 				        </div>
 				        {% else %}
@@ -89,10 +86,10 @@ div.scroll {
 								<b>{{send.sender}}</b><br>
 				            <i class="sendmsg">{{send.message}}</i>
 
-
+<!-- it contains  and delete button-->
 				            <a class = "del_msg float-right" data-msgid="{{ send.sender.id }}"  href="{% url 'users:del_message' %}">
 				            <i class="fa fa-trash"></i></a><br>
-	<!-- it is the model for reply button-->
+<!-- it is the model for Delete button-->
 				            
 				        	</div>
 				        </div>
@@ -102,6 +99,8 @@ div.scroll {
 			        </div>
 			    </div>
 			</div>
+<!-- it is the model for wish-->
+
 			{% if wish %}
 			<div class="col-md-4">
 				<div class="card card-signin my-5">
@@ -193,14 +192,6 @@ $(document).off().on('submit','#messageform',function(e){
 	function updatemsg(){
 			var updateid = $("#messageform").attr('data-postid');
 			var name = $('.chat span').attr('name');
-			if(updateid == ''){
-				$.getJSON("{% url 'users:updatemsg' %}",function(rowz){
-					console.log(rowz)
-					for(var i = 0;i < 1;i++){
-					$('.upmsg').append()
-					}
-				});
-			}else{
 			$.getJSON("{% url 'users:updatemsg' %}",{'updateid':updateid},function(rowz){
 			var prev = $('.div2').attr('data');
 			if(prev != rowz.length){
@@ -216,9 +207,28 @@ $(document).off().on('submit','#messageform',function(e){
 				$('.div2').attr('data',rowz.length);
 			}
 			});
+			$.getJSON("{% url 'users:updatemsguser' %}",function(rowz){
+				var userlist =[];
+				var colledlist =[];
+				$('.sendbtn b').each(function(){
+					var list = $(this).html();
+					userlist.push(list);
+				});
+				for(var i=0; i < rowz.length; i++){
+					if(updateid != rowz[i][1][1]){
+						if(userlist.includes(rowz[i][1][0])){
+							$('.sendbtn b').each(function(){
+								if($(this).html() == rowz[i][1][0]){
+								}
+							}); 
+						}
+						else{
+						$('.upmsg').append('<div class="msgcss sendbtn" name='+rowz[i][1][0]+' id='+rowz[i][1][1]+'><b>'+rowz[i][1][0]+'</b><br><i class="sendmsg">'+rowz[i][1][2]+ '</div>')
+						}
+					}
+				}
+			});
 			setTimeout('updatemsg()',6000);
-			}
-			
 		}
 	$(document).ready(function(){
 		$.ajaxSetup({cache:false});

@@ -44,12 +44,15 @@ def register(request):
             if form.is_valid():
                 new_user = form.save()
                 auth_login(request,new_user)
-                subject = "welcome to SpaceAiro"
+                subject = "Welcome to SpaceAiro"
                 message = render_to_string('emails/message.txt')
                 email_from = settings.EMAIL_HOST_USER 
                 recipient_list = [request.user.email, ] 
-                send_mail( subject, message, email_from, recipient_list )
-                return redirect('users:editprofile' )
+                try:
+                    send_mail( subject, message, email_from, recipient_list )
+                    return redirect('users:editprofile' )
+                except:
+                    return redirect('users:editprofile')
         context = {'form':form}
         return render(request,'registration/register.html',context)
 
@@ -228,7 +231,7 @@ def contact(request):               #contact form
             'message' : form.cleaned_data['content'],
             }
             email_from = form.cleaned_data['email']
-            email_to = settings.EMAIL_HOST_USER 
+            email_to = [settings.EMAIL_HOST_USER,] 
             message = "\n".join(body.values())
             try:
                 send_mail(subject, message,email_from,email_to) 
@@ -316,30 +319,31 @@ def inboxmessage(request):   #message tab in index
 def updatemsg(request):                # it update message countinuously 6000(microsec)
     messages = Messages.objects.all().order_by('-msg_date')
     updateid = request.GET.get('updateid')
-    prvowner = 0
-    if not updateid:
-        omsglist ={}
-        ownermsg = Messages.objects.filter(reciver= request.user)
-        if prvowner < len(ownermsg):
-            for omsg in ownermsg:
-                sender = str(omsg.sender)
-                omsglist[omsg.msg_date.strftime("%m/%d/%Y,%H:%M:%S")] = [omsg.message,sender,omsg.sender.id]
-        prvowner = len(ownermsg)
-        msglistsort = sorted(omsglist.items(),reverse = True)
-        response = json.dumps(msglistsort)
-        return HttpResponse(response,content_type="application/json")
-    else:
-        msglist = {}
-        user = User.objects.get(id = updateid)
-        inbox  = Messages.objects.filter(sender = user,reciver=request.user)
-        sendbox = Messages.objects.filter(reciver = user, sender= request.user)
-        for i in inbox:
-            msglist[i.msg_date.strftime("%m/%d/%Y,%H:%M:%S")] = model_to_dict(i)
-        for s in sendbox:
-            msglist[s.msg_date.strftime("%m/%d/%Y,%H:%M:%S")] = model_to_dict(s)
-        msglistsort = sorted(msglist.items())
-        response = json.dumps(msglistsort)
-        return HttpResponse(response,content_type="application/json")
+    msglist = {}
+    user = User.objects.get(id = updateid)
+    inbox  = Messages.objects.filter(sender = user,reciver=request.user)
+    sendbox = Messages.objects.filter(reciver = user, sender= request.user)
+    for i in inbox:
+        msglist[i.msg_date.strftime("%m/%d/%Y,%H:%M:%S")] = model_to_dict(i)
+    for s in sendbox:
+        msglist[s.msg_date.strftime("%m/%d/%Y,%H:%M:%S")] = model_to_dict(s)
+    msglistsort = sorted(msglist.items())
+    response = json.dumps(msglistsort)
+    return HttpResponse(response,content_type="application/json")
+
+@login_required
+def updatemsguser(request):
+    messages = Messages.objects.all().order_by('-msg_date')
+    updateid = request.GET.get('updateid')
+    msglist = {}
+    receviedmsg = Messages.objects.filter(reciver = request.user)
+    for revmsg in receviedmsg:
+        sen = revmsg.sender.username
+        msgvalue = [sen,revmsg.sender.id,revmsg.message]
+        msglist[revmsg.msg_date.strftime("%m%d%Y,%H:%M:%S")] = msgvalue
+    msglistsort = sorted(msglist.items())
+    response = json.dumps(msglistsort)
+    return HttpResponse(response,content_type="application/json")
 
 
 @login_required
