@@ -24,6 +24,8 @@ class Post(models.Model):
 	post_type = models.CharField(max_length=300,blank=True,null=True)
 	likes = models.ManyToManyField(User,blank=True,related_name='like')
 	wishlist = models.ManyToManyField(User,blank=True,related_name='wish')
+	timer = models.DateTimeField(null=True,blank=True)
+	percentage = models.IntegerField(null=True,blank=True)
 
 	@property
 	def view_count(self):
@@ -59,7 +61,4 @@ class Rating(models.Model):
 		MaxValueValidator(5),
 		MinValueValidator(0)
 		])
-
-
-
 

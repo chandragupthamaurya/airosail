@@ -20,6 +20,7 @@ import notifications
 from django.forms.models import model_to_dict 
 import json
 from feed.views import indexwork
+from django.utils.html import strip_tags
 
 User = get_user_model()
  
@@ -45,11 +46,12 @@ def register(request):
                 new_user = form.save()
                 auth_login(request,new_user)
                 subject = "Welcome to SpaceAiro"
-                message = render_to_string('emails/message.txt')
+                html_message = render_to_string('emails/welcome.html',{'context':request.user})
+                plainmessage = strip_tags(html_message)
                 email_from = settings.EMAIL_HOST_USER 
                 recipient_list = [request.user.email, ] 
                 try:
-                    send_mail( subject, message, email_from, recipient_list )
+                    send_mail( subject, plainmessage, email_from, recipient_list ,html_message=html_message )
                     return redirect('users:editprofile' )
                 except:
                     return redirect('users:editprofile')
@@ -367,8 +369,8 @@ def search(request):
         if u not in object_list:
             object_list.append(u)
     for p in post_list:
-        if p not in object_list:
-            object_list.append(p)
+        if p.user_name not in object_list:
+            object_list.append(p.user_name)
     for pro in pro_list:
         if pro not in object_list:
             object_list.append(pro.user)

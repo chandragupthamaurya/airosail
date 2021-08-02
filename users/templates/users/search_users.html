@@ -4,9 +4,7 @@
   <input class="form-control mt-4 mb-4" id="myInput" type="text" placeholder="Filter ..">
   <div class="row">
     <div class="col-md-8" style="padding-left: 10%;">
-      {% if not users or post %}
-      <br /><br />
-      <h2><i></i></h2>
+      {% if not users%}
       {% else %}
 
 
@@ -48,12 +46,10 @@
 </div>
 </div>
 {% endif %}
-{% if not post %}
-{% else %}
+{% if post %}
 <div class="card card-signin filter">
         <div class="card-body">
         {% for post in post %}
-          {% if request.user != post.user_name %}
           <div class="row pb-2">
             <div class="col-md-auto">
                 {% for p in post.img.all %}
@@ -70,13 +66,12 @@
                 <i><b>country</b>{{post.user_name.profile.country|title}} </i>             
               </div>
             </div>
-            {% endif %}
         {% endfor %}
         </div><hr>
       </div>
-      {% endif %}
+{% else %}
+{% endif %}
     </div>
-
 
     {% if user.is_authenticated %}
     <div class="col-md-3 ">

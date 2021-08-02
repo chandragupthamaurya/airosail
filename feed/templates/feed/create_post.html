@@ -24,43 +24,96 @@ input[type="checkbox"]{
   max-height: 200px;
   overflow-y: auto;
 }
+label,input[name=timer],input[name=percentage]{
+  width: 40%;
+  display: inline;
+}
+label,select[name=currency]{
+  width:10%;
+  display: inline;
+}
+input[name=price]{
+  width:75%;
+}
+label[for=id_buyurl]:before {
+
+  content: "";
+  clear: right;
+  display: block;
+}
+input[name=images]{
+  width: 50%;
+}
+@media(max-width: 1000px){
+label[for=id_percentage],label[for=id_price]:before{
+    content: "";
+    clear: right;
+    display: block;
+  }
+}
 </style>
 <div class="container my-4">
   <div class="card" style="background-color: lightgrey;">
     <div class="card-body" style="padding-left: 5%;padding-right: 5%;">
-<form method="post" action="{% url 'feed:create_post' %}" enctype="multipart/form-data" >    
-  {% csrf_token %}    
-  {% for field in postForm %}
-  <p>
-    {{ field.label_tag}}<br>
-    {{field}}
-    {% if field.help_text %}
-    <small style='color: grey'>{{field.help_text}}</small>
-    {% endif %}
-    {% for error in field.errors %}
-    <p style='color: red'>{{error}}</p>
-    {% endfor %}
-  </p>  
-  {% endfor %}
-  {{imageform.as_p}}
-  <div class="dropdown">
-<button class="btn btn-secondary dropdown-toggle" type="button" 
-id="sampleDropdownMenu" data-toggle="dropdown">
-categories
-</button>
-<div class="dropdown-menu">
-  {% for c in cat %}
-    <button class="dropdown-item" type="button"> <input type="checkbox" name="check" value="{{c}}">{{c|title}} </button>
-  {% endfor %}
-</div>
-</div><br>
-  <div class=" text-center">
-   <button name="submit" class="btn btn-primary btn-lg" >Launch</button>    
+      <form method="post" action="{% url 'feed:create_post' %}" enctype="multipart/form-data" >    
+        {% csrf_token %}    
+        {% for field in postForm %}
+          {{ field.label_tag}}
+          {{field}}
+          {% if field.help_text %}
+          <small style='color: grey'>{{field.help_text}}</small>
+          {% endif %}
+          {% for error in field.errors %}
+          <p style='color: red'>{{error}}</p>
+          {% endfor %}
+        {% endfor %}<br>
+        <input type="checkbox" name="discount" value="discount" id="id_discount" onclick = "myfunction()" >discount<br>
+        <small style="color:red;"> * If you use the discount the post will automatically deleted after the timer finished but you reach more user *</small>
+          {{imageform.as_p}}
+        <div class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="sampleDropdownMenu" data-toggle="dropdown">categories</button>
+          <div class="dropdown-menu">
+            {% for c in cat %}
+              <button class="dropdown-item" type="button"> <input type="checkbox" name="check" value="{{c}}">{{c|title}} </button>
+            {% endfor %}
+          </div>
+        </div><br>
+        <div class=" text-center">
+            <button name="submit" class="btn btn-primary btn-lg" >Launch</button>    
+        </div>
+      </form>
+    </div>
   </div>
-  </form>
-</div>
-</div>
 </div><br>
+{% block jsfiles %}
+<script type="text/javascript">
 
+$(document).ready(function(){
+  $('label[for=id_timer], input#id_timer').hide();
+  $('label[for=id_percentage], input#id_percentage').hide();
+  $("#id_timer").datetimepicker( {
+      format:'Y-m-d H:i',
+    });
+
+});
+
+
+function myfunction(){
+  if($('#id_discount').attr('checked')){
+  document.getElementById('id_discount').removeAttribute('checked','')
+    $('label[for=id_timer], input#id_timer').hide().val('');
+  $('label[for=id_percentage], input#id_percentage').hide().val('');
+
+  }else{
+  document.getElementById('id_discount').setAttribute('checked','checked')
+  $('label[for=id_timer], input#id_timer').show();
+  $('label[for=id_percentage], input#id_percentage').show();
+  $('small').append('<br>')
+  }
+}
+
+
+</script>
+{% endblock jsfiles %}
 
 {% endblock content %}

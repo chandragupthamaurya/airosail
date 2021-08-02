@@ -55,7 +55,7 @@
               </div>
               {% if request.user == u %}
               <a class="btn btn-info" href="{% url 'users:editprofile' %}">Edit Profile</a>
-              <a class="btn btn-info" href="{% url 'feed:create_post' %}">create post</a>
+              <a class="btn btn-info" href="{% url 'feed:create_post' %}">create Ads</a>
                {% else %}
                {% if button == 'follow' %}
                <a class="btn btn-primary" href="{% url 'users:add_friends' u.id %}">Follow</a>
@@ -117,8 +117,10 @@
                     {% endif %}
                     {% endfor %}
                 </div>
+
           </div>
-            <div class="col-xl-4">
+
+            <div class="col-md-4">
               <div class="card">
                 <div class="card-body">
                   <h4>Activities writes</h4><hr>

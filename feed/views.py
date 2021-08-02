@@ -15,11 +15,15 @@ from notifications.signals import notify
 from django import template
 User = get_user_model()
 
-register =  template.Library()
 
-@register.filter()
-def range(min =5):
-	return range(min)
+postlist = Post.objects.all()
+for d in postlist:
+	if d.timer != None:
+		if d.timer >= d.date_posted:
+			d.delete()
+
+
+
 # Create your views here.
 class indexwork():
 	def catagories(self):
@@ -27,11 +31,11 @@ class indexwork():
 		'games','smart home','wearable','marketing','advertising','manufacturing','fashion','clothes','footwear','watches','makeup','human','resources','photography','property','science','technology',
 		'websites','app','software']
 		return catlist
+
 	def subcatagories(self,cate):
 		self.cate = cate
 		if self.cate == fashion:
 			subcat = []
-
 
 	def followerscount(self,user):
 		friend_count=0
@@ -40,6 +44,7 @@ class indexwork():
 			if ul.friends.filter(user=user): # check the followers
 				friend_count +=1
 		return friend_count
+
 	def followers(self,user):
 		follower =[]
 		user_list = Profile.objects.all()
@@ -64,6 +69,7 @@ class indexwork():
 							postlist.append(i)				
 							break
 		return postlist
+
 	def wishlistdata(self,request):
 		pro= request.user.profile
 		post = Post.objects.all()
@@ -87,7 +93,6 @@ def index(request):
 		p = request.user.profile #user profile for frindlist
 		follower = ind.followerscount(request.user)# indexclass
 		postlist = ind.postlist_filter_byfeed(p,post,request)# index class
-
 	context = {'post':postlist,'u':p,'post_count':post_count.count,'follower':follower,'cat':incat}
 	return render(request,'feed/index.html',context)
 
@@ -116,7 +121,7 @@ def create_post(request):
 					photo = PostImages(Imgtitle=p_obj, pimages=f)
 					photo.save()
 			messages.success(request,"ah success")
-			notify.send(user,recipient=friendlist,verb="post a new advertising",target=p_obj)
+			notify.send(user,recipient=friendlist,verb="post a new product",target=p_obj)
 			return redirect("users:dashboard")
 	else:
 		p_form = NewPostForm()
@@ -356,7 +361,6 @@ def rules(request,value):
 		context={'condition':value}
 	return render(request,'feed/rules.html',context)
 def reports(request,id):
-		
 	return redirect('users:contact')
 def search(request):
 	if request.method == "GET":
