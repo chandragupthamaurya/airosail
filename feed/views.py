@@ -16,6 +16,14 @@ from django import template
 User = get_user_model()
 
 
+postlist = Post.objects.all()
+for d in postlist:
+	if d.timer != None:
+		if d.timer >= d.date_posted:
+			d.delete()
+
+
+
 # Create your views here.
 class indexwork():
 	def catagories(self):
