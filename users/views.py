@@ -45,16 +45,12 @@ def register(request):
             if form.is_valid():
                 new_user = form.save()
                 auth_login(request,new_user)
-                subject = "Welcome to SpaceAiro"
-                html_message = render_to_string('emails/welcome.html',{'context':request.user})
-                plainmessage = strip_tags(html_message)
+                subject = "welcome to SpaceAiro"
+                message = render_to_string('emails/message.txt')
                 email_from = settings.EMAIL_HOST_USER 
                 recipient_list = [request.user.email, ] 
-                try:
-                    send_mail( subject, plainmessage, email_from, recipient_list ,html_message=html_message )
-                    return redirect('users:editprofile' )
-                except:
-                    return redirect('users:editprofile')
+                send_mail( subject, message, email_from, recipient_list )
+                return redirect('users:editprofile' )
         context = {'form':form}
         return render(request,'registration/register.html',context)
 
