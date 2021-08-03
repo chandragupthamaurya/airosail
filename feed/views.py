@@ -27,9 +27,12 @@ for d in postlist:
 # Create your views here.
 class indexwork():
 	def catagories(self):
-		catlist = ['agriculture','foods','organic','agroproducts','health','sports','fitness','yoga','pets','architecture','arts','transport','car','motor','education','tutorials','trading','books','charity','energy','entertainment',
-		'games','smart home','wearable','marketing','advertising','manufacturing','fashion','clothes','footwear','watches','makeup','human','resources','photography','property','science','technology',
-		'websites','app','software']
+		catlist = ['agriculture','agroproducts','advertising','aerospace','ai','animation','AR VR','app','architecture',
+		'arts & photography','automotive','books','car','computer vision','construnction','clothes','charity',
+		'Dating','energy','entertainment','education','fitness','foods & beverages','fashion','footwear','games','green technology'
+		'health','human resources','healthcare','IOT''makeup','manufacturing','non-renewable','organic','pets','property','renewable',
+		'sports','smart home','software','science','technology','tutorials','trading',
+		'wearable','watches','websites','yoga']
 		return catlist
 
 	def subcatagories(self,cate):
@@ -232,15 +235,17 @@ def categories(request):
 
 @login_required
 def changeimage(request,imgid,postid,value):
-	print(imgid,postid)
-	photo = PostImages.objects.get(id = imgid)
-	if value == 'change':
-		file = request.FILES['images']
-		photo.pimages = file
-		photo.save()
-	else:
-		photo.delete()
-		
+	try:
+		photo = PostImages.objects.get(id = imgid)
+		if value == 'change':
+			file = request.FILES['images']
+			photo.pimages = file
+			photo.save()
+		else:
+			if photo:
+				photo.delete()
+	except:
+		pass
 	return redirect('feed:editpost',id = postid )
 
 def comment_list(request,id):

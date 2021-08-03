@@ -27,9 +27,12 @@ User = get_user_model()
 ind = indexwork()
 class userview():
     def cat(self):
-        catlist = ['agriculture','foods','organic','agroproducts','health','sports','fitness','yoga','pets','architecture','arts','transport','car','motor','education','tutorials','trading','books','charity','energy','entertainment',
-        'games','smart home','wearable','marketing','advertising','manufacturing','fashion','clothes','footwear','watches','makeup','human','resources','photography','property','science','technology',
-        'websites','app','software']
+        catlist = ['agriculture','agroproducts','advertising','aerospace','ai','animation','AR VR','app','architecture',
+        'arts & photography','automotive','books','car','computer vision','construnction','clothes','charity',
+        'Dating','energy','entertainment','education','fitness','foods & beverages','fashion','footwear','games','green technology'
+        'health','human resources','healthcare','IOT''makeup','manufacturing','non-renewable','organic','pets','property','renewable',
+        'sports','smart home','software','science','technology','tutorials','trading',
+        'wearable','watches','websites','yoga']
         return catlist
 
 uv= userview()
@@ -49,8 +52,11 @@ def register(request):
                 message = render_to_string('emails/message.txt')
                 email_from = settings.EMAIL_HOST_USER 
                 recipient_list = [request.user.email, ] 
-                send_mail( subject, message, email_from, recipient_list )
-                return redirect('users:editprofile' )
+                try:
+                    send_mail( subject, message, email_from, recipient_list )
+                    return redirect('users:editprofile' )
+                except:
+                    return redirect('users:editprofile')
         context = {'form':form}
         return render(request,'registration/register.html',context)
 

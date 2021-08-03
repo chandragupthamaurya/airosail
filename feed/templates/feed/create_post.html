@@ -74,7 +74,7 @@ label[for=id_percentage],label[for=id_price]:before{
           <button class="btn btn-secondary dropdown-toggle" type="button" id="sampleDropdownMenu" data-toggle="dropdown">categories</button>
           <div class="dropdown-menu">
             {% for c in cat %}
-              <button class="dropdown-item" type="button"> <input type="checkbox" name="check" value="{{c}}">{{c|title}} </button>
+              <button class="dropdown-item" type="button"><label><input type="checkbox" name="check" value="{{c}}">{{c|title}}</label></button>
             {% endfor %}
           </div>
         </div><br>
@@ -112,7 +112,9 @@ function myfunction(){
   }
 }
 
-
+$(document).on('click', '.dropdown .dropdown-menu', function (e) {
+  e.stopPropagation();
+});
 </script>
 {% endblock jsfiles %}
 
