@@ -234,8 +234,8 @@ def contact(request):               #contact form
             'email_from' : form.cleaned_data['email'],
             'message' : form.cleaned_data['content'],
             }
-            email_from = form.cleaned_data['email']
-            email_to = [settings.EMAIL_HOST_USER,] 
+            email_from = 'airo@airosail.com'
+            email_to = ['airosailinfo@gmail.com',] 
             message = "\n".join(body.values())
             try:
                 send_mail(subject, message,email_from,email_to) 
