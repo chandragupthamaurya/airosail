@@ -50,7 +50,11 @@ def register(request):
                 auth_login(request,new_user)
                 subject = "welcome to SpaceAiro"
                 message = render_to_string('emails/message.txt')
-                email_from = settings.EMAIL_HOST_USER 
+                if DEBUG:
+                    email_from = settings.EMAIL_HOST_USER 
+                else:
+                    email_from = settings.DEFAULT_FROM_EMAIL
+                    
                 recipient_list = [request.user.email, ] 
                 try:
                     send_mail( subject, message, email_from, recipient_list )

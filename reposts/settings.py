@@ -157,7 +157,7 @@ EMAIL_USE_TLS = Oauth.EMAIL_USE_TLS
 EMAIL_PORT = Oauth.EMAIL_PORT
 EMAIL_HOST_USER = Oauth.EMAIL_HOST_USER
 EMAIL_HOST_PASSWORD = Oauth.EMAIL_HOST_PASSWORD
-
+DEFAULT_FROM_EMAIL =Oauth.DEFAULT_FROM_EMAIL
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
