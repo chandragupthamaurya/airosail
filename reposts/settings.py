@@ -38,9 +38,12 @@ ALLOWED_HOSTS = ["127.0.0.1","localhost","156.67.218.171","airosail.com","www.ai
 INSTALLED_APPS = [
     'feed',
     'users',
+    'newsletter',
     'ckeditor',
+    'ckeditor_uploader',
     'taggit',
     'notifications',
+    'django_cleanup.apps.CleanupConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -165,7 +168,22 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # extra configs
 CKEDITOR_CONFIGS = {
-    'default': {
+
+    'default':{
+    'width':'100%',
+       'toolbar_Full': [
+            ['Styles', 'Format', 'Bold', 'Italic', 'Underline', 'Strike', 'SpellChecker', 'Undo', 'Redo'],
+            ['Link', 'Unlink', 'Anchor'],
+            ['Image', 'Flash', 'Table', 'HorizontalRule'],
+            ['TextColor', 'BGColor'],
+            ['Smiley', 'SpecialChar'], ['Source'],
+            ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
+            ['NumberedList','BulletedList'],
+            ['Indent','Outdent'],
+            ['Maximize'],
+        ],
+    },
+    'post_editor': {
         'width': '100%',
         'toolbar': 'Custom',
         'toolbar_Custom': [
@@ -176,7 +194,9 @@ CKEDITOR_CONFIGS = {
         ]
     },
 }
-CKEDITOR_BASEPATH = os.path.join(BASE_DIR,"/static/ckeditor/ckeditor/")
+CKEDITOR_UPLOAD_PATH = "uploads/"
+#CKEDITOR_BASEPATH = os.path.join(BASE_DIR,"/static/ckeditor/ckeditor/")
+
 
 DJANGO_NOTIFICATIONS_CONFIG = { 'USE_JSONFIELD': True}
 

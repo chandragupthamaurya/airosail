@@ -182,49 +182,21 @@
    	    		{% endfor %}
    	    		{% endif %}
 	    	</div>
-	  	   <div class="col-md-3 categories">
+	  	   <div class="col-md-3 news">
 	  	   		<div class="card card-signin my-3">
-	        		<div class="card-body"><h3>Top List</h3>
-	        			<div class="row">
-	        			{% for c in cat %}
-	        			<div class="col-md-auto" style="margin-right: -25px;">
-	        			<form  action="{% url 'feed:categories' %}" method="GET">
-	        				<button type="submit" name="submit" class="btn btn-dark btn-rounded mb-1">
-	        					<input type="hidden" name="cvalue" value="{{c}}">{{c}}
-	        				</button>
-	        			</form>
-	        		</div>
+	        		<div class="card-body"><h3>News</h3>
+	        			{% for news in news %}
+	        			<a  style="color:black;" href="{% url 'newsletter:newsdetails' news.id %}"><strong>{{news.title}}</strong>
+	        				<p>{{news.content|safe|truncatewords:20}}</p>
+	        			</a><br>
+
 	        			{% endfor %}
-	        			</div>	  
 	        		</div>
 	      		</div>
 	  	   </div>
 		</div>
 	</div>
 
-{% if is_paginated %}
-
-      {% if page_obj.has_previous %}
-        <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
-        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
-      {% endif %}
-
-      {% for num in page_obj.paginator.page_range %}
-        {% if page_obj.number == num %}
-          <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
-        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-          <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
-        {% endif %}
-      {% endfor %}
-
-      {% if page_obj.has_next %}
-        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
-        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
-      {% endif %}
-
-    {% endif %}
-
-{% endblock content %}
 {% block jsfiles %}
 <script>
 $(".like").click(function (e) {
@@ -283,4 +255,21 @@ $(".wish").click(function (e) {
       })
 });
 </script>
+<script type="text/javascript">
+	$('.news').find('img').hide()
+	$('.news').find('p').css('text-align','left').css('margin','0')
+</script>
 {% endblock jsfiles %}
+{% endblock content %}
+
+<div class="row">
+{% for c in cat %}
+<div class="col-md-auto" style="margin-right: -25px;">
+<form  action="{% url 'feed:categories' %}" method="GET">
+<button type="submit" name="submit" class="btn btn-dark btn-rounded mb-1">
+<input type="hidden" name="cvalue" value="{{c}}">{{c}}
+</button>
+</form>
+</div>
+{% endfor %}
+</div>

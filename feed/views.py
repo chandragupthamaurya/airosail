@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from .forms import NewPostForm,NewCommentForm,NewPostImage
 from .models import Post,comments,PostImages,Rating,PostViews
+from newsletter.models import Newsletter
 from users.models import Profile
 from django.contrib import messages
 from django.core.paginator import Paginator
@@ -13,6 +14,9 @@ import json
 from django.forms import modelformset_factory
 from notifications.signals import notify
 from django import template
+from taggit.models import Tag
+from django.template.defaultfilters import slugify
+
 User = get_user_model()
 
 
@@ -91,12 +95,13 @@ def index(request):
 	follower=0
 	post = Post.objects.all().order_by('-date_posted')
 	postlist = Post.objects.order_by('?')
+	news = Newsletter.objects.all().order_by('-created')
 	if request.user.is_authenticated:
 		post_count = Post.objects.filter(user_name=request.user) #for total post.count of user
 		p = request.user.profile #user profile for frindlist
 		follower = ind.followerscount(request.user)# indexclass
 		postlist = ind.postlist_filter_byfeed(p,post,request)# index class
-	context = {'post':postlist,'u':p,'post_count':post_count.count,'follower':follower,'cat':incat}
+	context = {'post':postlist,'u':p,'post_count':post_count.count,'follower':follower,'cat':incat,'news':news}
 	return render(request,'feed/index.html',context)
 
 
@@ -119,6 +124,7 @@ def create_post(request):
 			p_obj.post_type = c # save that string
 			p_obj.user_name = user
 			p_obj.save()
+			p_form.save_m2m()
 			for f in files[0:4]: # save the 4 images to post 
 				if f:
 					photo = PostImages(Imgtitle=p_obj, pimages=f)
@@ -214,11 +220,22 @@ def postdetails(request,id):
 	context = {'post':post,'photo':photo,'form':form,'comment':comment,'ratevalue':round(b,2),'is_liked':is_liked,'is_wished':is_wished} 
 	return render(request,'feed/postdetails.html',context)
 
+def tagged(request,slug):
+	common_tags = Post.tags.most_common()[:4]
+	tag = get_object_or_404(Tag, slug=slug)
+	posts = Post.objects.filter(tags=tag)
+	context = {'tag':tag,'posts':posts,'common_tags':common_tags}
+	return render(request,'feed/searchpost.html',context)
+
+
 @login_required
 def deletepost(request,id):
-	post = Post.objects.get(id = id)
-	post.delete()
-	return redirect('users:dashboard')
+	try:
+		post = Post.objects.get(id = id)
+		post.delete()
+		return redirect('users:dashboard')
+	except:
+		return redirect('users:dashboard')
 
 def categories(request):
 	value = request.GET.get('cvalue')

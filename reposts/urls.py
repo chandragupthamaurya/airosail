@@ -23,7 +23,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('feed.urls')),
     path('users/', include('users.urls')),
+    path('newsletter',include('newsletter.urls')),
     path('accounts/',include('django.contrib.auth.urls')),
+    path('ckeditor/',include('ckeditor_uploader.urls')),
     path('inbox/notifications/', include(notifications.urls, namespace='notifications')),
 
 ]

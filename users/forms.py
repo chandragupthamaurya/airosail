@@ -30,7 +30,7 @@ class UserUpdateForm(forms.ModelForm):
 		fields = ('username','email')
 
 class ProfileUpdateForm(forms.ModelForm):
-	About = forms.CharField(widget= CKEditorWidget())
+	About = forms.CharField(widget= CKEditorWidget(config_name='post_editor'))
 
 
 	class Meta:

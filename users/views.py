@@ -234,7 +234,7 @@ def contact(request):               #contact form
             'email_from' : form.cleaned_data['email'],
             'message' : form.cleaned_data['content'],
             }
-            email_from = 'airo@airosail.com'
+            email_from = form.cleaned_data['email']
             email_to = ['airosailinfo@gmail.com',] 
             message = "\n".join(body.values())
             try:

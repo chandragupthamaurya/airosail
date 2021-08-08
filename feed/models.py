@@ -14,7 +14,7 @@ def post_pic(instance,filename):
 
 class Post(models.Model):
 	title = models.CharField(max_length = 255)
-	descriptions =RichTextField(null=True,blank =True)
+	descriptions =RichTextField(null=True,blank =True,config_name='post_editor')
 	date_posted = models.DateTimeField(auto_now_add=True)
 	user_name = models.ForeignKey(User,on_delete=models.CASCADE)
 	currency = models.CharField(choices=currency_type,default='INR',max_length=6)

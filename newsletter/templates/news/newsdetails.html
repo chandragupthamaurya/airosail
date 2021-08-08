@@ -1,0 +1,101 @@
+{% extends 'feed/base.html' %}
+{% block content %}
+<style type="text/css">
+	p{margin:0px;}
+</style>
+<div class="container-fluid ">
+	<div class="row">
+		<div class="col-md-8">
+			<div class="card img-fluid">
+				{% if news.image %}
+			<img src='{{news.image.url}}' width="7500" height="500"><br><br>
+			{% endif %}
+				<div class="card-body">
+				<h2>{{news.title}}</h2>
+				<i><i class="fa fa-user"></i> {{news.author}}</i>
+				<span style="margin-left: 20px;"> <i class="fa fa-eye"></i> {{news.view_count}}</span>
+				<span style="margin-left: 20px;">
+				{% for tag in news.tags.all %}		
+					<a href="{% url 'newsletter:tagged' tag.slug %}" class="badge badge-success">#{{tag}}</a>
+				{% endfor %}
+				</span><br><br>
+				<div>
+					{{news.content|safe}}
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-4" >
+		<div class="card">
+		<div class="card-body">
+		{% if request.user == news.author %}
+		<a  href="{% url 'newsletter:editnews' news.id %}"><button class="btn btn-outline-info mr-3">Update</button></a>
+		<button class="btn btn-outline-danger mr-3" data-toggle="modal" data-target="#exampleModalCenter{{news.id}}">Delete</button>
+						
+		<div class="modal fade" id="exampleModalCenter{{news.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	    <div class="modal-dialog modal-dialog-centered" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title" id="exampleModalLongTitle">Delete news</h5>
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			          <span aria-hidden="true">&times;</span>
+			        </button>
+		      </div>
+		      <div class="modal-body text-center">
+		          <p>Are you sure you want to delete your account?</p>
+			      <div class="clearfix">
+				    <button type="button" class="btn btn-lg btn-secondary cancelbtn">Cancel</button>
+				    <button type="button" class="btn btn-lg btn-danger deletebtn"><a style="color:white;" href="{% url 'newsletter:deletenews' news.id %}"> Delete</a></button>
+				  </div>
+				  </div>
+					      
+			   </div>
+		 </div>
+		</div>
+		{% endif %}
+		<h3>Top Topics</h3>
+		<div>
+			
+			{% for top in topic %}
+			<h5><a href="{% url 'newsletter:newscat' top.id %}">{{ top }}</a></h5>
+			{% endfor %}
+		</div>
+		<hr>
+		<h4>Recent Post</h4>
+		<div>
+			{% for recent in newslist %}
+			<a href="{% url 'newsletter:newsdetails' recent.id %}" style="color: black;">
+			<div class="row">
+				<div class="col-md-3 img-fluid">
+					{% if recent.image %}
+					<img src="{{recent.image.url}}" width="100px" height="80px">
+					{% endif %}
+				</div>
+				<div class="col-md-9 news" style="word-wrap: break-word;">
+					<h5>{{recent.title|truncatewords:6}}</h5>
+	        				<p>{{recent.content|safe|truncatewords:20}}</p>
+					<small>{{recent.created}}</small>
+				</div>
+			</div>
+			</a><hr>
+			{% endfor %}
+		</div>
+		<h4>Comman Tags</h4>
+		<div>
+			{% for tag in commantag %}
+			<a href="{% url 'newsletter:tagged' tag.slug %}" class="badge badge-success" style="font-size: 16px;">#{{tag}}</a>
+			{% endfor %}
+		</div>
+	</div>
+</div>
+</div>	
+</div>
+</div>
+{% block jsfiles %}
+<script type="text/javascript">
+	$('.news').find('img').hide()
+	$('.news').find('p').css('text-align','left').css('margin','0')
+</script>
+{% endblock jsfiles %}
+
+{% endblock content %}

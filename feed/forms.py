@@ -4,7 +4,7 @@ from ckeditor.widgets import CKEditorWidget
 
 
 class NewPostForm(forms.ModelForm):
-	descriptions = forms.CharField(required = False,widget=CKEditorWidget())
+	descriptions = forms.CharField(required = False,widget=CKEditorWidget(config_name='post_editor'))
 
 	class Meta:
 		model = Post

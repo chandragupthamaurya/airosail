@@ -129,7 +129,7 @@
                   <div class="row">
                     <div class="col-md mb-3" style="margin-right: -10px">
                         <div class=""><a href="{% url 'feed:postdetails' post.id %}">
-                                <strong>{{post.title}}</strong> <small>{{post.date_posted}}</small>{% if request.user %}<a  href="{% url 'feed:editpost' post.id %}">edit</a><a href="{% url 'feed:deletepost' post.id %}"> Delete</a>{% endif %}
+                                <strong>{{post.title |truncatewords:2}}</strong> <small>{{post.date_posted}}</small>{% if request.user %}<a class="btn"style="color: violet;" href="{% url 'feed:editpost' post.id %}"><i class="fa fa-edit"></i></a><a style="color: red;" href="{% url 'feed:deletepost' post.id %}"><i class="fa fa-trash"></i></a>{% endif %}
                             <div class="pt-3">
                                 {{post.disc|safe}}
                             </div></a>
