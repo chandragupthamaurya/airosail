@@ -1,7 +1,6 @@
 {% extends 'feed/base.html' %}
 {% block content %}
 <style type="text/css">
-	p{margin:0px;}
 </style>
 <div class="container-fluid ">
 	<div class="row">
@@ -23,6 +22,15 @@
 					{{news.content|safe}}
 				</div>
 			</div>
+										        <!-- Modal body -->
+	        <div style="margin:2%;">
+	        	 <a href="https://plus.google.com/share?url=https://airosail.com/{{ request.get_full_path|urlencode }}" class="fa fa-google btn btn-outline-info btn-lg"></a>
+				 <a href="http://www.linkedin.com/shareArticle?url=https://airosail.com/{{ request.get_full_path|urlencode }}&title={{post.title}}&summary=&source=https://airosail.com" class="fa fa-linkedin btn btn-outline-info btn-lg"></a>
+				  <a href="http://www.facebook.com/sharer/sharer.php?u=https://airosail.com/{{ request.get_full_path|urlencode }}"class="fa fa-facebook btn btn-outline-info btn-lg"></a>
+				  <a href="whatsapp://send?text=https//airosail.com/{{request.get_full_path|urlencode}}" data-action="share/whatsapp/share"><i class="fa fa-whatsapp btn btn-outline-info btn-lg"></i></a>
+
+	        </div>
+
 		</div>
 	</div>
 	<div class="col-md-4" >
@@ -73,7 +81,7 @@
 				</div>
 				<div class="col-md-9 news" style="word-wrap: break-word;">
 					<h5>{{recent.title|truncatewords:6}}</h5>
-	        				<p>{{recent.content|safe|truncatewords:20}}</p>
+	        				<p>{{recent.content|safe|truncatewords:10}}</p>
 					<small>{{recent.created}}</small>
 				</div>
 			</div>
