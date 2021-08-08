@@ -13,7 +13,7 @@ from django.core.paginator import Paginator,PageNotAnInteger, EmptyPage
 User = get_user_model()
 
 def newsletter(request):
-	news = Topics.objects.all()
+	news = Topics.objects.all().order_by('-title_time')
 	context = {'news':news}
 	return render(request,'news/newsletter.html',context)
 
@@ -73,7 +73,7 @@ def newsdetails(request,id):
 
 def newscat(request,id):
 	new = Topics.objects.get(id = id)
-	news_list = new.topic.all()
+	news_list = new.topic.all().order_by('-created')
 	paginator = Paginator(news_list,5)
 	page = request.GET.get('page')
 	try:
@@ -88,7 +88,7 @@ def newscat(request,id):
 
 def tagged(request,slug):
 	tag = get_object_or_404(Tag,slug=slug)
-	news = Newsletter.objects.filter(tags= tag)
+	news = Newsletter.objects.filter(tags= tag).order_by('-created')
 	context ={'news':news}
 	return render(request,'news/newstags.html',context)
 
