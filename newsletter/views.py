@@ -13,24 +13,22 @@ from django.core.paginator import Paginator,PageNotAnInteger, EmptyPage
 User = get_user_model()
 
 def newsletter(request):
-	news = Topics.objects.all().order_by('-title_time')
-	context = {'news':news}
+	news = Topics.objects.all()
+	newslist = []
+	for n in news:
+		newslist.append(n.topic.all().order_by('-created')[:3])
+	context = {'news':news,'newslist':newslist}
 	return render(request,'news/newsletter.html',context)
 
 @login_required
 def create_newsletter(request):
 	user =request.user
-	prolist = user.profile.friends.all()
-	friendlist =[]
-	for pro in prolist:
-		friendlist.append(pro.user)
 	if request.method == "POST":
 		form = NewNewsForm(request.POST,request.FILES)
 		if form.is_valid():
 			obj = form.save(commit = False)
 			obj.author = user
 			obj.save()
-		notify.send(user,recipient=friendlist,verb="Newsletter ",target=obj)
 		return redirect("users:dashboard")
 	else:
 		form  = NewNewsForm()

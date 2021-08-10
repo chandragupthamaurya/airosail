@@ -30,9 +30,9 @@
 </div>
 <div class="container-fluid mt-5 ">
 	<div class="row ">
-	{% for new in news %}
+	{% for new in newslist %}
 	<div class="col-sm-12 col-lg-4 ">
-		{% for recent in new.topic.all %}
+		{% for recent in new  %}
 		{% if forloop.counter <= 3  %}
 		<a href="{% url 'newsletter:newsdetails' recent.id %}" style="color: black;">
 		<div class="card">

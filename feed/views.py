@@ -95,7 +95,7 @@ def index(request):
 	follower=0
 	post = Post.objects.all().order_by('-date_posted')
 	postlist = Post.objects.order_by('?')
-	news = Newsletter.objects.all().order_by('-created')
+	news = Newsletter.objects.all().order_by('-created')[:6]
 	if request.user.is_authenticated:
 		post_count = Post.objects.filter(user_name=request.user) #for total post.count of user
 		p = request.user.profile #user profile for frindlist
