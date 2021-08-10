@@ -21,6 +21,21 @@
 				</a>
 			</div><br>
 			{% endfor %}
+			{% for new, des, i,url, tim, auth  in bus %}
+			<div class="card">
+				<div class="row">
+					<div class="col-md-4">
+						{% if i %}
+						<img src="{{i}}" width="250px" class="h-100">
+						{% endif %}
+					</div>
+					<div class="col-md-8">
+						<h4><a href="{{url}}" style="color: black;">{{new}}</a></h4>
+						<q>{{auth}}</q>- {{tim|truncatechars:11}}</a></b><div class="wordwarp">{{des}} </div>
+					</div>
+				</div>
+			</div><br>
+			{% endfor %}
 		</div>
 		<div class="col-md-4">
 			<div class="card">
@@ -53,3 +68,16 @@
 </script>
 {% endblock jsfiles %}
 {% endblock content %}
+
+
+<div class="row h-100">
+					<div class="col-md-4" >
+						{% if i %}
+						<img src="{{i}}" width="250px" height="250px" alt="news">
+						{% endif %}
+					</div>
+					<div class="col-md-8">
+						<h4>{{new}}</h4>
+						<q>{{auth}}</q>- {{tim|truncatechars:11}}</a></b><div class="wordwarp">{{des}} </div>
+					</div>
+				</div>

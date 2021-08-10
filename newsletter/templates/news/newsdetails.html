@@ -66,7 +66,7 @@
 		<div>
 			
 			{% for top in topic %}
-			<h5><a href="{% url 'newsletter:newscat' top.id %}">{{ top }}</a></h5>
+			<h5 class="btn btn-outline-success btn-lg"><a style="color: black;" href="{% url 'newsletter:newscat' top.id %}">{{ top }}</a></h5><br>
 			{% endfor %}
 		</div>
 		<hr>

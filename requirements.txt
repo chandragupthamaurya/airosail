@@ -1,4 +1,6 @@
 asgiref==3.3.4
+certifi==2021.5.30
+charset-normalizer==2.0.4
 Django==3.2.2
 django-appconf==1.0.4
 django-autoslug==1.9.8
@@ -11,12 +13,16 @@ django-notifications-hq==1.6.0
 django-taggit==1.4.0
 django-user-accounts==3.0.4
 gunicorn==20.1.0
+idna==3.2
 jsonfield==3.1.0
+newsapi-python==0.2.6
 Pillow==8.2.0
 psycopg2-binary==2.9.1
 pytz==2021.1
+requests==2.26.0
 six==1.16.0
 sqlparse==0.4.1
 swapper==1.1.2.post1
 typing-extensions==3.10.0.0
+urllib3==1.26.6
 whitenoise==5.3.0

@@ -8,6 +8,8 @@ from notifications.signals import notify
 from .models import Newsletter,NewsViews,Topics
 from taggit.models import Tag
 from django.core.paginator import Paginator,PageNotAnInteger, EmptyPage
+from newsapi import NewsApiClient 
+from django.conf import settings
 
 # Create your views here.
 User = get_user_model()
@@ -81,7 +83,35 @@ def newscat(request,id):
 	except EmptyPage:
 		news = paginator.page(paginator.num_pages)
 
-	context = {'news':news,'page':page}
+	newsapi = NewsApiClient(api_key =settings.NEWSAPI) 
+	if new.title.lower() == 'business':
+		business = newsapi.get_top_headlines(q='business',language='en')
+	elif new.title.lower() == 'technology':
+		business = newsapi.get_top_headlines(sources='techcrunch',language='en')
+	else:
+		business = newsapi.get_top_headlines(q='health',language='en')
+
+
+	bus = business['articles']
+	bdesc =[] 
+	bnews =[] 
+	bimg  =[]
+	burl = []
+	btime = []
+	bauth= []
+
+	for i in range(8): 
+		f = bus[i]
+		if f['urlToImage'] is not None:
+			bnews.append(f['title']) 
+			bdesc.append(f['description']) 
+			bimg.append(f['urlToImage']) 
+			burl.append(f['url'])
+			btime.append(f['publishedAt'])
+			bauth.append(f['author'])
+	blist = zip(bnews, bdesc, bimg, burl, btime,bauth)
+
+	context = {'news':news,'page':page,'bus':blist}
 	return render(request,'news/newstags.html',context)
 
 def tagged(request,slug):
