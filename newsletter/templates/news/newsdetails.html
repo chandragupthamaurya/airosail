@@ -1,4 +1,5 @@
 {% extends 'feed/base.html' %}
+{% load static %}
 {% block content %}
 <style type="text/css">
 </style>
@@ -87,6 +88,9 @@
 			</div>
 			</a><hr>
 			{% endfor %}
+		</div>
+		<div>
+			<a href="{% url 'users:login' %}"><img src="{% static 'img/airosail.png' %}" width="300px" height="250px"></a>
 		</div>
 		<h4>Comman Tags</h4>
 		<div>

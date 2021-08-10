@@ -1,4 +1,5 @@
 {% extends 'feed/base.html' %}
+{% load static %}
 {% block content %}
 <div class="container">
 	<div class="row">
@@ -23,7 +24,10 @@
 		</div>
 		<div class="col-md-4">
 			<div class="card">
-				 
+				<div>
+				<a href="{% url 'users:login' %}"><img src="{% static 'img/airosail.png' %}" class="w-100" height="250px"></a>
+				</div>
+
 			</div>
 		</div>
 	</div>
