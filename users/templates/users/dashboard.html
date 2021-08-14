@@ -1,6 +1,12 @@
 {% extends 'feed/base.html'%}
 {% block content %}
+<style type="text/css">
+  .gt:hover {
+    font-size: 30px;
+    color:violet;
+}
 
+</style>
 <div class="main-content">
   <div class="container-fluid mt-7">
     <div class="row" style="margin:10px 10% 10px 10%">
@@ -121,6 +127,25 @@
           </div>
 
             <div class="col-md-4">
+              {% if news %}
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="gt"><a href="{% url 'newsletter:articles' u.id %}" style="color: black;">Articles <span class="gt">&gt</span></a></h4><hr>
+                  {% for news in news %}
+                  <div class="row">
+                    <div class="col-md mb-3" style="margin-right: -10px">
+                        <div class=""><a href="{% url 'newsletter:newsdetails' news.id %}">
+                                <strong>{{news.title |truncatewords:2 }}</strong> <small>{{news.created}}</small>{% if request.user %}<a class="btn"style="color: violet;" href="{% url 'newsletter:editnews' news.id %}"><i class="fa fa-edit"></i></a><a style="color: red;" href="{% url 'newsletter:deletenews' news.id %}"><i class="fa fa-trash"></i></a>{% endif %}
+                            <div class="pt-3">
+                                {{news.disc|safe}}
+                            </div></a>
+                        </div>
+                    </div>
+                  </div> 
+                    {% endfor %}
+                </div>
+              </div>
+              {% endif %}
               <div class="card">
                 <div class="card-body">
                   <h4>Activities writes</h4><hr>
@@ -129,7 +154,7 @@
                   <div class="row">
                     <div class="col-md mb-3" style="margin-right: -10px">
                         <div class=""><a href="{% url 'feed:postdetails' post.id %}">
-                                <strong>{{post.title |truncatewords:2}}</strong> <small>{{post.date_posted}}</small>{% if request.user %}<a class="btn"style="color: violet;" href="{% url 'feed:editpost' post.id %}"><i class="fa fa-edit"></i></a><a style="color: red;" href="{% url 'feed:deletepost' post.id %}"><i class="fa fa-trash"></i></a>{% endif %}
+                                <strong>{{post.title |truncatewords:2 }}</strong> <small>{{post.date_posted}}</small>{% if request.user %}<a class="btn"style="color: violet;" href="{% url 'feed:editpost' post.id %}"><i class="fa fa-edit"></i></a><a style="color: red;" href="{% url 'feed:deletepost' post.id %}"><i class="fa fa-trash"></i></a>{% endif %}
                             <div class="pt-3">
                                 {{post.disc|safe}}
                             </div></a>

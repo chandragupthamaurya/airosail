@@ -184,12 +184,12 @@
 	    	</div>
 	  	   <div class="col-md-3 news">
 	  	   		<div class="card card-signin my-3">
-	        		<div class="card-body"><h3>News</h3>
+	        		<div class="card-body">
+	        			<h3>News</h3>
 	        			{% for news in news %}
 	        			<a  style="color:black;" href="{% url 'newsletter:newsdetails' news.id %}"><strong>{{news.title}}</strong>
-	        				<p>{{news.content|safe|truncatewords:10}}</p>
-	        			</a><br>
-
+	        			</a>
+	        			<hr>
 	        			{% endfor %}
 	        		</div>
 	      		</div>
@@ -262,14 +262,4 @@ $(".wish").click(function (e) {
 {% endblock jsfiles %}
 {% endblock content %}
 
-<div class="row">
-{% for c in cat %}
-<div class="col-md-auto" style="margin-right: -25px;">
-<form  action="{% url 'feed:categories' %}" method="GET">
-<button type="submit" name="submit" class="btn btn-dark btn-rounded mb-1">
-<input type="hidden" name="cvalue" value="{{c}}">{{c}}
-</button>
-</form>
-</div>
-{% endfor %}
-</div>
+<

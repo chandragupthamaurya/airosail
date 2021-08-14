@@ -7,6 +7,7 @@ from django.conf import settings
 from .forms import registerForm,ProfileUpdateForm,UserUpdateForm,ContactForm,MessageForm
 from .models import Profile,FriendRequest,Messages
 from feed.models import Post,comments,PostImages
+from newsletter.models import Newsletter
 from django.core.mail import send_mail,BadHeaderError
 from django.template.loader import render_to_string,get_template
 from django.contrib import messages
@@ -127,17 +128,21 @@ def editprofile(request):
     return render(request,'users/editprofile.html',context)
 
 
-@login_required
 def profile_v(request,id):
     p = Profile.objects.get(id=id)
     u = p.user
     friends = p.friends.all()
-    if p not in request.user.profile.friends.all():
-        button_status = 'follow'
-        post = []
+    follower = ind.followerscount(u)
+    if request.user.is_authenticated:
+        if p not in request.user.profile.friends.all():
+            button_status = 'follow'
+            post = []
+        else:
+            button_status = 'unfollow'
+            post = Post.objects.filter(user_name=u).order_by('-date_posted')
     else:
-        button_status = 'unfollow'
-        post = Post.objects.filter(user_name=u).order_by('-date_posted')
+        button_status="login"
+        post = []
 
     context = {
         'u': u,
@@ -145,6 +150,7 @@ def profile_v(request,id):
         'button':button_status,
         'post':post,
         'post_count':post.count,
+        'follower':follower,
         
     }
 
@@ -157,12 +163,14 @@ def dashboard(request):
     you = p.user
     friends = p.friends.all()
     post = Post.objects.filter(user_name=you).order_by('-date_posted')
+    news  = Newsletter.objects.filter(author=you).order_by('-created')[:5]
     follower = ind.followerscount(request.user)
     
     context = {
         'u': you,
         'friends_list': friends,
         'post':post,
+        'news':news,
         'post_count':post.count,
         'follower':follower,
 

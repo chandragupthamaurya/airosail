@@ -1,16 +1,16 @@
 from django.shortcuts import render,redirect,get_object_or_404
-from .forms import NewNewsForm
+from .forms import NewNewsForm,NewCommentForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse,HttpResponseRedirect,JsonResponse
 from django.contrib.auth import get_user_model
 from users.models import Profile
 from notifications.signals import notify
-from .models import Newsletter,NewsViews,Topics
+from .models import Newsletter,NewsViews,Topics,Comments
 from taggit.models import Tag
 from django.core.paginator import Paginator,PageNotAnInteger, EmptyPage
 from newsapi import NewsApiClient 
 from django.conf import settings
-
+import json
 # Create your views here.
 User = get_user_model()
 
@@ -58,6 +58,32 @@ def newsdetails(request,id):
 	newslist = Newsletter.objects.all().order_by('-created')
 	topic = Topics.objects.all()
 	comman_tag = Newsletter.tags.most_common()[:6]
+	if request.user.is_authenticated:
+		is_liked = news.nlikes.filter(id =request.user.id).exists()
+	else:
+		is_liked = False
+
+	comment = Comments.objects.filter(news=news, reply= None).order_by('-newscomment_date')
+	if request.method == 'POST':
+		form = NewCommentForm(request.POST)
+		if form.is_valid():
+			reply_id = request.POST.get('reply_id')
+			reply_com = None
+			if reply_id:
+				reply_com = Comments.objects.get(id = reply_id)
+			data = form.save(commit = False)
+			if request.user.is_authenticated:
+				data.newsuser = request.user
+				data.reply = reply_com
+				data.news = news
+				data.save()
+			else:
+				pass
+			
+			return redirect('newsletter:newsdetails', id = news.id)
+	else:
+		form = NewCommentForm()
+
 	def get_client_ip(request):
 		x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
 		if x_forwarded_for:
@@ -68,8 +94,52 @@ def newsdetails(request,id):
 	NewsViews.objects.get_or_create(IPAddres = get_client_ip(request),newsletter = news)
 
 
-	context={'news':news,'topic':topic[:5],'newslist':newslist[ :6] ,'commantag':comman_tag}
+	context={'news':news,'topic':topic[:5],'newslist':newslist[ :6] ,'commantag':comman_tag,'form':form,'comment':comment,'is_liked':is_liked}
 	return render(request,'news/newsdetails.html',context)
+
+""""def newscommetadd(request):
+	if request.method == "POST":
+		newsid = request.POST.get('comid')
+		news = Newsletter.objects.get(id =newsid)
+		msg = request.POST.get('msg')
+		form = NewCommentForm(request.POST)
+		if form.is_valid():
+			reply_id = request.POST.get('reply_id')
+			reply_com = None
+			if reply_id:
+				reply_com = Comments.objects.get(id = reply_id)
+			data = form.save(commit = False)
+			if request.user.is_authenticated:
+				data.commet = msg
+				data.newsuser = request.user
+				data.reply = reply_com
+				data.news = news
+				data.save()
+		return HttpResponse('success')
+	else:
+		return HttpResponse('unsuccess')
+"""
+@login_required
+def nlike(request):
+	news_id = request.GET.get("likeId", "")
+	user = request.user
+	news = Newsletter.objects.get(pk=news_id)
+	liked = False
+	if news.nlikes.filter(id= request.user.id).exists():
+		print('True')
+		news.nlikes.remove(user)
+	else:
+		news.nlikes.add(request.user)
+		liked = True
+	like_count = news.nlikes.all().count()
+	resp = {
+        'liked':liked,
+        'like_count':like_count
+    }
+	response = json.dumps(resp)
+	return HttpResponse(response, content_type = "application/json")
+
+
 
 def newscat(request,id):
 	new = Topics.objects.get(id = id)
@@ -120,6 +190,12 @@ def tagged(request,slug):
 	context ={'news':news}
 	return render(request,'news/newstags.html',context)
 
+def articles(request,id):
+	u = User.objects.get(id = id)
+	news = Newsletter.objects.filter(author = id)
+	context ={'news':news,'u':u}
+	return render(request,'news/articles.html',context)
+
 @login_required
 def deletenews(request,id):
 	try:
@@ -130,3 +206,13 @@ def deletenews(request,id):
 		return redirect('users:dashboard')
 
 
+@login_required
+def del_comment(request):
+	if request.is_ajax() and request.method=="GET":
+		comid = request.GET.get('comid')
+		comment = Comments.objects.get(id = comid)
+		if comment.newsuser == request.user:
+			comment.delete()
+		return HttpResponse('success',True)
+	else:
+		return HttpResponse('unsuccess',False)

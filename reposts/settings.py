@@ -145,7 +145,7 @@ USE_TZ = True
 
 
 LOGIN_REDIRECT_URL = 'users:dashboard'
-LOGIN_URL = 'feed:index'
+LOGIN_URL = 'users:login'
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')

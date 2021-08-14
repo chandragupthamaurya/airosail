@@ -6,19 +6,20 @@
 		<div class="col-md-8">
 			{% for news in news %}
 			<div class="card">
-				<a href="{% url 'newsletter:newsdetails' news.id %}" style="color: black;">
-				<div class="row h-100">
+				<div class="row">
 					<div class="col-md-4 img-fluid" >
 						{% if news.image %}
-						<img src="{{news.image.url}}" width="250px" height="120px" alt="{{news.title}}">
+						<img src="{{news.image.url}}" width="250px" class="h-100" alt="{{news.title}}">
 						{% endif %}
 					</div>
 					<div class="col-md-8 newsimg">
+						<a href="{% url 'newsletter:newsdetails' news.id %}" style="color: black;">
 						<h4>{{news.title}}</h4>
 						<small>{{news.created}}</small>
+						</a>
+
 					</div>
 				</div>
-				</a>
 			</div><br>
 			{% endfor %}
 			{% for new, des, i,url, tim, auth  in bus %}
@@ -68,16 +69,3 @@
 </script>
 {% endblock jsfiles %}
 {% endblock content %}
-
-
-<div class="row h-100">
-					<div class="col-md-4" >
-						{% if i %}
-						<img src="{{i}}" width="250px" height="250px" alt="news">
-						{% endif %}
-					</div>
-					<div class="col-md-8">
-						<h4>{{new}}</h4>
-						<q>{{auth}}</q>- {{tim|truncatechars:11}}</a></b><div class="wordwarp">{{des}} </div>
-					</div>
-				</div>

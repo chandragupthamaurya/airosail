@@ -12,4 +12,9 @@ urlpatterns = [
 	path('deletenews/<int:id>/',views.deletenews,name='deletenews'),
 	path('tagged/<slug:slug>/',views.tagged,name='tagged'),
 	path('newscat/<int:id>/',views.newscat,name='newscat'),
+	path('del_comment/',views.del_comment,name='del_comment'),
+	#path('newscommetadd/',views.newscommetadd,name='newscommetadd'),
+	path('nlike/', views.nlike, name='news-like'),
+	path('articles/<int:id>/',views.articles,name='articles'),
+
 ]

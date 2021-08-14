@@ -26,15 +26,17 @@
               <div class="col">
                 <div class="card-profile-stats d-flex justify-content-center mt-md-5">
                   <div>
-                    <span class="heading">{{ u.profile.friends.count }}</span>
-                    {% if request.user == u %}
-                    <span class="description"><a href="{% url 'users:friend_list' %}">followers</a></span>
-                    <span class="description">{{post_count}}posts</span>                    
-                    <span class="description"><a href="{% url 'feed:wishlist' %}">Wishlist</a></span>
+                      {% if request.user == u %}
+                      <div class="img-fluid ">
+                      <a type="button" class="btn btn-outline-success" >{{ u.profile.friends.count }} Following</a>
+                      <a type="button" class="btn btn-outline-success" >{{follower}} Followers</a>
+                      <a type="button" class="btn btn-outline-success">{{post_count}} posts</a>
+                      </div>
                     {% else %}
-                    <span class="description">followers</span>
-                    <span class="description">{{post_count}}posts</span>                    
-                    <span class="description">Wishlist</span>
+                    <button type="button" class="btn btn-outline-success">{{ u.profile.friends.count }}Following</button>
+                    <button type="button" class="btn btn-outline-success">{{follower}}Followers</button>
+                    <button type="button" class="btn btn-outline-success">{{post_count}}posts</button>
+                    <button type="button" class="btn btn-outline-success">Wishlist</button>
                     {% endif %}
                     
                     </div>
@@ -89,24 +91,27 @@
 
                {% if button == 'follow' %}
                <a class="btn btn-primary" href="{% url 'users:add_friends' u.id %}">Follow</a>
-               {% else %}
+               {% elif button == 'unfollow' %}
                 <a class="btn btn-danger" href="{% url 'users:delete_friend' u.id %}">Unfollow</a>
+                {% else %}
+                <a  href="{% url 'users:login' %}" class="btn btn-info">Login</a>
                 {% endif %}
+
+
                {% endif %}
             </div>
           </div>
           
         </div>
       </div>
-      {% if u.profile.profile_type != 'people'%}
       <div class="col-xl-4 order-xl-2">
         <div class="card">
           <div class="card-body">
-            <h3>News</h3>
+            <h3>Articles</h3>
+
           </div>
         </div>
       </div>
-      {% endif %}
     </div>
     <br />
    {% if u.profile.profile_type != 'people'%}

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Newsletter
+from .models import Newsletter,Comments
 from ckeditor.widgets import CKEditorWidget
 
 
@@ -10,3 +10,9 @@ class NewNewsForm(forms.ModelForm):
 	class Meta:
 		model = Newsletter
 		fields = ['topics','title','content','tags','image']
+
+class NewCommentForm(forms.ModelForm):
+
+	class Meta:
+		model = Comments
+		fields = ['newscomment']

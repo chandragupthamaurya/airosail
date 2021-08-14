@@ -34,20 +34,21 @@
 	<div class="col-sm-12 col-lg-4 ">
 		{% for recent in new  %}
 		{% if forloop.counter <= 3  %}
-		<a href="{% url 'newsletter:newsdetails' recent.id %}" style="color: black;">
 		<div class="card ">
-			<div class="row h-100 img-fluid ">
+			<div class="row">
 				<div class="col-md-4 col-lg-3 img-fluid " style="margin-right:;">
-					<img src="{{recent.image.url}}" height="120px" width="200px" alt="business">
+					<img src="{{recent.image.url}}" class="h-100" width="200px" alt="business">
 				</div>
 				<div class="col-md-8 newsinline" >
+					<a href="{% url 'newsletter:newsdetails' recent.id %}" style="color: black;">
 					<h4>{{recent.title}}</h4>
 					<p>{{recent.content|safe|truncatewords:10}}</p>
 					<small>{{recent.created}}</small>
+					</a>
+
 				</div>
 			</div>
 		</div><br>
-		</a>
 		{% endif %}
 		{% endfor %}
 	</div>

@@ -2,18 +2,44 @@
 {% load static %}
 {% block content %}
 <style type="text/css">
+
+#id_newscomment{
+  border: none;
+  border-bottom: 2px solid #009999;
+  width: 100%;
+}
+p,ul,strong{font-family: Arial, Helvetica, sans-serif;
+
+font-size: 20px;
+}
 </style>
 <div class="container-fluid ">
 	<div class="row">
-		<div class="col-md-8">
+		<div class="col-md-1">
+			
+		</div>
+		<div class="col-md-7">
 			<div class="card img-fluid">
 				{% if news.image %}
 			<img src='{{news.image.url}}' width="7500" height="500"><br><br>
 			{% endif %}
 				<div class="card-body">
 				<h2>{{news.title}}</h2>
-				<i><i class="fa fa-user"></i> {{news.author}}</i>
+			<a href="{% url 'users:profile_v' news.author.profile.id %}" style="color: black;">
+			<img src="{{ news.author.profile.image.url }}" class="rounded-circle" width="30" height="30" alt="">
+			<b style="font-family: 'Courgette'"> {{news.author}}</b></a>
 				<span style="margin-left: 20px;"> <i class="fa fa-eye"></i> {{news.view_count}}</span>
+	          			 <!-- like button-->
+	          			<button class="btn btn-white mr-3 nlike" id="{{ news.id }}"> 
+	          				{% if is_liked %}
+				            	<a href="{% url 'newsletter:news-like' %}" style="color:red;" id="likebtn{{ news.id }}"><i class="fa fa-heart "style="font-size: 18px;"></i></a>| <span id="likespan{{news.id}}">{{news.nlikes.count}}</span>         				
+				        	{% else %}
+				            	<a href="{% url 'newsletter:news-like' %}" style="" id="likebtn{{ news.id }}"> <i class="fa fa-heart" style="font-size: 18px"></i></a>| <span id="likespan{{news.id}}">{{news.nlikes.count}}</span>
+				        	{% endif %}
+				       
+				    	</button>
+	  				<!-- like end button-->
+
 				<span style="margin-left: 20px;">
 				{% for tag in news.tags.all %}		
 					<a href="{% url 'newsletter:tagged' tag.slug %}" class="badge badge-success">#{{tag}}</a>
@@ -26,15 +52,49 @@
 										        <!-- Modal body -->
 	        <div style="margin:2%;">
 	        	 <a href="https://plus.google.com/share?url=https://airosail.com/{{ request.get_full_path|urlencode }}" class="fa fa-google btn btn-outline-info btn-lg"></a>
-				 <a href="http://www.linkedin.com/shareArticle?url=https://airosail.com/{{ request.get_full_path|urlencode }}&title={{post.title}}&summary=&source=https://airosail.com" class="fa fa-linkedin btn btn-outline-info btn-lg"></a>
+				 <a href="http://www.linkedin.com/shareArticle?url=https://airosail.com/{{ request.get_full_path|urlencode }}&title={{news.title}}&summary=&source=https://airosail.com" class="fa fa-linkedin btn btn-outline-info btn-lg"></a>
 				  <a href="http://www.facebook.com/sharer/sharer.php?u=https://airosail.com/{{ request.get_full_path|urlencode }}"class="fa fa-facebook btn btn-outline-info btn-lg"></a>
 				  <a href="whatsapp://send?text=https//airosail.com/{{request.get_full_path|urlencode}}" data-action="share/whatsapp/share"><i class="fa fa-whatsapp btn btn-outline-info btn-lg"></i></a>
 
 	        </div>
+	        <hr>
+	        <div class="pl-4">
+	        	<form class="newscom px-2" method = "POST"  action="">
+					{% csrf_token %}
+		            <fieldset class="form-group"><br>
+		                <div style="width: 100%;">{{form.newscomment}}</div>
+		            </fieldset>
+		            <div class="form-group">
+		                <button class="btn btn-primary" style="background-color: #009999;" type="submit">Comment</button><br>
+		            </div>
+		        </form>
+		        <hr>
+	       	{% if news.newsdetails.all %}
+			{% for detail in comment|slice:":10" %}
+				<div id = "com{{detail.id}}">
+    				<a href="{% url 'users:profile_v' detail.newsuser.profile.id %}">
+    					<img src="{{ detail.newsuser.profile.image.url }}" class="rounded-circle" width="30" height="30" alt=""></a>
+          			<a class="text-dark" href="{% url 'users:profile_v' detail.newsuser.profile.id %}"><b>{{ detail.newsuser }}</b></a>
+          			<br>
+          			<small>{{ detail.newscomment_date }}</small>
+	          		{% if detail.newsuser == request.user %}
+	          			<a class = "del_com" data-comid="{{ detail.id }}" id="com{{ detail.id }}" href="{% url 'newsletter:del_comment' %}">delete</a>
+	          		{% endif %}
+          			<br><br>
+          			<p class="card-text text-dark">{{ detail.newscomment }}</p>
+    				<hr class="my-1">
+    			</div>
+    			{% endfor %}
+    			{% else %}
+    				<p>No comments to show!</p>
+    			{% endif %}
+				
+		        <a href="">see more -></a>
+	        </div>
 
 		</div>
 	</div>
-	<div class="col-md-4" >
+	<div class="col-md-3" >
 		<div class="card">
 		<div class="card-body">
 		{% if request.user == news.author %}
@@ -105,8 +165,52 @@
 </div>
 {% block jsfiles %}
 <script type="text/javascript">
+$(".nlike").unbind().click(function (e) {
+    var id = this.id;
+    var href = $('.nlike').find('a').attr('href');
+    e.preventDefault();
+
+    $.ajax({
+        url: href,
+        data: {
+          'likeId': id
+        },
+        success: function(response){
+          if(response.liked){
+            $('#likebtn' + id).html("<i class='fa fa-heart' style='font-size: 18px'></i>");
+            $('#likebtn' + id).css("color", "red")
+            $('#likespan'+ id).html(response.like_count)
+          }
+          else{
+            $('#likebtn' + id).html("<i class='fa fa-heart' style='font-size: 18px'></i>");
+            $('#likebtn' + id).css("color", "")
+            $('#likespan'+ id).html(response.like_count)
+          }
+        }
+      })
+});
+</script>
+<script type="text/javascript">
 	$('.news').find('img').hide()
 	$('.news').find('p').css('text-align','left').css('margin','0')
+	$('.news').find('p').css('color','grey')
+
+</script>
+<script type="text/javascript">
+	$(".del_com").click(function(e){
+		var comid = $(this).attr('data-comid');
+		var href = $(this).attr('href');
+		e.preventDefault();
+		$.ajax({
+			method:"GET",
+			url: href,
+			data:{'comid': comid},
+
+			success:function(response){
+				$('#com'+comid).remove()
+			},
+		});
+	});
 </script>
 {% endblock jsfiles %}
 

@@ -26,6 +26,7 @@ class Newsletter(models.Model):
 	title = models.CharField(max_length=250)
 	content = RichTextUploadingField(null=True,blank=True)
 	image = models.ImageField(default='default.png',upload_to='news_pic',null=True,blank=True,)
+	nlikes = models.ManyToManyField(User,blank=True,related_name='nlike')
 	tags =TaggableManager(blank=True)
 
 	@property
@@ -41,3 +42,10 @@ class NewsViews(models.Model):
 
 	def __str__(self):
 		return '%r in %r news'%(self.IPAddres,self.newsletter.title)
+
+class Comments(models.Model):
+	news = models.ForeignKey(Newsletter,related_name='newsdetails',on_delete=models.CASCADE)
+	newsuser = models.ForeignKey(User, related_name='newsdetails', on_delete=models.CASCADE)
+	newscomment = models.CharField(max_length=2000,blank=True)
+	newscomment_date = models.DateTimeField(auto_now_add=True)
+	reply = models.ForeignKey('comments', on_delete=models.CASCADE, related_name="replies", null=True)
