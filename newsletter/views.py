@@ -154,7 +154,7 @@ def newscat(request,id):
 		news = paginator.page(paginator.num_pages)
 
 	newsapi = NewsApiClient(api_key =settings.NEWSAPI) 
-	if new.title.lower() == 'business':
+	if new.title == 'Business':
 		business = newsapi.get_top_headlines(q='business',language='en')
 	elif new.title.lower() == 'technology':
 		business = newsapi.get_top_headlines(sources='techcrunch',language='en')
@@ -169,8 +169,8 @@ def newscat(request,id):
 	burl = []
 	btime = []
 	bauth= []
-
-	for i in range(8): 
+	i=0
+	while i < len(business): 
 		f = bus[i]
 		if f['urlToImage'] is not None:
 			bnews.append(f['title']) 
@@ -179,6 +179,7 @@ def newscat(request,id):
 			burl.append(f['url'])
 			btime.append(f['publishedAt'])
 			bauth.append(f['author'])
+		i += 1
 	blist = zip(bnews, bdesc, bimg, burl, btime,bauth)
 
 	context = {'news':news,'page':page,'bus':blist}
