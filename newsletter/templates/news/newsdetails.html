@@ -25,6 +25,7 @@
 			{% endif %}
 				<div class="card-body">
 				<h2>{{news.title}}</h2>
+				<i>{{news.created}}</i><br>
 			<a href="{% url 'users:profile_v' news.author.profile.id %}" style="color: black;">
 			<img src="{{ news.author.profile.image.url }}" class="rounded-circle" width="30" height="30" alt="">
 			<b style="font-family: 'Courgette'"> {{news.author}}</b></a>

@@ -29,20 +29,20 @@
 	</div>
 </div>
 <div class="container-fluid mt-5 ">
-	<div class="row ">
+	<div class="row">
 	{% for new in newslist %}
 	<div class="col-sm-12 col-lg-4 ">
 		{% for recent in new  %}
 		{% if forloop.counter <= 3  %}
-		<div class="card ">
-			<div class="row">
-				<div class="col-md-4 col-lg-3 img-fluid " style="margin-right:;">
-					<img src="{{recent.image.url}}" class="h-100" width="200px" alt="business">
+		<div class="card h-100">
+			<div class="row img-fluid px-2">
+				<div class="col-md-4 col-lg-3" style="margin-right:;">
+					<img src="{{recent.image.url}}"  width="200px" alt="business">
 				</div>
 				<div class="col-md-8 newsinline" >
 					<a href="{% url 'newsletter:newsdetails' recent.id %}" style="color: black;">
 					<h4>{{recent.title}}</h4>
-					<p>{{recent.content|safe|truncatewords:10}}</p>
+					<p>{{recent.content|safe|truncatewords:9}}</p>
 					<small>{{recent.created}}</small>
 					</a>
 

@@ -304,7 +304,6 @@ def del_comment(request):
 		return HttpResponse('unsuccess',False)
 
 @login_required
-
 def like(request):
 	post_id = request.GET.get("likeId", "")
 	user = request.user
