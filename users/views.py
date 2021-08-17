@@ -49,7 +49,7 @@ def register(request):
             if form.is_valid():
                 new_user = form.save()
                 auth_login(request,new_user)
-                subject = "welcome to SpaceAiro"
+                subject = "welcome to Airosail"
                 message = render_to_string('emails/message.txt')
                 email_from = "airo@airosail.com"
                 recipient_list = [request.user.email, ] 

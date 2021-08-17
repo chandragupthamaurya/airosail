@@ -153,7 +153,7 @@
 		<div>
 			<a href="{% url 'users:login' %}"><img src="{% static 'img/airosail.png' %}" width="300px" height="250px"></a>
 		</div>
-		<h4>Comman Tags</h4>
+		<h4>Common Tags</h4>
 		<div>
 			{% for tag in commantag %}
 			<a href="{% url 'newsletter:tagged' tag.slug %}" class="badge badge-success" style="font-size: 16px;">#{{tag}}</a>
