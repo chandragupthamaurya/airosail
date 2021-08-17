@@ -1,0 +1,15 @@
+{% extends 'feed/base.html' %}
+{% load static %}
+{% block content %}
+<div class="container">
+	<div class="card">
+		<div class="row">
+			<div class="col-sm-4">
+				<a>
+				<img src="{{u.profile.image.url}}" width="80px" height="80px">
+				</a>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock content %}

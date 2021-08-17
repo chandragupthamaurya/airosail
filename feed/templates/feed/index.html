@@ -14,11 +14,21 @@
   width: 300px;
   max-height: 200px;
   overflow-y: auto;
+
+}
+
+.dropdown:hover{
+	background:  #e8d9ff;
+	border:1px solid;
+	border-radius:24px;	
+
 }
 @media(max-width: 800px){
 	.categories{display: none;}
 }
-
+.card:hover{
+	border-color:   #57007d;
+}
 
 </style>
  	<div class="container-fluid" style="padding:0 3% 0 8%">
@@ -54,7 +64,7 @@
 		        		<hr>
 		        		<div>
 		        			<div class="dropdown">
-		        				<button type="button" class="btn btn-block" data-toggle="dropdown">Catagories</button>
+		        				<button type="button" class="btn btn-block"  data-toggle="dropdown">Catagories</button>
 		        				<div class="dropdown-menu">
 		        					{% for c in cat %}
 			        			<li class="dropdown-item">

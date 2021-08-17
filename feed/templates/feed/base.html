@@ -37,7 +37,31 @@ body{
   min-width:2em;
   font-weight:bold;
 }
-  
+.box input[type='search']{
+    border: 0;
+    background: none;
+    text-align: center;
+    border: 2px solid ;
+    width:300px;
+    outline: none;
+    padding: 5px 5px;
+    color: white;
+    border-radius: 24px;
+    transition: 0.25s
+}
+.box input[type= "search"]:focus{
+    width:400px;
+    border-color:#00ff00;
+    background:white;
+}
+.navbar-custom .navbar-brand{
+  border: 1px solid;
+  padding: 0 6px 0 6px;
+
+}
+.card:hover{
+  border-color:   #57007d;
+}
 </style>
 <head>
   <title>AiroSail</title>
@@ -62,10 +86,11 @@ body{
 
 
 </head>
-<body class="d-flex flex-column min-vh-100vh">
+<body class="d-flex flex-column min-vh-100vh" style="background-color:#e2e1e0;">
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark ">
-  <a class="navbar-brand" href="{% url 'feed:index' %}"><h2><span  style="font-family: 'Impact', fantasy;">A</span>irosail</h2></a>
+<nav class="navbar navbar-expand-lg navbar-light bg-info navbar-custom ">
+  <div class="container">
+  <a class="navbar-brand" href="{% url 'feed:index' %}"><span  style="font-family: 'Courgette';">Al</span></a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -85,17 +110,16 @@ body{
       <li class="nav-item">
         <a class="nav-link " href="{% url 'newsletter:newsletter' %}">News</a>
       </li>
-      <li class="nav-item pl-2">
-        <form class="img-fluid" method="GET" action="{% url 'users:search' %}">
-          <input type="search" class="img-fluid" name="q" placeholder="search"style="width: 300px;">
-          <button class="btn btn-outline-success" type="submit" name="submit"><i class="fa fa-search"></i></button>
+    </ul>
+         <form class="img-fluid box" method="GET" action="{% url 'users:search' %}" >
+          <input type="search" class="img-fluid" name="q" placeholder="search" >
+          <button class="btn btn-outline-secondary" style="border-radius: 100%" type="submit" name="submit"><i class="fa fa-search fa-1x"></i></button>
         </form>
         
-      </li>
-    </ul>
+
     <ul class="navbar-nav navbar-right">
-  <li class="nav-item">
-        <a class="nav-link " href="{% url 'users:notification' %}">
+  <li class="">
+        <a class="nav-link" href="{% url 'users:notification' %}">
           <span class="fa-stack fa-1x" data-count="{% if unread_count %}{{unread_count}}{% endif %}">
             <i class="fa fa-circle fa-stack-2x"></i>
             <i class="fa fa-bell fa-stack-1x fa-inverse"></i>
@@ -105,7 +129,7 @@ body{
         {% if user.is_authenticated %}
         <a href="{% url 'users:dashboard' %}"><i class="fa fa-user-circle pl-2 btn " style="font-size:24px;color:white;"></i></a>
         <li class="nav-item pt-1">
-          <div class="dropleft">
+          <div class="dropright">
                   <button type="button" class="btn btn-outline-secondary dropdown-toggle" style="float: right;" data-toggle="dropdown">
                     <i class="fa fa-gear"></i>
                   </button>
@@ -122,6 +146,7 @@ body{
       </li>
     </ul>    
   </div>
+</div>
 </nav>
 <br>
 
