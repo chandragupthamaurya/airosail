@@ -153,7 +153,7 @@ def newscat(request,id):
 	except EmptyPage:
 		news = paginator.page(paginator.num_pages)
 
-	newsapi = NewsApiClient(api_key =settings.NEWSAPI)
+"""	newsapi = NewsApiClient(api_key =settings.NEWSAPI)
 	business = {}
 	blist =[]
 	if newsapi: 
@@ -183,9 +183,9 @@ def newscat(request,id):
 						btime.append(f['publishedAt'])
 						bauth.append(f['author'])
 					i += 1
-				blist = zip(bnews, bdesc, bimg, burl, btime,bauth)
+				blist = zip(bnews, bdesc, bimg, burl, btime,bauth)"""
 
-	context = {'news':news,'page':page,'bus':blist}
+	context = {'news':news,'page':page}
 	return render(request,'news/newstags.html',context)
 
 def tagged(request,slug):
