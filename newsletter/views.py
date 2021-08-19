@@ -160,7 +160,7 @@ def newscat(request,id):
 		if new.title == 'Business':
 			business = newsapi.get_top_headlines(q='business',language='en')
 		elif new.title.lower() == 'technology':
-			business = newsapi.get_top_headlines(q='techcrunch',language='en')
+			business = newsapi.get_top_headlines(sources='techcrunch',language='en')
 		else:
 			business = newsapi.get_top_headlines(q='health',language='en')
 		if business:
