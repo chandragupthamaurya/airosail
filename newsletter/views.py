@@ -153,34 +153,37 @@ def newscat(request,id):
 	except EmptyPage:
 		news = paginator.page(paginator.num_pages)
 
-	newsapi = NewsApiClient(api_key =settings.NEWSAPI) 
-	if new.title == 'Business':
-		business = newsapi.get_top_headlines(q='business',language='en')
-	elif new.title.lower() == 'technology':
-		business = newsapi.get_top_headlines(sources='techcrunch',language='en')
-	else:
-		business = newsapi.get_top_headlines(q='health',language='en')
+	newsapi = NewsApiClient(api_key =settings.NEWSAPI)
+	business = {}
+	blist =[]
+	if newsapi: 
+		if new.title == 'Business':
+			business = newsapi.get_top_headlines(q='business',language='en')
+		elif new.title.lower() == 'technology':
+			business = newsapi.get_top_headlines(sources='techcrunch',language='en')
+		else:
+			business = newsapi.get_top_headlines(q='health',language='en')
 
-
-	bus = business['articles']
-	bdesc =[] 
-	bnews =[] 
-	bimg  =[]
-	burl = []
-	btime = []
-	bauth= []
-	i=0
-	while i < len(business): 
-		f = bus[i]
-		if f['urlToImage'] is not None:
-			bnews.append(f['title']) 
-			bdesc.append(f['description']) 
-			bimg.append(f['urlToImage']) 
-			burl.append(f['url'])
-			btime.append(f['publishedAt'])
-			bauth.append(f['author'])
-		i += 1
-	blist = zip(bnews, bdesc, bimg, burl, btime,bauth)
+		print(business)
+		bus = business['articles']
+		bdesc =[] 
+		bnews =[] 
+		bimg  =[]
+		burl = []
+		btime = []
+		bauth= []
+		i=0
+		while i < len(business): 
+			f = bus[i]
+			if f['urlToImage'] is not None:
+				bnews.append(f['title']) 
+				bdesc.append(f['description']) 
+				bimg.append(f['urlToImage']) 
+				burl.append(f['url'])
+				btime.append(f['publishedAt'])
+				bauth.append(f['author'])
+			i += 1
+		blist = zip(bnews, bdesc, bimg, burl, btime,bauth)
 
 	context = {'news':news,'page':page,'bus':blist}
 	return render(request,'news/newstags.html',context)
