@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'taggit',
     'notifications',
     'django_cleanup.apps.CleanupConfig',
+    'django.contrib.sitemaps',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

@@ -4,6 +4,8 @@ from django.urls import reverse
 from ckeditor_uploader.fields import RichTextUploadingField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from taggit.managers import TaggableManager
+from autoslug import AutoSlugField
+
 # Create your models here.
 def news_pic(instance,filename):
 	return 'newspics/{0}/{1}'.format(instance.id,filename)
@@ -21,6 +23,7 @@ class Topics(models.Model):
 class Newsletter(models.Model):
 	topics = models.ForeignKey(Topics,related_name='topic',on_delete=models.CASCADE,null=True,blank=True)
 	author = models.ForeignKey(User, related_name="news", on_delete=models.CASCADE)
+	slug = AutoSlugField(populate_from='topics',null=True)
 	created = models.DateTimeField(auto_now_add =True,null = True)
 	edited = models.DateTimeField(auto_now = True,auto_now_add=False)
 	title = models.CharField(max_length=250)
@@ -35,6 +38,9 @@ class Newsletter(models.Model):
 
 	def __str__(self):
 		return self.title
+
+	def get_absolute_url(self):
+		return "/{}".format(self.slug)
 
 class NewsViews(models.Model):
 	IPAddres = models.GenericIPAddressField(default="45.243.82.169")

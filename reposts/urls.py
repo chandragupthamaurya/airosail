@@ -18,7 +18,13 @@ from django.urls import path,include
 from django.conf import settings
 from django.conf.urls.static import static
 import notifications.urls
+from django.contrib.sitemaps.views import sitemap
+from feed.sitemaps import StaticViewsSitemap,NewsletterSitemap
 
+sitemaps = {
+    'static':StaticViewsSitemap,
+    'NewsletterSitemap':NewsletterSitemap
+}
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('feed.urls')),
@@ -27,6 +33,7 @@ urlpatterns = [
     path('accounts/',include('django.contrib.auth.urls')),
     path('ckeditor/',include('ckeditor_uploader.urls')),
     path('inbox/notifications/', include(notifications.urls, namespace='notifications')),
+    path('sitemap.xml',sitemap,{'sitemaps':sitemaps}),
 
 ]
 

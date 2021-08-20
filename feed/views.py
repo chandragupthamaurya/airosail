@@ -26,7 +26,8 @@ for d in postlist:
 		if d.timer >= d.date_posted:
 			d.delete()
 
-
+def about(request):
+	return HttpResponse('about page.....')
 
 # Create your views here.
 class indexwork():
