@@ -55,7 +55,17 @@ def editnews(request,id):
 
 def newsdetails(request,id):
 	news = Newsletter.objects.get(id =id)
-	newslist = Newsletter.objects.all().order_by('-created')
+	recentnews = Newsletter.objects.all().order_by('-created')[:3]
+	relatednews = Newsletter.objects.filter(topics  = news.topics)[:3]
+	newslist = []
+	for recent in recentnews[:3]:
+		if recent.title != news.title:
+			newslist.append(recent)
+
+	for related in relatednews:
+		if related.title != news.title:
+			newslist.append(related)
+
 	topic = Topics.objects.all()
 	comman_tag = Newsletter.tags.most_common()[:6]
 	if request.user.is_authenticated:
@@ -92,7 +102,6 @@ def newsdetails(request,id):
 			ip = request.META['REMOTE_ADDR']
 		return ip
 	NewsViews.objects.get_or_create(IPAddres = get_client_ip(request),newsletter = news)
-
 
 	context={'news':news,'topic':topic[:5],'newslist':newslist[ :6] ,'commantag':comman_tag,'form':form,'comment':comment,'is_liked':is_liked}
 	return render(request,'news/newsdetails.html',context)
