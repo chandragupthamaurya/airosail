@@ -23,7 +23,7 @@ class Topics(models.Model):
 class Newsletter(models.Model):
 	topics = models.ForeignKey(Topics,related_name='topic',on_delete=models.CASCADE,null=True,blank=True)
 	author = models.ForeignKey(User, related_name="news", on_delete=models.CASCADE)
-	slug = AutoSlugField(populate_from='topics',null=True)
+	slug = AutoSlugField(populate_from='title',null=True)
 	created = models.DateTimeField(auto_now_add =True,null = True)
 	edited = models.DateTimeField(auto_now = True,auto_now_add=False)
 	title = models.CharField(max_length=250)

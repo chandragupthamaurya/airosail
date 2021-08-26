@@ -55,16 +55,17 @@ def editnews(request,id):
 
 def newsdetails(request,id):
 	news = Newsletter.objects.get(id =id)
-	recentnews = Newsletter.objects.all().order_by('-created')[:3]
-	relatednews = Newsletter.objects.filter(topics  = news.topics)[:3]
+	recentnews = Newsletter.objects.all().order_by('-created')[:4]
+	relatednews = Newsletter.objects.filter(topics  = news.topics)[:4]
 	newslist = []
-	for recent in recentnews[:3]:
+	for recent in recentnews:
 		if recent.title != news.title:
 			newslist.append(recent)
 
 	for related in relatednews:
 		if related.title != news.title:
-			newslist.append(related)
+			if related.title not in newslist:
+				newslist.append(related)
 
 	topic = Topics.objects.all()
 	comman_tag = Newsletter.tags.most_common()[:6]
