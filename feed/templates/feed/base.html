@@ -235,13 +235,14 @@ body{
       <div >
         <a href="{% url 'feed:rules' 'about' %}"style="color: white;padding-right: 10px;">About</a>
         <a href="{% url 'feed:rules' 'privacy' %}"style="color: white; padding-right: 10px;">Privacy Policy</a>
-        <a href="{% url 'users:contact' %}"style="color: white;">Contact</a>
+        <a href="{% url 'users:contact' %}"style="color: white;  padding-right: 10px;">Contact</a>
+        <a href="/sitemap.xml" style="color: white;">sitemap</a>
       </div>
 
       <!-- Copyright -->
       <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);color:white;">
         © 2021 Copyright:
-        <a class="" href="#">Airosail</a>
+        <a class="" href="{% url 'feed:index' %}">Airosail</a>
       </div>
       <!-- Copyright -->
     </footer>
